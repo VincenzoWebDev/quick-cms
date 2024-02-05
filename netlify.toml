@@ -1,0 +1,2 @@
+[build]
+  command = "composer update && php -v && npm run build"
