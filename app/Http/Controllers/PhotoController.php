@@ -5,18 +5,34 @@ namespace App\Http\Controllers;
 use App\Models\Album;
 use App\Models\Photo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class PhotoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
+    public function __construct()
+    {
+        $this->authorizeResource(Photo::class);
+    }
+
+    protected $rules = [
+        'name' => 'required',
+        'description' => 'required',
+        'album_id' => 'required|exists:albums,id',
+        'img_path' => 'required|image'
+    ];
+
     public function index()
     {
-        $photos = Photo::get();
+        $photos = Photo::orderBy('id', 'desc')->paginate(env('IMG_PER_PAGE'));
 
-        return $photos;
+        return view(
+            'admin.images.photos',
+            [
+                "photos" => $photos
+            ]
+        );
     }
 
     /**
@@ -24,7 +40,15 @@ class PhotoController extends Controller
      */
     public function create()
     {
-        //
+        $photo = new Photo;
+        $albums = $this->getAlbums()->where('user_id', Auth::user()->id);
+        return view(
+            'admin.images.create',
+            [
+                'photo' => $photo,
+                'albums' => $albums
+            ]
+        );
     }
 
     /**
@@ -32,7 +56,25 @@ class PhotoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, $this->rules);
+
+        $photo = new Photo();
+        $photo->name = $request->input('name');
+        $photo->description = $request->input('description');
+        $photo->album_id = $request->album_id;
+        $photo->img_path = '';
+        $res = $photo->save();
+
+        if ($res) {
+            $this->processFile($photo);
+            $photo->save();
+        }
+
+        $messaggio = $res ? 'Immagine inserita correttamente' : 'Immagine non inserita';
+        $tipoMessaggio = $res ? 'success' : 'danger';
+        session()->flash('message', ['tipo' => $tipoMessaggio, 'testo' => $messaggio]);
+
+        return redirect()->route('albums.photos', $photo->album_id);
     }
 
     /**
@@ -47,11 +89,12 @@ class PhotoController extends Controller
      */
     public function edit(Photo $photo)
     {
-        $album = Album::find($photo)->first();
+        $albums = $this->getAlbums()->where('user_id', Auth::user()->id);
         return view(
-            'admin/images/edit',
+            'admin.images.edit',
             [
-                'photo' => $photo, 'album' => $album
+                'photo' => $photo,
+                'albums' => $albums
             ]
         );
     }
@@ -59,18 +102,40 @@ class PhotoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, int $id)
+    public function update(Request $request, Photo $photo)
     {
-        //
+        $oldName = $photo->name;
+        $oldDescription = $photo->description;
+        $oldPath = $photo->img_path;
+
+        array_pop($this->rules);
+        $this->validate($request, $this->rules);
+        $photo->name = $request->input('name');
+        $photo->description = $request->input('description');
+        $photo->album_id = $request->album_id;
+        $photo->img_path = $request->input('img_path') == null ? $oldPath : $request->input('img_path');
+        $this->processFile($photo);
+
+        if ($oldName != $photo->name || $oldDescription != $photo->description || $oldPath != $photo->img_path) {
+            $res = $photo->save();
+        } else {
+            $res = 0;
+        }
+
+        $messaggio = $res ? 'Immagine ID : ' . $photo->id . ' - Aggiornata correttamente' : 'Immagine ID : ' . $photo->id . ' - Non aggiornata';
+        $tipoMessaggio = $res ? 'success' : 'danger';
+        session()->flash('message', ['tipo' => $tipoMessaggio, 'testo' => $messaggio]);
+
+        return redirect()->route('albums.photos', $photo->album_id);
     }
 
     /**
      * Remove the specified resource from storage.
      */
 
-    public function destroy(int $id)
+    public function destroy(Photo $photo)
     {
-        $photo = Photo::find($id);
+        $photo = Photo::find($photo->id);
 
         if (!$photo) {
             return response()->json(['error' => 'Foto non trovata'], 404);
@@ -88,13 +153,27 @@ class PhotoController extends Controller
             return false;
         }
         $file = request()->file('img_path');
+
         if (!$file->isValid()) {
             return false;
         }
-        $fileName = $photo->id . '.' . $file->extension();
-        $file = $file->storeAs(env('IMG_DIR'), $fileName, 'public');
-        $photo->img_path = env('IMG_DIR') . $fileName;
+        $originalName = $photo->name;
+        $imgName = str_replace(' ', '_', $originalName);
+        $extension = $file->extension();
+
+        $counter = 1;
+        $fileName = $imgName . '.' . $extension;
+
+        // Verifica se il file esiste già
+        while (Storage::disk('public')->exists(env('IMG_DIR') .'/'. $photo->album_id . '/' . $fileName)) {
+            $fileName = $imgName . '_' . $counter . '.' . $extension;
+            $counter++;
+        }
+
+        $file = $file->storeAs(env('IMG_DIR') . '/' . $photo->album_id, $fileName, 'public');
+        $photo->img_path = env('IMG_DIR') . $photo->album_id . '/' . $fileName;
     }
+
 
     public function deleteFile(Photo $photo)
     {
@@ -104,4 +183,10 @@ class PhotoController extends Controller
         }
         return false;
     }
+
+    public function getAlbums()
+    {
+        return Album::OrderBy('album_name', 'asc')->get();
+    }
+    
 }

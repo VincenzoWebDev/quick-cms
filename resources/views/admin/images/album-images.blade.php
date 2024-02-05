@@ -15,7 +15,8 @@
     @endif
 
     <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-        <a href="{{ route('albums.create') }}" class="btn btn-primary">Inserisci nuova immagine</a>
+        <a href="{{ route('photos.create') }}?album_id={{ $album->id }}" class="btn cb-primary mb-3">Inserisci nuova
+            immagine</a>
     </div>
 
     <div class="card" style="min-height: 485px">
@@ -39,13 +40,16 @@
                                 <td scope="row" class="col-md-3">{{ $photo->name }}</td>
                                 <td scope="row" class="col-md-4">{{ $photo->description }}</td>
                                 <td scope="row">{{ $album->album_name }}</td>
-                                <td scope="row"><img src="{{ asset($photo->img_path) }}" width="120"></td>
+                                <td scope="row"><img src="{{ asset($photo->path) }}" width="120"></td>
                                 <td scope="row">{{ $photo->created_at }}</td>
                                 <td scope="row" class="text-center">
-                                    <a href="{{ route('photos.edit', $photo->id) }}"
-                                        class="btn btn-success me-3">Modifica</a>
-                                    <a href="{{ route('photos.destroy', $photo->id) }}" class="btn btn-danger"
-                                        onclick="return confirm('Sicuro di eliminare?')">Elimina</a>
+                                    <a href="{{ route('photos.edit', $photo->id) }}" class="btn btn-outline-success me-3">
+                                        <i class="fa-regular fa-pen-to-square"></i>
+                                    </a>
+                                    <a href="{{ route('photos.destroy', $photo->id) }}" class="btn btn-outline-danger"
+                                        onclick="return confirm('Sicuro di eliminare?')">
+                                        <i class="fa-regular fa-trash-can"></i>
+                                    </a>
                                 </td>
                             </tr>
                         @endforeach
@@ -74,7 +78,7 @@
 
             $('div.alert').fadeOut(5000);
 
-            $('table').on('click', 'a.btn-danger', function(e) {
+            $('table').on('click', 'a.btn-outline-danger', function(e) {
                 e.preventDefault();
 
                 var urlImg = $(this).attr('href');

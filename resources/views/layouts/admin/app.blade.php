@@ -7,22 +7,19 @@
         <div class="body-overlay"></div>
 
         <!-- Sidebar  -->
-        @component('components.sidebar')
-        @endcomponent
+        <x-admin.sidebar/>
 
         <!-- Page Content  -->
-        <div id="content">
+        <div id="content" class="active">
 
             <!-- Topbar  -->
-            @component('components.topbar')
-            @endcomponent
+            <x-admin.topbar/>
             
             <div class="main-content">
                 @yield('container')
             </div>
 
-            @component('components.copyright')
-            @endcomponent
+            <x-admin.copyright/>
         </div>
     </div>
 

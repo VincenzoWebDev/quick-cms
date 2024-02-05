@@ -5,22 +5,27 @@
 @section('container')
     <h1>Inserisci un nuovo album</h1>
 
-    <form action="{{ route('albums.save') }}" method="POST" enctype="multipart/form-data">
+    @include('partials.admin.inputErrors')
+
+    <form action="{{ route('albums.store') }}" method="POST" enctype="multipart/form-data">
         {{ csrf_field() }}
         <div class="mb-3">
             <label for="album_name">Nome album</label>
-            <input type="text" name="album_name" id="album_name" class="form-control" placeholder="Nome album">
+            <input type="text" name="album_name" id="album_name" class="form-control" placeholder="Nome album"
+                value="{{ old('album_name') }}">
         </div>
 
         <div class="mb-3">
             <label for="description">Descrizione</label>
-            <textarea name="description" id="description" class="form-control" placeholder="Descrizione"></textarea>
+            <textarea name="description" id="description" class="form-control" placeholder="Descrizione">{{ old('description') }}</textarea>
         </div>
 
-        @include('partials.admin.fileupload')
+        @include('admin.albums.partials.category_combo')
+
+        @include('admin.albums.partials.fileupload')
 
         <div class="mb-3">
-            <button type="submit" class="btn btn-primary">Inserisci</button>
+            <button type="submit" class="btn cb-primary">Inserisci</button>
             <a href="{{ route('albums') }}" class="btn btn-secondary">Torna indietro</a>
         </div>
     </form>

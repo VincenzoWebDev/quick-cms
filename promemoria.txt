@@ -1,1 +1,11 @@
-Corso laravel: capitolo 14 lezione 7
+Corso laravel: capitolo 24 lezione 3
+
+### finire gestione pagine - frontend ###
+
+### modificare grafica table per datatables jquery, usare un template con pagination e cerca ecc.. ###
+
+### modificare grafica della pagina 403 error ###
+
+### continua lezione 12 javascript - YT midali  ###
+
+### gestione temi dinamica FATTA, ricordati di aggiungere uno switch nel middlewareTheme ad ogni nuova pagina del sito front-end ###

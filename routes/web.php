@@ -2,12 +2,18 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AlbumController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\UserController;
+use App\Mail\testEmail;
+use App\Models\Theme;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -20,39 +26,26 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-route::prefix('admin')->group(function () {
-    Route::get('/', [AdminController::class, 'index']);
-
-    Route::get('/users', [UserController::class, 'index'])->name('users');
-    Route::get('/users/{id}/delete', [UserController::class, 'delete']);
-    Route::get('/users/{id}/edit', [UserController::class, 'edit']);
-    Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
-    Route::post('/users', [UserController::class, 'save'])->name('users.save');
-    Route::patch('/users/{id}', [UserController::class, 'store']);
-
-    Route::get('/albums', [AlbumController::class, 'index'])->name('albums');
-    Route::delete('/albums/{id}', [AlbumController::class, 'delete'])->name('albums.destroy');
-    Route::get('/albums/{id}/edit', [AlbumController::class, 'edit']);
-    Route::get('/albums/create', [AlbumController::class, 'create'])->name('albums.create');
-    Route::post('/albums', [AlbumController::class, 'save'])->name('albums.save');
-    Route::patch('/albums/{id}', [AlbumController::class, 'store']);
-    Route::get('/albums/{id}/photos', [AlbumController::class, 'getPhotos'])->name('albums.photos')->where('id', '[0-9]+');
-
-    Route::resource('/photos', PhotoController::class);
-
-});
-
+// Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('user/demo', function () {
     $user = new User();
-    $user->password = Hash::make('test');
-    $user->email = 'test@test.it';
-    $user->name = 'Enzo';
+    $user->password = Hash::make('enzo');
+    $user->email = 'enzo@enzo.com';
+    $user->name = 'enzo';
     $user->save();
 
     echo 'Utente creato';
 });
+
+Auth::routes();
+
+require __DIR__ . '/admin.php';
+
+require __DIR__ . '/theme.php';
+
+Route::get('testEmail', function(){
+    Mail::to('sports.eco12@gmail.com')->send(new testEmail());
+});
+
+//Route::view('testEmail', 'mails.testEmail', ['username' => 'Vincenzo']);

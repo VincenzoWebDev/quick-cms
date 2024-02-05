@@ -12,13 +12,21 @@ class Album extends Model
     public function getPathAttribute(){
         //return asset('storage/albums/' . $this->patch);
         $url = $this->album_thumb;
-        if(stristr($this->album_thumb, 'http') === false){
-            $url = 'storage/'. $this->album_thumb.'?v='.time();
+        if(stristr($url, 'http') === false){
+            $url = 'storage/'. $url.'?v='.time();
         }
         return $url;
     }
     
     public function photos(){
         return $this->hasMany(Photo::class, 'album_id', 'id');
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
+
+    public function categories(){
+        return $this->belongsToMany(AlbumCategories::class, 'album_category', 'album_id', 'category_id')->withTimestamps();
     }
 }

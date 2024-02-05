@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Album>
@@ -23,12 +24,15 @@ class AlbumFactory extends Factory
             'people',
             'nature',
             'buildings',
-            'food'
+            'food',
+            'nature',
+            'sports',
+            'fashion'
         ];
         return [
             'album_name' => fake()->name(),
             'description' => fake()->text(128),
-            'user_id' => User::inRandomOrder()->first()->id,
+            'user_id' => 31,
             'album_thumb' => fake()->imageUrl(120, 120, fake()->randomElement($category))
         ];
     }
