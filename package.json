@@ -2,8 +2,8 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "dev": "vite",
-        "build": "vite build"
+        "dev": "echo 'No dev script'",
+        "build": "echo 'No build script'"
     },
     "devDependencies": {
         "@popperjs/core": "^2.11.6",
