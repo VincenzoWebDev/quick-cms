@@ -38,6 +38,10 @@ Route::get('user/demo', function () {
     echo 'Utente creato';
 });
 
+Route::get('react', function () {
+    return view('welcome');
+});
+
 Auth::routes();
 
 require __DIR__ . '/admin.php';
