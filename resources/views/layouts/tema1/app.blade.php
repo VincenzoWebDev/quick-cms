@@ -1,25 +1,28 @@
 @include('partials.tema1._header')
 
 <body>
+    @inertia
 
     @component('components.tema1.color-mode')
     @endcomponent
 
-    @component('components.tema1.topbar')
-    @endcomponent
-
-    <main>
-
-        @component('components.tema1.carousel')
-        @endcomponent
+    {{-- @component('components.tema1.topbar')
+    @endcomponent --}}
 
 
-        <!-- Marketing messaging and featurettes
-        ================================================== -->
-        <!-- Wrap the rest of the page in another container to center all the content. -->
+        {{-- @component('components.tema1.carousel')
+        @endcomponent --}}
 
-        <div class="container">
+        {{-- <div class="container">
             @yield('container')
-        </div>
+        </div> --}}
+        
+        {{-- <x-tema1.copyright /> --}}
 
-        @include('partials.tema1._footer')
+    @include('partials.tema1._footer')
+
+    @yield('scripts')
+
+</body>
+
+</html>

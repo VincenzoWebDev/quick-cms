@@ -14,8 +14,8 @@ class AlbumCategoriesSeed extends Seeder
     public function run(): void
     {
         $categories = [
-            'cars',
-            'animals',
+            // 'cars',
+            // 'animals',
             'people',
             'nature',
             'buildings',

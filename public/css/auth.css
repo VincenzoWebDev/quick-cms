@@ -1,52 +1,7 @@
   @import url('variables.css');
 
-  body {
-    font-family: "Lato", Arial, sans-serif;
-    font-size: 16px;
-    line-height: 1.8;
-    font-weight: normal;
-    background: #f8f9fd;
-    color: gray;
-  }
-
-  a {
-    -webkit-transition: .3s all ease;
-    -o-transition: .3s all ease;
-    transition: .3s all ease;
-    color: var(--bs-primary);
-  }
-
-  a:hover,
-  a:focus {
-    text-decoration: none !important;
-    outline: none !important;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-    color: var(--bs-primary);
-  }
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  .h1,
-  .h2,
-  .h3,
-  .h4,
-  .h5 {
-    line-height: 1.5;
-    font-weight: 400;
-    font-family: "Lato", Arial, sans-serif;
-    color: #000;
-  }
-
-  .bg-primary {
-    background: var(--bs-primary);
-  }
-
   .ftco-section {
-    padding: 7em 0;
+    padding: 3em 0;
   }
 
   .ftco-no-pt {
@@ -59,13 +14,7 @@
 
   .heading-section {
     font-size: 28px;
-    color: #000;
-  }
-
-  .img {
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center center;
+    color: #4f4f4f;
   }
 
   .login-wrap {
@@ -78,7 +27,7 @@
   }
 
   .login-wrap h3 {
-    font-weight: 700;
+    font-weight: 500;
     font-size: 20px;
     color: var(--bs-primary);
   }
@@ -97,56 +46,12 @@
     color: #fff;
   }
 
-  .form-control {
-    height: 48px;
-    background: rgba(0, 0, 0, 0.05);
-    color: #000;
-    font-size: 16px;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-    border: 1px solid transparent;
-    padding-left: 20px;
-    padding-right: 20px;
-    -webkit-transition: all 0.2s ease-in-out;
-    -o-transition: all 0.2s ease-in-out;
-    transition: all 0.2s ease-in-out;
-  }
-
   @media (prefers-reduced-motion: reduce) {
     .form-control {
       -webkit-transition: none;
       -o-transition: none;
       transition: none;
     }
-  }
-
-  .form-control::-webkit-input-placeholder {
-    /* Chrome/Opera/Safari */
-    color: rgba(0, 0, 0, 0.2) !important;
-  }
-
-  .form-control::-moz-placeholder {
-    /* Firefox 19+ */
-    color: rgba(0, 0, 0, 0.2) !important;
-  }
-
-  .form-control:-ms-input-placeholder {
-    /* IE 10+ */
-    color: rgba(0, 0, 0, 0.2) !important;
-  }
-
-  .form-control:-moz-placeholder {
-    /* Firefox 18- */
-    color: rgba(0, 0, 0, 0.2) !important;
-  }
-
-  .form-control:focus,
-  .form-control:active {
-    outline: none !important;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-    background: rgba(0, 0, 0, 0.07);
-    border-color: transparent;
   }
 
   .checkbox-wrap {
@@ -186,7 +91,6 @@
     position: absolute;
     color: rgba(0, 0, 0, 0.1);
     font-size: 20px;
-    margin-top: -4px;
     -webkit-transition: 0.3s;
     -o-transition: 0.3s;
     transition: 0.3s;
@@ -217,7 +121,16 @@
     color: var(--bs-primary);
   }
 
-  .btn {
+  .login-form .form-control {
+    width: 100%;
+  }
+
+  .login-wrap .form-control {
+    width: 100%;
+  }
+
+  .login-form .btn,
+  .login-wrap .btn {
     cursor: pointer;
     border-radius: 40px;
     -webkit-box-shadow: none !important;
@@ -225,41 +138,58 @@
     font-size: 15px;
   }
 
-  .btn:hover,
-  .btn:active,
-  .btn:focus {
+  .login-form .form-group .btn:hover,
+  .login-form .form-group .btn:active,
+  .login-form .form-group .btn:focus,
+  .login-wrap .form-group .btn:hover,
+  .login-wrap .form-group .btn:active,
+  .login-wrap .form-group .btn:focus {
     outline: none;
   }
 
-  .btn.btn-primary {
+  .login-form .form-group .btn.btn-primary,
+  .login-wrap .form-group .btn.btn-primary {
     background: var(--bs-primary);
     border: 1px solid var(--bs-primary);
     color: #fff !important;
   }
 
-  .btn.btn-primary:hover {
+  .login-form .form-group .btn.btn-primary:hover,
+  .login-wrap .form-group .btn.btn-primary:hover {
     border: 1px solid var(--bs-cobalto);
     background: var(--bs-cobalto);
     color: var(--bs-primary);
   }
 
-  .btn.btn-primary.btn-outline-primary {
+  .login-form .form-group .btn.btn-primary.btn-outline-primary,
+  .login-wrap .form-group .btn.btn-primary.btn-outline-primary {
     border: 1px solid var(--bs-primary);
     background: transparent;
     color: var(--bs-primary);
   }
 
-  .btn.btn-primary.btn-outline-primary:hover {
+  .login-form .form-group .btn.btn-primary.btn-outline-primary:hover,
+  .login-wrap .form-group .btn.btn-primary.btn-outline-primary:hover {
     border: 1px solid transparent;
     background: var(--bs-primary);
     color: #fff;
   }
 
-  .form-group {
+  .login-form .form-group,
+  .login-wrap .form-group {
     position: relative;
   }
 
-  .form-group .submit {
+  .login-form .form-group a,
+  .login-form .form-group label,
+  .login-wrap .form-group a,
+  .login-wrap .form-group label {
+    color: #4f4f4f;
+    font-weight: 400;
+  }
+
+  .login-form .form-group .submit,
+  .login-wrap .form-group .submit {
     position: absolute;
     top: 20px;
     left: 0;
@@ -268,14 +198,11 @@
   }
 
   @media (max-width: 767.98px) {
-    .form-group .submit {
+
+    .login-form .form-group .submit,
+    .login-wrap .form-group .submit {
       top: 0;
     }
 
-    .text-end {
-      text-align: left !important;
-    }
-    .w-50{
-      width: 100%!important;
-    }
+    
   }

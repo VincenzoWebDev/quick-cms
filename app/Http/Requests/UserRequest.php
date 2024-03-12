@@ -25,7 +25,8 @@ class UserRequest extends FormRequest
     {
         return [
             'name' => 'required|max:255',
-            'password' => 'nullable|min:6|confirmed',
+            'lastname' => 'required|max:255',
+            'password' => 'required|nullable|min:6',
             'email' => 'required|max:255|unique:users',
             'role' => [
                 'required',
@@ -37,6 +38,7 @@ class UserRequest extends FormRequest
     {
         return [
             'name' => 'Il nome è obbligatorio',
+            'lastname' => 'Il cognome è obbligatorio',
             'password' => 'La password è obbligatoria',
             'email.required' => 'Il campo email è obbligatorio',
             'email.unique' => 'Email già in uso',

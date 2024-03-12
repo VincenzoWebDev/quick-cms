@@ -25,6 +25,7 @@ class EditUserRequest extends FormRequest
     {
         return [
             'name' => 'required',
+            'lastname' => 'required',
             'email' => [
                 'required',
                 'email',
@@ -38,6 +39,7 @@ class EditUserRequest extends FormRequest
     {
         return [
             'name' => 'Il nome è obbligatorio',
+            'lastname' => 'Il cognome è obbligatorio',
             'email.required' => 'L\'email è obbligatoria',
             'email.unique' => 'Email già esistente',
         ];

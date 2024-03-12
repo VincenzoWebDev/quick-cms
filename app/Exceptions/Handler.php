@@ -26,5 +26,10 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+        // $this->renderable(function (Throwable $e, Request $request) {
+        //     if ($e instanceof NotFoundHttpException) {
+        //         return error(404);
+        //     }
+        // });
     }
 }

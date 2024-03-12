@@ -2,31 +2,75 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Album extends Model
 {
     use HasFactory;
 
-    public function getPathAttribute(){
+    protected $fillable = ['album_name', 'description', 'album_thumb', 'user_id'];
+
+    public function getPathAttribute()
+    {
         //return asset('storage/albums/' . $this->patch);
         $url = $this->album_thumb;
-        if(stristr($url, 'http') === false){
-            $url = 'storage/'. $url.'?v='.time();
+        if (stristr($url, 'http') === false) {
+            $url = 'storage/' . $url . '?v=' . time();
         }
         return $url;
     }
-    
-    public function photos(){
+
+    public function photos()
+    {
         return $this->hasMany(Photo::class, 'album_id', 'id');
     }
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function categories(){
+    public function categories()
+    {
         return $this->belongsToMany(AlbumCategories::class, 'album_category', 'album_id', 'category_id')->withTimestamps();
+    }
+
+    public function getAlbumThumbAttribute($value)
+    {
+        $url = $value;
+        // Verifica se l'URL già include il protocollo "http"
+        if (!stristr($url, 'http')) {
+            // Aggiungi il protocollo "http" e l'URL di base dello storage
+            $url = env('APP_URL') . '/storage/' . $url . '?v=' . time();
+        }
+        return $url;
+    }
+
+    public function getAlbumsPercentage()
+    {
+        // Data di inizio e fine del mese corrente
+        $startOfMonth = Carbon::now()->startOfMonth();
+        $endOfMonth = Carbon::now()->endOfMonth();
+
+        // Data di inizio e fine del mese scorso
+        $startOfLastMonth = Carbon::now()->subMonth()->startOfMonth();
+        $endOfLastMonth = Carbon::now()->subMonth()->endOfMonth();
+
+        // Conteggio degli utenti nel mese corrente
+        $currentMonthUsersCount = Album::whereBetween('created_at', [$startOfMonth, $endOfMonth])->count();
+
+        // Conteggio degli utenti nel mese scorso
+        $lastMonthUsersCount = Album::whereBetween('created_at', [$startOfLastMonth, $endOfLastMonth])->count();
+
+        // Calcolo della percentuale di crescita
+        if ($lastMonthUsersCount != 0) {
+            $growthPercentage = (($currentMonthUsersCount - $lastMonthUsersCount) / $lastMonthUsersCount) * 100;
+        } else {
+            $growthPercentage = 0; // per evitare divisione per zero
+        }
+        return $growthPercentage;
     }
 }

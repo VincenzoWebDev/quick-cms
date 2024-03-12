@@ -10,7 +10,8 @@
 
             @if (Route::has('login'))
                 <div class="text-center w-100">
-                    <span class="mb-0">Ciao <label class="ct-primary">{{ Auth::user()->name }}</label>, Benvenuto in Quick CMS</span>
+                    <span class="mb-0">Ciao <label class="ct-primary">{{ Auth::user()->name }}</label>, Benvenuto in
+                        Quick CMS</span>
                 </div>
             @endif
 
@@ -20,8 +21,7 @@
                 <i class="fa-solid fa-ellipsis-vertical" style="color:#fff"></i>
             </button>
 
-            <div class="collapse navbar-collapse d-lg-block d-xl-block d-sm-none d-md-none d-none"
-                id="navbarSupportedContent">
+            <div class="navbar-collapse d-lg-block d-xl-block d-sm-none d-md-none d-none" id="navbarSupportedContent">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item dropdown">
                         <a href="#" class="nav-link" role="button" data-bs-toggle="dropdown">
@@ -73,7 +73,8 @@
                                 <i class="fa-solid fa-user"></i>
                             </a>
 
-                            <div class="dropdown-menu dropdown-menu-end dropdown-menu-dark" aria-labelledby="navbarDropdown">
+                            <div class="dropdown-menu dropdown-menu-end dropdown-menu-dark"
+                                aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item" href="{{ route('logout') }}"
                                     onclick="event.preventDefault();
                                                                 document.getElementById('logout-form').submit();">
@@ -88,7 +89,7 @@
                     @endguest
                     </li>
                     <li class="nav-item" style="width:max-content">
-                        <a class="nav-link" href="{{route('home')}}" target="_blank">
+                        <a class="nav-link" href="{{ route('home') }}" target="_blank">
                             Vai al sito
                             <i class="fa-solid fa-circle-right"></i>
                         </a>

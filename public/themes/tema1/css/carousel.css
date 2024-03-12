@@ -1,14 +1,12 @@
 /* GLOBAL STYLES
 -------------------------------------------------- */
-/* Padding below the footer and lighter body text */
-
-body {
-    padding-top: 3rem;
-}
-
 
 /* CUSTOMIZE THE CAROUSEL
   -------------------------------------------------- */
+
+body{
+    padding-top: 30px;
+}
 
 /* Carousel base class */
 .carousel {

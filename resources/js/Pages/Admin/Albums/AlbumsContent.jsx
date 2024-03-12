@@ -1,0 +1,214 @@
+import { useState, useEffect } from 'react';
+import { Link, useForm } from '@inertiajs/react';
+import Layout from "@/Layouts/Admin/Layout"
+import Pagination from '@/components/Admin/Pagination';
+import { STORAGE_URL, BASE_URL } from '@/constants/constants'
+import AlertErrors from '@/components/Admin/AlertErrors';
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+
+const AlbumsContent = ({ albums, flash, user_auth }) => {
+    const { delete: formDelete } = useForm();
+    const [message, setMessage] = useState(flash.message);
+    const [selectedRecords, setSelectedRecords] = useState([]);
+    const [selectAll, setSelectAll] = useState(false);
+    const MySwal = withReactContent(Swal);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setMessage(null);
+        }, 3000);
+
+        return () => clearTimeout(timer);
+    }, [message]);
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const albumId = e.target.id;
+        if (albumId) {
+            MySwal.fire({
+                title: "Sei sicuro di voler eliminare questo album?",
+                text: "Non sarà possibile annullare questa operazione!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "var(--bs-cobalto)",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Si, elimina!",
+                cancelButtonText: "Annulla",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    formDelete(route('albums.destroy', albumId), {
+                        onSuccess: () => {
+                            setMessage({ tipo: 'success', testo: `Album ${albumId} cancellato correttamente` });
+                        },
+                        onError: () => {
+                            setMessage({ tipo: 'danger', testo: `Errore durante la cancellazione dell'album ${albumId}` });
+                        }
+                    });
+                }
+            });
+        }
+    }
+
+    const handleCheckboxChange = (e, albumId) => {
+        if (e.target.checked) {
+            setSelectedRecords(prevSelectedRecords => [...prevSelectedRecords, albumId]);
+        } else {
+            setSelectedRecords(prevSelectedRecords => prevSelectedRecords.filter(id => id !== albumId));
+        }
+    };
+
+    const handleSelectAllChange = (e) => {
+        const isChecked = e.target.checked;
+        setSelectAll(isChecked);
+        const allRecordIds = albums.data.map(album => album.id);
+        if (isChecked) {
+            setSelectedRecords(allRecordIds);
+        } else {
+            setSelectedRecords([]);
+        }
+    };
+
+    const handleDeleteSelected = (e) => {
+        e.preventDefault();
+        if (selectedRecords.length === 0) {
+            setMessage({ tipo: 'danger', testo: 'Nessun album selezionato' });
+            return;
+        }
+        if (selectedRecords.length > 0) {
+            MySwal.fire({
+                title: "Sei sicuro di voler eliminare questi albums?",
+                text: "Non sarà possibile annullare questa operazione!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "var(--bs-cobalto)",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Si, elimina!",
+                cancelButtonText: "Annulla",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    formDelete(route('albums.destroy.batch', { recordIds: selectedRecords }), {
+                        onSuccess: () => {
+                            setSelectedRecords([]);
+                            setSelectAll(false);
+                            if (selectedRecords.length === 1) {
+                                setMessage({ tipo: 'success', testo: `Album selezionato cancellato correttamente` });
+                            } else {
+                                setMessage({ tipo: 'success', testo: `Albums selezionati cancellati correttamente` });
+                            }
+                        },
+                        onError: () => {
+                            setMessage({ tipo: 'danger', testo: `Errore durante la cancellazione degli albums` });
+                        }
+                    });
+                }
+            })
+        }
+    }
+
+    return (
+        <Layout user_auth={user_auth}>
+            <h2>Lista albums</h2>
+            <AlertErrors message={message} />
+
+            <div className="d-grid gap-2 d-md-flex justify-content-md-start">
+                <Link href={route('albums.create')} className="btn cb-primary mb-3">Inserisci nuovo album</Link>
+                {selectedRecords && selectedRecords.length > 0 &&
+                    <button className='btn btn-danger mb-3' onClick={handleDeleteSelected}>Elimina selezionati</button>
+                }
+            </div>
+
+            <div className="card shadow-2-strong" style={{ backgroundColor: '#f5f7fa' }}>
+                <div className="card-body">
+                    <div className="table-responsive">
+                        <table className="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">
+                                        <div className="form-check d-flex justify-content-center align-items-center">
+                                            <input className="form-check-input" type="checkbox" value={selectAll}
+                                                onChange={handleSelectAllChange}
+                                                checked={selectAll} />
+                                        </div>
+                                    </th>
+                                    <th scope="col">Id</th>
+                                    <th scope="col">Nome album</th>
+                                    <th scope="col">Autore</th>
+                                    <th scope="col">Categorie</th>
+                                    <th scope="col">Thumbnail</th>
+                                    <th scope="col" className="text-center">Operazioni</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {albums.data.length > 0 ? (
+                                    albums.data.map(album => (
+                                        <tr key={album.id}>
+                                            <th scope="row" className='col-md-1'>
+                                                <div className="form-check d-flex justify-content-center align-items-center">
+                                                    <input className="form-check-input" type="checkbox" value={album.id}
+                                                        onChange={(e) => handleCheckboxChange(e, album.id)}
+                                                        checked={selectedRecords.includes(album.id)} />
+                                                </div>
+                                            </th>
+                                            <th scope="row" className='col-md-1'>{album.id}</th>
+                                            <td scope="row" className='col-md-2'>{album.album_name}</td>
+                                            <td scope="row" className='col-md-2'>{album.user.name}</td>
+                                            <td scope="row" className='col-md-2'>
+                                                {album.categories.length > 0 ? (
+                                                    album.categories.map(cat => (
+                                                        <li key={cat.id}>{cat.category_name}</li>
+                                                    ))
+                                                ) : (
+                                                    <span>Nessuna categoria</span>
+                                                )}
+                                            </td>
+                                            <td scope="row" className='col-md-2'><img src={album.album_thumb} width="120" alt={album.album_name} /></td>
+                                            <td scope="row" className="text-center col-md-2">
+                                                {album.photos_count ? (
+                                                    <Link href={route('albums.photos', album.id)} className="btn px-2">
+                                                        <div className="over-icon">
+                                                            <img src={`${BASE_URL}img/icons/image.png`} alt="image" width={40} className='original' />
+                                                            <img src={`${BASE_URL}img/icons/image-over.png`} alt="image" width={40} className='overized' />
+                                                        </div>
+                                                    </Link>
+                                                ) : (
+                                                    <Link href={route('photos.create', { 'album_id': album.id })} className="btn px-2">
+                                                        <div className="over-icon">
+                                                            <img src={`${BASE_URL}img/icons/add.png`} alt="add" width={40} className='original' />
+                                                            <img src={`${BASE_URL}img/icons/add-over.png`} alt="add" width={40} className='overized' />
+                                                        </div>
+                                                    </Link>
+                                                )}
+                                                <Link href={route('albums.edit', album.id)} className="btn px-2">
+                                                    <div className="over-icon">
+                                                        <img src={`${BASE_URL}img/icons/edit.png`} alt="edit" width={40} className='original' />
+                                                        <img src={`${BASE_URL}img/icons/edit-over.png`} alt="edit" width={40} className='overized' />
+                                                    </div>
+                                                </Link>
+                                                <form onSubmit={handleSubmit} className="d-inline" id={album.id}>
+                                                    <button id={`btnDelete-${album.id}`} className="btn px-2">
+                                                        <div className="over-icon">
+                                                            <img src={`${BASE_URL}img/icons/delete.png`} alt="delete" width={40} className='original' />
+                                                            <img src={`${BASE_URL}img/icons/delete-over.png`} alt="delete" width={40} className='overized' />
+                                                        </div>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan="7" className='text-center'>Non ci sono album</td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <Pagination links={albums.links} />
+        </Layout >
+    )
+}
+
+export default AlbumsContent;

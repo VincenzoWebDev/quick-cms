@@ -2,7 +2,7 @@
 
 @section('title', 'Admin panel')
 
-@section('container')
+{{-- @section('container')
     @component('components.admin.dashboard', 
     [
         'users' => $users,
@@ -11,5 +11,5 @@
         'albumCategories' => $albumCategories
     ])
     @endcomponent
-@endsection
+@endsection --}}
 

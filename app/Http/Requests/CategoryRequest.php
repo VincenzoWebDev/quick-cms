@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class CategoryRequest extends FormRequest
 {
@@ -22,14 +23,20 @@ class CategoryRequest extends FormRequest
      */
     public function rules(): array
     {
+        $userId = Auth::id();
         return [
-            'category_name' => 'required',
+            'category_name' => [
+                'required',
+                Rule::unique('album_categories', 'category_name')->where('user_id', $userId),
+            ],
         ];
     }
 
-    public function messages(){
+    public function messages()
+    {
         return [
-            'category_name' => 'Nome categoria è richiesto',
+            'category_name.required' => 'Nome categoria obbligatorio',
+            'category_name.unique' => 'Nome categoria già esistente'
         ];
     }
 }

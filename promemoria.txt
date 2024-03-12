@@ -1,11 +1,10 @@
-Corso laravel: capitolo 24 lezione 3
+### PRIORITA - gestione immagini singole e multi fatte, continua con il processo delle immagini ###
+
+
+### Continuare corso react stytled component - Ref hook - memo hook ###
 
 ### finire gestione pagine - frontend ###
 
-### modificare grafica table per datatables jquery, usare un template con pagination e cerca ecc.. ###
-
 ### modificare grafica della pagina 403 error ###
 
-### continua lezione 12 javascript - YT midali  ###
-
-### gestione temi dinamica FATTA, ricordati di aggiungere uno switch nel middlewareTheme ad ogni nuova pagina del sito front-end ###
+### gestione temi dinamica DA RIFARE PER BENE, ricordati di aggiungere uno switch nel middlewareTheme ad ogni nuova pagina del sito front-end ###

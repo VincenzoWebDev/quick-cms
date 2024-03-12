@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('album_categories', function (Blueprint $table) {
             $table->bigInteger('user_id')->unsigned()->index();
-            $table->foreign('user_id')->on('users')->references('id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

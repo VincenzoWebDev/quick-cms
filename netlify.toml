@@ -1,4 +1,0 @@
-[build]
-  command = "npm run build"
-  publish = "dist"
-  image = "php:8.1"

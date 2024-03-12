@@ -21,7 +21,6 @@
     <link href="{{ asset('themes/tema1/css/bootstrap.min.css') }}?={{ time() }}" rel="stylesheet">
     <link href="{{ asset('themes/tema1/css/zoom.css') }}?={{ time() }}" rel="stylesheet">
 
-
     <style>
         .bd-placeholder-img {
             font-size: 1.125rem;
@@ -104,4 +103,9 @@
 
     <!-- Custom styles for this template -->
     <link href="{{ asset('themes/tema1/css/carousel.css') }}?={{ time() }}" rel="stylesheet">
+
+    @routes
+    @viteReactRefresh
+    @vite(['resources/js/app.jsx', "resources/js/Pages/{$page['component']}.jsx"])
+    @inertiaHead
 </head>

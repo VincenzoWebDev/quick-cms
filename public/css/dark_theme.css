@@ -1,0 +1,68 @@
+[data-theme="dark"] {
+    #sidebar {
+        background-color: #212529;
+        color: #fff;
+    }
+
+    #sidebar ul li a,
+    #sidebar ul li a i {
+        color: #c2c7d0;
+    }
+
+    #sidebar ul li a:hover {
+        color: #fff;
+        background-color: rgba(200, 200, 200, 0.1);
+    }
+
+    #sidebar ul li a:hover i {
+        color: #fff;
+    }
+
+    #sidebar::-webkit-scrollbar {
+        background-color: #212529;
+    }
+
+    #sidebar::-webkit-scrollbar-thumbs {
+        background-color: #212529;
+    }
+
+    .sidebar-header h3 {
+        color: #fff;
+    }
+
+    .navbar {
+        background-color: #212529;
+    }
+
+    .navbar h4 {
+        color: #fff;
+    }
+
+    .navbar span {
+        color: #fff;
+    }
+
+    .navbar .dropdown-menu {
+        background-color: #212529;
+    }
+
+    .navbar a {
+        color: #fff;
+    }
+
+    .navbar button i {
+        color: #fff;
+    }
+
+    .arrow-icon {
+        border-right: 1px solid #c2c7d0;
+    }
+
+    .left-bar:after {
+        background-color: #fff;
+    }
+
+    .right-bar:after {
+        background-color: #fff;
+    }
+}
