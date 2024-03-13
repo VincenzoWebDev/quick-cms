@@ -736,6 +736,62 @@ table th {
    ===============================================*/
 
 
+/* profile img */
+.outer {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 180px !important;
+    max-height: 180px !important;
+    margin: auto;
+    background-color: #6eafd4;
+    border-radius: 100%;
+    position: relative;
+}
+
+.inner {
+    background-color: var(--bs-primary);
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    transition: all 0.3s ease;
+}
+
+.inner:hover {
+    background-color: var(--bs-cobalto);
+}
+
+.profile_img {
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+    width: 40px;
+    height: 40px;
+}
+
+.profile_img+label {
+    font-size: 1.25rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+    overflow: hidden;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    line-height: 40px;
+    text-align: center;
+}
+
+.profile_img+label svg {
+    fill: #fff;
+}
+
+/* profile img */
+
+
 /*=============================================
   footer design start
   =========================================*/

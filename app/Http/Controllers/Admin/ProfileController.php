@@ -10,8 +10,11 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\ImageManager;
 
 class ProfileController extends \App\Http\Controllers\Controller
 {
@@ -38,13 +41,21 @@ class ProfileController extends \App\Http\Controllers\Controller
         $oldLastName = $user->lastname;
         $oldEmail = $user->email;
         $oldRole = $user->role;
+        $oldProfile = $user->profile_img;
 
         $user->name = $request->input('name');
         $user->lastname = $request->input('lastname');
         $user->email = $request->input('email');
         $user->role = $request->input('role');
+        $user->profile_img = $request->input('profile_img') == null ? $oldProfile : $request->input('profile_img');
 
-        if ($oldName != $user->name || $oldLastName != $user->lastname || $oldEmail != $user->email || $oldRole != $user->role) {
+        if ($oldName != $user->name || $oldLastName != $user->lastname || $oldEmail != $user->email || $oldRole != $user->role || $request->hasFile('profile_img')) {
+            if ($request->file('profile_img') != null) {
+                Storage::delete($oldProfile);
+                $this->processFile($user->id, $user);
+            } else {
+                $user->profile_img = $oldProfile;
+            }
             $res = $user->save();
         } else {
             $res = 0;
@@ -53,6 +64,38 @@ class ProfileController extends \App\Http\Controllers\Controller
         $messaggio = $res ? 'Informazioni profilo aggiornate correttamente' : 'Informazioni profilo non aggiornate';
         $tipoMessaggio = $res ? 'success' : 'danger';
         session()->flash('message', ['tipo' => $tipoMessaggio, 'testo' => $messaggio]);
+
+        return redirect()->route('profile');
+    }
+
+    public function processFile($id, &$user)
+    {
+        if (!request()->hasFile('profile_img')) {
+            return false;
+        }
+        $file = request()->file('profile_img');
+
+        if (!$file->isValid() || $file == null) {
+            return false;
+        }
+        $fileName = $user->name . '_' . $id . '.' . $file->extension();
+        $file = $file->storeAs('public/' . env('PROFILE_IMG_DIR'), $fileName);
+        $filePath = public_path('storage/' . env('PROFILE_IMG_DIR') . '/' . $fileName);
+        $this->createThumbnail($filePath);
+        $user->profile_img = env('PROFILE_IMG_DIR') . $fileName;
+    }
+
+    public function createThumbnail($filePath)
+    {
+        try {
+            $manager = new ImageManager(new Driver());
+            $image = $manager->read($filePath);
+            // resize image proportionally to 300px width
+            $image->scale(width: 300);
+            $image->save($filePath);
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     // public function destroy(Request $request): RedirectResponse
