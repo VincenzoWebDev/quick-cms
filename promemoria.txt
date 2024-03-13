@@ -1,4 +1,4 @@
-### PRIORITA - gestione immagini singole e multi fatte, continua con il processo delle immagini ###
+###gestione cambio immagine profilo user - fatto, ma ricontrolla bene ###
 
 
 ### Continuare corso react stytled component - Ref hook - memo hook ###

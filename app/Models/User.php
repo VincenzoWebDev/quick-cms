@@ -68,9 +68,11 @@ class User extends Authenticatable
     public function getProfileImgAttribute($value)
     {
         $url = $value;
-        if(empty($url)){
+        if (empty($url)) {
             $url = 'https://via.placeholder.com/150';
-        }else{
+        } else if (substr($url, 0, 4) === 'http' || substr($url, 0, 5) === 'https') {
+            $url = $url;
+        } else {
             $url = config('app.url') . '/storage/' . $url . '?v=' . time();
         }
         return $url;
