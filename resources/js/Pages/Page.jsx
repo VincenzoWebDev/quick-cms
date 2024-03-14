@@ -1,11 +1,11 @@
 import React from "react";
-import PageComponent from "@/components/Front/PageComponent";
+import PageContent from "@/components/Front/PageContent";
 import FrontLayout from "@/Layouts/FrontLayout";
 
-const Page = ({ currentPage, pages }) => {
+const Page = ({ currentPage, pageLayout, pages }) => {
     return (
         <FrontLayout pages={pages}>
-            <PageComponent currentPage={currentPage}></PageComponent>
+            <PageContent currentPage={currentPage} pageLayout={pageLayout}></PageContent>
         </FrontLayout>
     )
 }

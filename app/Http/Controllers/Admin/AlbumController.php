@@ -25,7 +25,6 @@ class AlbumController extends \App\Http\Controllers\Controller
             ->where('user_id', Auth::id())
             ->with(['categories', 'user']) // Carica anche la relazione dell'utente
             ->paginate(env('IMG_PER_PAGE'));
-
         return Inertia::render('Admin/Albums/AlbumsContent', ['albums' => $albums]);
     }
 

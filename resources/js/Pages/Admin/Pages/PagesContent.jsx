@@ -123,7 +123,7 @@ const PageContent = ({ pages, flash, user_auth }) => {
             })
         }
     }
-
+    
     return (
         <Layout user_auth={user_auth}>
             <h2>Gestione pagine</h2>
@@ -152,6 +152,7 @@ const PageContent = ({ pages, flash, user_auth }) => {
                                     <th scope="col">Id</th>
                                     <th scope="col">Titolo pagina</th>
                                     <th scope="col">Descrizione pagina</th>
+                                    <th scope="col">Layout</th>
                                     <th scope="col">Stato</th>
                                     <th scope="col">Creato il</th>
                                     <th scope="col">Aggiornato il</th>
@@ -172,6 +173,7 @@ const PageContent = ({ pages, flash, user_auth }) => {
                                             <th scope="row" className='col-md-1'>{page.id}</th>
                                             <td scope="row">{page.title}</td>
                                             <td scope="row">{page.meta_description}</td>
+                                            <td scope="row">{page.layout.name}</td>
                                             <td scope="row">
                                                 <div className="form-check form-switch">
                                                     <input className="form-check-input page-switch" type="checkbox" role="switch"

@@ -20,17 +20,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-/* Rotte pagine front-end */
-Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('page/{slug}', [PageViewController::class, 'show'])->name('page.show');
-
-
-
 Auth::routes();
-
 
 require __DIR__ . '/admin.php';
 
+/* Rotte pagine front-end */
+
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/{slug}', [PageViewController::class, 'show'])->name('page.show')->where('slug', '[a-z0-9-]+');
 
 
 
