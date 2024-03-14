@@ -9,5 +9,10 @@ class Page extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'meta_title', 'active', 'slug', 'content', 'meta_description', 'published_at'];
+    protected $fillable = ['title', 'meta_title', 'active', 'slug', 'content', 'layout_id', 'meta_description', 'published_at'];
+
+    public function layout()
+    {
+        return $this->belongsTo(PageLayout::class, 'layout_id');
+    }
 }

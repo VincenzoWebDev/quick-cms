@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Requests\EditPageRequest;
 use App\Http\Requests\PageRequest;
 use App\Models\Page;
+use App\Models\PageLayout;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -25,14 +26,14 @@ class PageController extends \App\Http\Controllers\Controller
 
     public function index()
     {
-        $pages = Page::paginate(env('RECORD_PER_PAGE'));
-        // return view('admin.pages.pages')->with('pages', $pages);
+        $pages = Page::orderBy('id', 'desc')->with('layout')->paginate(env('IMG_PER_PAGE'));
         return Inertia::render('Admin/Pages/PagesContent', ['pages' => $pages]);
     }
 
     public function create()
     {
-        return Inertia::render('Admin/Pages/Create');
+        $pageLayout = PageLayout::all();
+        return Inertia::render('Admin/Pages/Create', ['pageLayout' => $pageLayout]);
     }
 
     public function store(PageRequest $request)
@@ -40,6 +41,7 @@ class PageController extends \App\Http\Controllers\Controller
         $page = new Page();
         $page->title = $request->input('title');
         $page->content = $request->input('content_editor');
+        $page->layout_id = $request->input('layout_id');
         $page->meta_title = $request->input('meta_title');
         $page->meta_description = $request->input('meta_description');
         $page->slug = $this->createSlug($page->title);
@@ -61,24 +63,27 @@ class PageController extends \App\Http\Controllers\Controller
 
     public function edit(Page $page)
     {
-        return Inertia::render('Admin/Pages/Edit', ['page' => $page]);
+        $pageLayout = PageLayout::all();
+        return Inertia::render('Admin/Pages/Edit', ['page' => $page, 'pageLayout' => $pageLayout]);
     }
 
     public function update(EditPageRequest $request, Page $page)
     {
         $oldTitle = $page->title;
         $oldContent = $page->content;
+        $oldLayout = $page->layout_id;
         $oldMetaTitle = $page->meta_title;
         $oldMetaDescription = $page->meta_description;
         $oldSlug = $page->slug;
 
         $page->title = $request->input('title');
         $page->content = $request->input('content_editor');
+        $page->layout_id = $request->input('layout_id');
         $page->meta_title = $request->input('meta_title');
         $page->meta_description = $request->input('meta_description');
         $page->slug = $this->createSlug($page->title);
 
-        if ($oldTitle != $page->title || $oldContent != $page->content || $oldMetaTitle != $page->meta_title || $oldMetaDescription != $page->meta_description || $oldSlug != $page->slug) {
+        if ($oldTitle != $page->title || $oldContent != $page->content || $oldMetaTitle != $page->meta_title || $oldMetaDescription != $page->meta_description || $oldLayout != $page->layout_id || $oldSlug != $page->slug) {
             $res = $page->save();
         } else {
             $res = 0;

@@ -138,10 +138,10 @@ const Sidebar = ({ user_auth, collapsed, respCollapsed, dataTheme, setTheme }) =
                         className="material-icons">content_copy</i><span>Pagine</span></Link>
                 </li>
 
-                <li className={includeLink("/themes") ? 'active' : ''}>
+                {/* <li className={includeLink("/themes") ? 'active' : ''}>
                     <Link href={route('themes')} className="themes"><i
                         className="material-icons">color_lens</i><span>Temi</span></Link>
-                </li>
+                </li> */}
 
                 {/* <li className="dropdown">
                     <a href="#pageSubmenu4" className="themes dropdown-toggle" data-bs-toggle="collapse" aria-expanded="false"><i
@@ -159,7 +159,7 @@ const Sidebar = ({ user_auth, collapsed, respCollapsed, dataTheme, setTheme }) =
                     </ul>
                 </li> */}
 
-                <li className="dropdown">
+                {/* <li className="dropdown">
                     <a href="#pageSubmenu5" data-bs-toggle="collapse" aria-expanded="false" className="dropdown-toggle">
                         <i className="material-icons">border_color</i><span>forms</span></a>
                     <ul className="collapse list-unstyled menu" id="pageSubmenu5">
@@ -197,7 +197,7 @@ const Sidebar = ({ user_auth, collapsed, respCollapsed, dataTheme, setTheme }) =
 
                 <li className="">
                     <a href="#"><i className="material-icons">library_books</i><span>Calender</span></a>
-                </li>
+                </li> */}
             </ul >
         </nav >
 

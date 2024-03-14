@@ -5,10 +5,11 @@ import InputErrors from '@/components/Admin/InputErrors';
 import { Editor } from "@tinymce/tinymce-react";
 import { EDITOR_CONFIG, API_KEY_EDITOR } from '@/constants/constants.js';
 
-const PageEdit = ({ page, user_auth }) => {
+const PageEdit = ({ page, pageLayout, user_auth }) => {
     const { data, setData, patch, errors } = useForm({
         title: page.title,
         content_editor: page.content ?? '',
+        layout_id: page.layout_id ?? '',
         meta_title: page.meta_title ?? '',
         meta_description: page.meta_description ?? '',
     });
@@ -47,10 +48,15 @@ const PageEdit = ({ page, user_auth }) => {
                     />
                 </div>
 
-                {/* <div className="mb-3">
-                    <label htmlFor="content">Descrizione</label>
-                    <textarea name="content" id="content_editor" className="form-control" placeholder="Descrizione" value={data.content} onChange={handleInputChange}></textarea>
-                </div> */}
+                <div className="mb-3">
+                    <label htmlFor="layout_id">Layout</label>
+                    <select name="layout_id" id="layout_id" className="form-select"
+                        value={data.layout_id} onChange={handleInputChange}>
+                        {pageLayout.map((layout) => (
+                            <option key={layout.id} value={layout.id}>{layout.name}</option>
+                        ))}
+                    </select>
+                </div>
 
                 <div className="mb-3">
                     <label htmlFor="meta_title">Meta title</label>

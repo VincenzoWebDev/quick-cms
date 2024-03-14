@@ -34,3 +34,7 @@ export const EDITOR_CONFIG = {
 };
 export const API_KEY_EDITOR = 'q2q8szpna6www4mstibaoriqw2mrsaeqivcmkec6fp3i2prq';
 /* End Editor config */
+
+export const ItemTypes = {
+    CARD: 'card'
+};

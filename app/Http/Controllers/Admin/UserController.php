@@ -119,11 +119,13 @@ class UserController extends \App\Http\Controllers\Controller
         $user->role = $request->input('role');
         $user->profile_img = $request->input('profile_img') == null ? $oldProfile : $request->input('profile_img');
 
-        if ($oldName != $user->name || $oldLastName != $user->lastname || $oldEmail != $user->email || $oldRole != $user->role || $oldProfile != $user->profile_img || $request->hasFile('profile_img')) {
-            if ($oldProfile) {
+        if ($oldName != $user->name || $oldLastName != $user->lastname || $oldEmail != $user->email || $oldRole != $user->role || $request->hasFile('profile_img')) {
+            if ($request->file('profile_img') != null) {
                 Storage::delete($oldProfile);
+                $this->processFile($user->id, $user);
+            }else{
+                $user->profile_img = $oldProfile;
             }
-            $this->processFile($user->id, $user);
             $res = $user->save();
         } else {
             $res = 0;
@@ -167,11 +169,9 @@ class UserController extends \App\Http\Controllers\Controller
     public function processFile($id, &$user)
     {
         if (!request()->hasFile('profile_img')) {
-            $user->profile_img = 'https://static-00.iconduck.com/assets.00/user-icon-2048x2048-ihoxz4vq.png';
-            return;
+            return false;
         }
         $file = request()->file('profile_img');
-
         if (!$file->isValid() || $file == null) {
             return false;
         }
