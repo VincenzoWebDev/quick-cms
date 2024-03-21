@@ -1,8 +1,8 @@
 import Copyright from "@/components/Front/Copyright";
-import Carousel from "@/components/Front/Carousel";
 import Topbar from "@/components/Front/Topbar";
+import Slideshow from "@/components/Front/Slideshow";
 import { useEffect } from "react";
-import 'animate.css';
+import Footer from "@/components/Front/Footer";
 
 const FrontLayout = ({ children, pages }) => {
     useEffect(() => {
@@ -12,12 +12,10 @@ const FrontLayout = ({ children, pages }) => {
     return (
         <>
             <Topbar pages={pages} />
-            <main className="animate__animated animate__fadeInLeft">
-                <Carousel />
-                <div className="container">
-                    {children}
-                </div>
-                <Copyright />
+            <main>
+                <Slideshow />
+                {children}
+                <Footer />
             </main>
         </>
     );

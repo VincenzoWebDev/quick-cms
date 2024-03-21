@@ -50,7 +50,7 @@ class HandleInertiaRequests extends Middleware
         if (str_contains($uri, 'admin') || str_contains($uri, 'login') || str_contains($uri, 'register') || str_contains($uri, 'password')) {
             return 'layouts.admin.app';
         }
-        return 'layouts.tema1.app';
+        return 'layouts.quick_cms.app';
 
         return parent::rootView($request);
     }
