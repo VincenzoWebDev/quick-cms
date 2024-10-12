@@ -1,0 +1,207 @@
+
+  .ftco-section {
+    padding: 3em 0;
+  }
+
+  .ftco-no-pt {
+    padding-top: 0;
+  }
+
+  .ftco-no-pb {
+    padding-bottom: 0;
+  }
+
+  .heading-section {
+    font-size: 28px;
+    color: #4f4f4f;
+  }
+
+  .login-wrap {
+    position: relative;
+    background: #fff;
+    border-radius: 10px;
+    -webkit-box-shadow: 0px 10px 34px -15px rgba(0, 0, 0, 0.24);
+    -moz-box-shadow: 0px 10px 34px -15px rgba(0, 0, 0, 0.24);
+    box-shadow: 0px 10px 34px -15px rgba(0, 0, 0, 0.24);
+  }
+
+  .login-wrap h3 {
+    font-weight: 500;
+    font-size: 20px;
+    color: var(--bs-primary);
+  }
+
+  .login-wrap .icon {
+    width: 80px;
+    height: 80px;
+    background: var(--bs-primary);
+    border-radius: 50%;
+    font-size: 30px;
+    margin: 0 auto;
+    margin-bottom: 10px;
+  }
+
+  .login-wrap .icon span {
+    color: #fff;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .form-control {
+      -webkit-transition: none;
+      -o-transition: none;
+      transition: none;
+    }
+  }
+
+  .checkbox-wrap {
+    display: block;
+    position: relative;
+    padding-left: 30px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  /* Hide the browser's default checkbox */
+  .checkbox-wrap input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+
+  /* Create a custom checkbox */
+  .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  /* Create the checkmark/indicator (hidden when not checked) */
+  .checkmark:after {
+    content: "\f0c8";
+    font-family: "FontAwesome";
+    position: absolute;
+    color: rgba(0, 0, 0, 0.1);
+    font-size: 20px;
+    -webkit-transition: 0.3s;
+    -o-transition: 0.3s;
+    transition: 0.3s;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .checkmark:after {
+      -webkit-transition: none;
+      -o-transition: none;
+      transition: none;
+    }
+  }
+
+  /* Show the checkmark when checked */
+  .checkbox-wrap input:checked~.checkmark:after {
+    display: block;
+    content: "\f14a";
+    font-family: "FontAwesome";
+    color: rgba(0, 0, 0, 0.2);
+  }
+
+  /* Style the checkmark/indicator */
+  .checkbox-primary {
+    color: var(--bs-primary);
+  }
+
+  .checkbox-primary input:checked~.checkmark:after {
+    color: var(--bs-primary);
+  }
+
+  .login-form .form-control {
+    width: 100%;
+  }
+
+  .login-wrap .form-control {
+    width: 100%;
+  }
+
+  .login-form .btn,
+  .login-wrap .btn {
+    cursor: pointer;
+    border-radius: 40px;
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+    font-size: 15px;
+  }
+
+  .login-form .form-group .btn:hover,
+  .login-form .form-group .btn:active,
+  .login-form .form-group .btn:focus,
+  .login-wrap .form-group .btn:hover,
+  .login-wrap .form-group .btn:active,
+  .login-wrap .form-group .btn:focus {
+    outline: none;
+  }
+
+  .login-form .form-group .btn.btn-primary,
+  .login-wrap .form-group .btn.btn-primary {
+    background: var(--bs-primary);
+    border: 1px solid var(--bs-primary);
+    color: #fff !important;
+  }
+
+  .login-form .form-group .btn.btn-primary:hover,
+  .login-wrap .form-group .btn.btn-primary:hover {
+    border: 1px solid var(--bs-cobalto);
+    background: var(--bs-cobalto);
+    color: var(--bs-primary);
+  }
+
+  .login-form .form-group .btn.btn-primary.btn-outline-primary,
+  .login-wrap .form-group .btn.btn-primary.btn-outline-primary {
+    border: 1px solid var(--bs-primary);
+    background: transparent;
+    color: var(--bs-primary);
+  }
+
+  .login-form .form-group .btn.btn-primary.btn-outline-primary:hover,
+  .login-wrap .form-group .btn.btn-primary.btn-outline-primary:hover {
+    border: 1px solid transparent;
+    background: var(--bs-primary);
+    color: #fff;
+  }
+
+  .login-form .form-group,
+  .login-wrap .form-group {
+    position: relative;
+  }
+
+  .login-form .form-group a,
+  .login-form .form-group label,
+  .login-wrap .form-group a,
+  .login-wrap .form-group label {
+    color: #4f4f4f;
+    font-weight: 400;
+  }
+
+  .login-form .form-group .submit,
+  .login-wrap .form-group .submit {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 767.98px) {
+
+    .login-form .form-group .submit,
+    .login-wrap .form-group .submit {
+      top: 0;
+    }
+
+    
+  }
