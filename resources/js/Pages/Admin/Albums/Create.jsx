@@ -1,6 +1,6 @@
 import Layout from "@/Layouts/Admin/Layout";
 import { Link, useForm } from '@inertiajs/react';
-import { AlbumCategoryCombo, AlbumThumbUpload, AlbumTabs, GalleryUpload, InputErrors } from "@/components/Admin";
+import { AlbumCategoryCombo, AlbumThumbUpload, AlbumTabs, GalleryUpload, InputErrors } from "@/components/Admin/Index";
 
 const AlbumCreate = ({ categories, selectedCategory }) => {
     const { data, setData, post, errors } = useForm({
