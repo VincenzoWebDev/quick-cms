@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "@inertiajs/react";
 import { BASE_URL, STORAGE_URL } from "@/constants/constants";
-import { ButtonDelete, ButtonEdit, ButtonShow, OrderShowDetails } from "@/components/Admin";
+import { ButtonDelete, ButtonEdit, ButtonShow, OrderShowDetails } from "@/components/Admin/Index";
 
 const OrderRow = React.memo(({ order, selectedRecords, handleCheckboxChange, handleDelete }) => {
     return (

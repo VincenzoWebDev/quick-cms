@@ -1,4 +1,4 @@
-import { CategoryCombo } from "@/components/Admin";
+import { CategoryCombo } from "@/components/Admin/Index";
 import { usePage } from "@inertiajs/react";
 const InfoTab = ({ data, handleChange, categories, selectedCategories, handleCatsChange }) => {
     const url = usePage().url;

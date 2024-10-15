@@ -1,4 +1,4 @@
-import { OrderDelete, OrderRow } from "@/components/Admin";
+import { OrderDelete, OrderRow } from "@/components/Admin/Index";
 import React, { useCallback } from "react";
 
 const OrdersContentTable = ({ orders, setMessage, formDelete, selectedRecords, setSelectedRecords, setSelectAll, selectAll, handleSort, getSortIcon }) => {
