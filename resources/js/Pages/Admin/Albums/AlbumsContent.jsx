@@ -1,54 +1,21 @@
 import { useState, useEffect } from 'react';
 import { Link, useForm } from '@inertiajs/react';
 import Layout from "@/Layouts/Admin/Layout"
-import Pagination from '@/components/Admin/Pagination';
+import { ButtonDelete, ButtonEdit, Pagination, AlertErrors, AlbumDelete, AlbumDeleteSelected } from '@/components/Admin';
 import { STORAGE_URL, BASE_URL } from '@/constants/constants'
-import AlertErrors from '@/components/Admin/AlertErrors';
-import Swal from 'sweetalert2'
-import withReactContent from 'sweetalert2-react-content'
 
-const AlbumsContent = ({ albums, flash, user_auth }) => {
+const AlbumsContent = ({ albums, flash }) => {
     const { delete: formDelete } = useForm();
     const [message, setMessage] = useState(flash.message);
     const [selectedRecords, setSelectedRecords] = useState([]);
     const [selectAll, setSelectAll] = useState(false);
-    const MySwal = withReactContent(Swal);
 
     useEffect(() => {
         const timer = setTimeout(() => {
             setMessage(null);
         }, 3000);
-
         return () => clearTimeout(timer);
     }, [message]);
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const albumId = e.target.id;
-        if (albumId) {
-            MySwal.fire({
-                title: "Sei sicuro di voler eliminare questo album?",
-                text: "Non sarà possibile annullare questa operazione!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "var(--bs-cobalto)",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Si, elimina!",
-                cancelButtonText: "Annulla",
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    formDelete(route('albums.destroy', albumId), {
-                        onSuccess: () => {
-                            setMessage({ tipo: 'success', testo: `Album ${albumId} cancellato correttamente` });
-                        },
-                        onError: () => {
-                            setMessage({ tipo: 'danger', testo: `Errore durante la cancellazione dell'album ${albumId}` });
-                        }
-                    });
-                }
-            });
-        }
-    }
 
     const handleCheckboxChange = (e, albumId) => {
         if (e.target.checked) {
@@ -69,45 +36,16 @@ const AlbumsContent = ({ albums, flash, user_auth }) => {
         }
     };
 
+    const handleDelete = (e) => {
+        AlbumDelete({ e, formDelete, setMessage });
+    }
+
     const handleDeleteSelected = (e) => {
-        e.preventDefault();
-        if (selectedRecords.length === 0) {
-            setMessage({ tipo: 'danger', testo: 'Nessun album selezionato' });
-            return;
-        }
-        if (selectedRecords.length > 0) {
-            MySwal.fire({
-                title: "Sei sicuro di voler eliminare questi albums?",
-                text: "Non sarà possibile annullare questa operazione!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "var(--bs-cobalto)",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Si, elimina!",
-                cancelButtonText: "Annulla",
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    formDelete(route('albums.destroy.batch', { recordIds: selectedRecords }), {
-                        onSuccess: () => {
-                            setSelectedRecords([]);
-                            setSelectAll(false);
-                            if (selectedRecords.length === 1) {
-                                setMessage({ tipo: 'success', testo: `Album selezionato cancellato correttamente` });
-                            } else {
-                                setMessage({ tipo: 'success', testo: `Albums selezionati cancellati correttamente` });
-                            }
-                        },
-                        onError: () => {
-                            setMessage({ tipo: 'danger', testo: `Errore durante la cancellazione degli albums` });
-                        }
-                    });
-                }
-            })
-        }
+        AlbumDeleteSelected({ e, formDelete, setMessage, selectedRecords, setSelectedRecords, setSelectAll });
     }
 
     return (
-        <Layout user_auth={user_auth}>
+        <Layout>
             <h2>Lista albums</h2>
             <AlertErrors message={message} />
 
@@ -142,7 +80,7 @@ const AlbumsContent = ({ albums, flash, user_auth }) => {
                             <tbody>
                                 {albums.data.length > 0 ? (
                                     albums.data.map(album => (
-                                        <tr key={album.id}>
+                                        <tr key={album.id} className="align-middle">
                                             <th scope="row" className='col-md-1'>
                                                 <div className="form-check d-flex justify-content-center align-items-center">
                                                     <input className="form-check-input" type="checkbox" value={album.id}
@@ -162,36 +100,13 @@ const AlbumsContent = ({ albums, flash, user_auth }) => {
                                                     <span>Nessuna categoria</span>
                                                 )}
                                             </td>
-                                            <td scope="row" className='col-md-2'><img src={album.album_thumb} width="120" alt={album.album_name} /></td>
+                                            <td scope="row" className='col-md-2'><img src={STORAGE_URL + album.album_thumb} width="120" alt={album.album_name} /></td>
                                             <td scope="row" className="text-center col-md-2">
-                                                {album.photos_count ? (
-                                                    <Link href={route('albums.photos', album.id)} className="btn px-2">
-                                                        <div className="over-icon">
-                                                            <img src={`${BASE_URL}img/icons/image.png`} alt="image" width={40} className='original' />
-                                                            <img src={`${BASE_URL}img/icons/image-over.png`} alt="image" width={40} className='overized' />
-                                                        </div>
-                                                    </Link>
-                                                ) : (
-                                                    <Link href={route('photos.create', { 'album_id': album.id })} className="btn px-2">
-                                                        <div className="over-icon">
-                                                            <img src={`${BASE_URL}img/icons/add.png`} alt="add" width={40} className='original' />
-                                                            <img src={`${BASE_URL}img/icons/add-over.png`} alt="add" width={40} className='overized' />
-                                                        </div>
-                                                    </Link>
-                                                )}
                                                 <Link href={route('albums.edit', album.id)} className="btn px-2">
-                                                    <div className="over-icon">
-                                                        <img src={`${BASE_URL}img/icons/edit.png`} alt="edit" width={40} className='original' />
-                                                        <img src={`${BASE_URL}img/icons/edit-over.png`} alt="edit" width={40} className='overized' />
-                                                    </div>
+                                                    <ButtonEdit url={BASE_URL} />
                                                 </Link>
-                                                <form onSubmit={handleSubmit} className="d-inline" id={album.id}>
-                                                    <button id={`btnDelete-${album.id}`} className="btn px-2">
-                                                        <div className="over-icon">
-                                                            <img src={`${BASE_URL}img/icons/delete.png`} alt="delete" width={40} className='original' />
-                                                            <img src={`${BASE_URL}img/icons/delete-over.png`} alt="delete" width={40} className='overized' />
-                                                        </div>
-                                                    </button>
+                                                <form onSubmit={handleDelete} className="d-inline" id={album.id}>
+                                                    <ButtonDelete url={BASE_URL} />
                                                 </form>
                                             </td>
                                         </tr>

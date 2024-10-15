@@ -2,7 +2,6 @@ import { configureStore } from '@reduxjs/toolkit'
 import darkThemeReducer from './darkThemeSlice'
 import collapsedReducer from './collapsedSlice'
 import respCollapsedReducer from './respCollapsedSlice'
-import userReducer from './userSlice'
 import productReducer from './productSlice'
 
 export default configureStore({
@@ -10,7 +9,6 @@ export default configureStore({
         darkTheme: darkThemeReducer,
         collapsed: collapsedReducer,
         respCollapsed: respCollapsedReducer,
-        user: userReducer,
         product: productReducer,
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({

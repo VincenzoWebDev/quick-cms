@@ -7,8 +7,8 @@ import CardsHome from "@/components/Admin/CardsHome";
 Chart.register(...registerables);
 
 const Home = (props) => {
-    const { users, albums, photos, albumCategories, dataChart, user_auth, flash } = props;
-    const { usersPercentage, albumsPercentage, categoriesPercentage, photosPercentage } = props;
+    const { users, albums, products, orders, dataChart, user_auth, flash } = props;
+    const { usersPercentage, albumsPercentage, productsPercentage, ordersPercentage } = props;
     const [message, setMessage] = useState(flash.message);
     const [status, setStatus] = useState(flash.status);
     useEffect(() => {
@@ -47,8 +47,8 @@ const Home = (props) => {
         const labels = dataChart.map(entry => getMonthName(entry.month));
         const userCounts = dataChart.map(entry => entry.userCount);
         const albumCounts = dataChart.map(entry => entry.albumCount);
-        const categoriesCounts = dataChart.map(entry => entry.categoryCount);
-        const photosCounts = dataChart.map(entry => entry.photoCount);
+        const productCounts = dataChart.map(entry => entry.productCount);
+        const orderCounts = dataChart.map(entry => entry.orderCount);
 
         return {
             labels: labels,
@@ -68,15 +68,15 @@ const Home = (props) => {
                     tension: 0.1
                 },
                 {
-                    label: 'Categorie',
-                    data: categoriesCounts,
+                    label: 'Prodotti',
+                    data: productCounts,
                     fill: false,
                     borderColor: 'rgb(56, 239, 125)',
                     tension: 0.1
                 },
                 {
-                    label: 'Foto',
-                    data: photosCounts,
+                    label: 'Ordini',
+                    data: orderCounts,
                     fill: false,
                     borderColor: 'rgb(255, 186, 86)',
                     tension: 0.1
@@ -94,8 +94,8 @@ const Home = (props) => {
         <Layout user_auth={user_auth}>
             <div className="row">
                 <AlertErrors message={message} status={status} />
-                <CardsHome users={users} albums={albums} photos={photos} albumCategories={albumCategories}
-                    usersPercentage={usersPercentage} albumsPercentage={albumsPercentage} categoriesPercentage={categoriesPercentage} photosPercentage={photosPercentage} />
+                <CardsHome users={users} albums={albums} products={products} orders={orders}
+                    usersPercentage={usersPercentage} albumsPercentage={albumsPercentage} productsPercentage={productsPercentage} ordersPercentage={ordersPercentage} />
             </div>
 
             <div className="row">

@@ -8,7 +8,7 @@ const ProductDetail = ({ product, variantCombinationsGroup, pages }) => {
 
     return (
         <FrontLayout pages={pages}>
-            <div className="container mb-5">
+            <div className="container my-5">
                 <div className="row">
                     <div className="col-12 mb-4">
                         <Link href={route('productList')}>Torna indietro</Link>

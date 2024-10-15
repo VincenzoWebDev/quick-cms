@@ -11,6 +11,6 @@ class VariantCombination extends Model
 
     public function variantValues()
     {
-        return $this->hasMany(CombinationVariantValue::class, 'variant_combination_id');
+        return $this->hasMany(VariantCombinationValue::class, 'variant_combination_id');
     }
 }

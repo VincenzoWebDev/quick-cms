@@ -60,27 +60,30 @@ const ProductCreate = ({ categories, selectedCategories, variants, variantColors
     };
 
     return (
-        <>
-            <Layout>
-                <h2>Inserisci nuovo prodotto</h2>
-                <InputErrors errors={errors} />
+        <Layout>
+            <h2>Inserisci nuovo prodotto</h2>
+            <InputErrors errors={errors} />
 
-                <ProductTabs />
-                <form onSubmit={handleSubmit} encType="multipart/form-data">
-                    <div className="tab-content" id="myTabContent">
-                        <InfoTab data={product} handleChange={handleChange} categories={categories} selectedCategories={selectedCategories} handleCatsChange={handleCatsChange} />
-                        <ImagesTab ThumbChanged={handleThumbChange} GalleryChanged={handleGalleryChange} />
-                        <VariantsTab variants={variants} variantColors={variantColors} variantSizes={variantSizes} />
-                        <SeoTab />
-                    </div>
+            <ProductTabs />
+            <div className="row">
+                <div className="col-md-8">
+                    <form onSubmit={handleSubmit} encType="multipart/form-data">
+                        <div className="tab-content" id="myTabContent">
+                            <InfoTab data={product} handleChange={handleChange} categories={categories} selectedCategories={selectedCategories} handleCatsChange={handleCatsChange} />
+                            <ImagesTab ThumbChanged={handleThumbChange} GalleryChanged={handleGalleryChange} />
+                            <VariantsTab variants={variants} variantColors={variantColors} variantSizes={variantSizes} />
+                            <SeoTab />
+                        </div>
 
-                    <div className="mb-3">
-                        <button className="btn cb-primary me-3">Inserisci</button>
-                        <Link href={route('products.index')} className="btn btn-secondary">Torna indietro</Link>
-                    </div>
-                </form>
-            </Layout>
-        </>
+                        <div className="mb-3">
+                            <button className="btn cb-primary me-3">Inserisci</button>
+                            <Link href={route('products.index')} className="btn btn-secondary">Torna indietro</Link>
+                        </div>
+                    </form>
+                </div>
+                <div className="col-md-4"></div>
+            </div>
+        </Layout>
     )
 }
 

@@ -1,10 +1,10 @@
 import Layout from "@/Layouts/Admin/Layout";
-import AlbumPhotoSelect from "@/components/Admin/AlbumPhotoSelect";
+import AlbumPhotoSelect from "@/components/Admin/Albums/AlbumPhotoSelect";
 import InputErrors from "@/components/Admin/InputErrors";
 import PhotoFileUpload from "@/components/Admin/PhotoFileUpload";
 import { Link, useForm, usePage } from '@inertiajs/react';
 
-const PhotoCreate = ({ photo, albums, user_auth }) => {
+const PhotoCreate = ({ photo, albums }) => {
 
     const urlParams = new URLSearchParams(window.location.search);
     const album_id = urlParams.get('album_id');
@@ -30,7 +30,6 @@ const PhotoCreate = ({ photo, albums, user_auth }) => {
         } else {
             setData('img_path', null);
         }
-
     }
 
     const handleAlbumChange = (albumId) => {
@@ -43,7 +42,7 @@ const PhotoCreate = ({ photo, albums, user_auth }) => {
     }
 
     return (
-        <Layout user_auth={user_auth}>
+        <Layout>
             <h2>Inserisci nuova immagine</h2>
             <InputErrors errors={errors} />
 

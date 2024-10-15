@@ -39,7 +39,7 @@ class AlbumController extends \App\Http\Controllers\Controller
         }
         $res = $album->delete();
 
-        if ($res && $thumbNail) {
+        if ($res) {
             // Costruisci il percorso completo del file utilizzando il nome del file
             $thumbPath = public_path('storage/' . $thumbNail);
             $folderPathThumb = dirname($album->album_thumb);
@@ -84,7 +84,7 @@ class AlbumController extends \App\Http\Controllers\Controller
         }
     }
 
-    public function deleteImages(Album $album)
+    public function deleteImages($album)
     {
         $photos = Photo::where('album_id', $album->id)->get();
         $disk = env('IMG_DISK');
@@ -117,17 +117,14 @@ class AlbumController extends \App\Http\Controllers\Controller
         $selectedCategory = $album->categories->pluck('id')->toArray();
 
         return Inertia::render('Admin/Albums/Edit', [
-            'album' => $album,
+            'album' => $album->load('photos'),
             'categories' => $categories,
             'selectedCategory' => $selectedCategory
         ]);
     }
 
-    public function update(EditAlbumRequest $request, $id)
+    public function update(EditAlbumRequest $request, Album $album)
     {
-
-        $album = Album::findOrFail($id);
-
         $this->authorize('update', $album);
 
         $oldAlbumName = $album->album_name;
@@ -136,22 +133,28 @@ class AlbumController extends \App\Http\Controllers\Controller
 
         $album->album_name = $request->input('album_name');
         $album->description = $request->input('description');
-        $album->album_thumb = $request->input('album_thumb') == null ? $oldImage : $request->input('album_thumb');
+        $album->album_thumb = $request->file('album_thumb') == null ? $oldImage : '';
         $album->user_id = $request->user()->id;
         $catAlbum = $album->categories()->sync($request->categories);
 
 
-        if ($oldAlbumName != $album->album_name || $oldDescription != $album->description || $oldImage != $album->album_thumb || $catAlbum['attached'] != null || $catAlbum['detached'] != null || $request->hasFile('album_thumb')) {
-            if ($oldImage) {
+        if (
+            $oldAlbumName != $album->album_name || $oldDescription != $album->description || $oldImage != $album->album_thumb || $catAlbum['attached'] != null || $catAlbum['detached'] != null ||
+            $request->hasFile('album_thumb') || $request->hasFile('gallery')
+        ) {
+            if ($request->hasFile('album_thumb')) {
                 Storage::delete($oldImage);
+                $this->processFile($request, $album);
             }
-            $this->processFile($album->id, $album);
+            if ($request->hasFile('gallery')) {
+                $this->processGallery($request, $album);
+            }
             $res = $album->save();
         } else {
             $res = 0;
         }
 
-        $messaggio = $res ? 'Album ID : ' . $id . ' - Aggiornato correttamente' : 'Album ID : ' . $id . ' - Non aggiornato';
+        $messaggio = $res ? 'Album ID : ' . $album->id . ' - Aggiornato correttamente' : 'Album ID : ' . $album->id . ' - Non aggiornato';
         $tipoMessaggio = $res ? 'success' : 'danger';
         session()->flash('message', ['tipo' => $tipoMessaggio, 'testo' => $messaggio]);
 
@@ -160,11 +163,9 @@ class AlbumController extends \App\Http\Controllers\Controller
 
     public function create()
     {
-        $album = new Album;
         $categories = AlbumCategories::orderBy('category_name', 'asc')->where('user_id', Auth::id())->get();
 
         return Inertia::render('Admin/Albums/Create', [
-            'album' => $album,
             'categories' => $categories,
             'selectedCategory' => []
         ]);
@@ -183,11 +184,13 @@ class AlbumController extends \App\Http\Controllers\Controller
             if ($request->has('categories') > 0) {
                 $album->categories()->attach($request->categories);
             }
-        }
-
-        if ($res) {
-            $this->processFile($album->id, $album);
-            $album->save(); // Salva nuovamente l'album dopo il caricamento del file
+            if ($request->hasFile('album_thumb')) {
+                $this->processFile($request, $album);
+            }
+            if ($request->hasFile('gallery')) {
+                $this->processGallery($request, $album);
+            }
+            $res = $album->save();
         }
 
         $messaggio = $res ? 'Album ' . $album->id . ' inserito correttamente' : 'Album ' . $album->id . ' non inserito';
@@ -198,22 +201,63 @@ class AlbumController extends \App\Http\Controllers\Controller
     }
 
 
-    public function processFile($id, &$album)
+    public function processFile($request, &$album)
     {
-        if (!request()->hasFile('album_thumb')) {
+        if (!$request->hasFile('album_thumb')) {
             return false;
         }
-        $file = request()->file('album_thumb');
+        $file = $request->file('album_thumb');
         if (!$file->isValid()) {
             return false;
         }
         $albumName = str_replace(' ', '_', $album->album_name);
-        $fileName = $albumName . '_' . $id . '.' . $file->extension();
+        $fileName = $albumName . '_' . $album->id . '.' . $file->extension();
         $dirAlbumId = 'album_' . $album->id;
-        $file = $file->storeAs('public/' . env('ALBUM_THUMB_DIR') . $dirAlbumId, $fileName);
+        $file->storeAs(env('ALBUM_THUMB_DIR') . $dirAlbumId, $fileName, 'public');
         $filePath = public_path('storage/' . env('ALBUM_THUMB_DIR') . $dirAlbumId . '/' . $fileName);
         $this->createThumbnail($filePath);
         $album->album_thumb = env('ALBUM_THUMB_DIR') . $dirAlbumId . '/' . $fileName;
+    }
+
+    public function processGallery($request, $album)
+    {
+        if (!$request->hasFile('gallery')) {
+            return false;
+        }
+        $file = $request->file('gallery');
+        $name = $request->input('album_name');
+        $album_id = $album->id;
+
+        if (is_array($file)) {
+            if (count($file) > 0) {
+                $count = 0;
+                foreach ($file as $img) {
+                    $originalName = $name;
+                    $imgName = str_replace(' ', '_', $originalName);
+                    $extension = $img->extension();
+                    $time = time();
+                    $dirAlbumId = 'album_' . $album_id;
+                    $fileNameStore = $imgName . '_' . $count . '_' . $time . '.' . $extension;
+                    $fileNameThumb = 'thumb_' . $imgName . '_' . $count . '_' . $time . '.' . $extension;
+
+                    // Crea thumbnail
+                    $img->storeAs(env('IMG_PHOTO_ALBUMS') . $dirAlbumId, $fileNameStore, 'public');
+                    $img->storeAs(env('IMG_PHOTO_ALBUM_THUMBS') . $dirAlbumId, $fileNameThumb, 'public');
+                    $fileNameThumbPath = public_path('storage/' . env('IMG_PHOTO_ALBUM_THUMBS') . $dirAlbumId . '/' . $fileNameThumb);
+                    $this->createThumbnail($fileNameThumbPath);
+
+                    // Crea un nuovo modello Photo per ogni immagine
+                    $photo = new Photo();
+                    $photo->name = $name;
+                    $photo->album_id = $album_id;
+                    $photo->thumb_path = env('IMG_PHOTO_ALBUM_THUMBS') . $dirAlbumId . '/' . $fileNameThumb;
+                    $photo->img_path = env('IMG_PHOTO_ALBUMS') . $dirAlbumId . '/' . $fileNameStore;
+                    $res = $photo->save();
+                    $count++;
+                }
+                return $res;
+            }
+        }
     }
 
     public function createThumbnail($filePath)

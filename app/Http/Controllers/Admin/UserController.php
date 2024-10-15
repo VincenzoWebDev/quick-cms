@@ -3,12 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\EditUserRequest;
+use App\Http\Requests\UserFilterRequest;
 use App\Http\Requests\UserRequest;
-use App\Models\Album;
 use App\Models\AlbumCategories;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -17,13 +16,21 @@ use Intervention\Image\ImageManager;
 
 class UserController extends \App\Http\Controllers\Controller
 {
-    public function index(Request $request)
+    public function index(UserFilterRequest $request)
     {
-        if ($request->input('sortBy') != null) {
-            $searchQuery = $request->input('sortBy');
-            $users = User::orderBy('id', 'desc')->paginate($searchQuery);
-        } else {
-            $users = User::orderBy('id', 'desc')->paginate(10)->through(fn ($user) => [
+        $sortBy = $request->input('sortBy', 'id');
+        $sortDirection = $request->input('sortDirection', 'desc');
+        $perPage = $request->input('perPage', 10);
+        $searchQuery = $request->input('q', '');
+
+        $users = User::orderBy($sortBy, $sortDirection)
+            ->when($searchQuery, function ($query) use ($searchQuery) {
+                $query->where(function ($query) use ($searchQuery) {
+                    $query->where('id', 'like', '%' . $searchQuery . '%')
+                        ->orWhere('name', 'like', '%' . $searchQuery . '%')
+                        ->orWhere('email', 'like', '%' . $searchQuery . '%');
+                });
+            })->paginate($perPage)->through(fn($user) => [
                 'id' => $user->id,
                 'profile_img' => $user->profile_img,
                 'name' => $user->name,
@@ -32,16 +39,19 @@ class UserController extends \App\Http\Controllers\Controller
                 'created_at' => $user->created_at,
                 'updated_at' => $user->updated_at
             ]);
-        }
+
         return Inertia::render('Admin/Users/UsersContent', [
             'users' => $users,
+            'sortBy' => $sortBy,
+            'sortDirection' => $sortDirection,
+            'perPage' => $perPage,
+            'sortSearch' => $searchQuery,
         ]);
     }
 
     public function searchUsers(Request $request)
     {
         $searchQuery = $request->input('q');
-
         $users = User::query()->orderBy('id', 'desc')
             ->when($searchQuery, function ($query) use ($searchQuery) {
                 $query->where('id', 'like', '%' . $searchQuery . '%')
@@ -50,7 +60,6 @@ class UserController extends \App\Http\Controllers\Controller
                     ->orWhere('role', 'like', '%' . $searchQuery . '%');
             })
             ->paginate(10);
-
         return Inertia::render('Admin/Users/UsersContent', [
             'users' => $users,
         ]);
@@ -123,7 +132,7 @@ class UserController extends \App\Http\Controllers\Controller
             if ($request->file('profile_img') != null) {
                 Storage::delete($oldProfile);
                 $this->processFile($user->id, $user);
-            }else{
+            } else {
                 $user->profile_img = $oldProfile;
             }
             $res = $user->save();
@@ -176,7 +185,7 @@ class UserController extends \App\Http\Controllers\Controller
             return false;
         }
         $fileName = $user->name . '_' . $id . '.' . $file->extension();
-        $file = $file->storeAs('public/' . env('PROFILE_IMG_DIR'), $fileName);
+        $file = $file->storeAs(env('PROFILE_IMG_DIR'), $fileName, 'public');
         $filePath = public_path('storage/' . env('PROFILE_IMG_DIR') . '/' . $fileName);
         $this->createThumbnail($filePath);
         $user->profile_img = env('PROFILE_IMG_DIR') . $fileName;

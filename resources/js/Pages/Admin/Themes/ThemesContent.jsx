@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import AlertErrors from '@/components/Admin/AlertErrors';
 import { BASE_URL } from "@/constants/constants";
 
-const ThemesContent = ({ themes, flash, user_auth }) => {
+const ThemesContent = ({ themes, flash }) => {
     const [message, setMessage] = useState(flash.message);
     const { delete: formDelete } = useForm();
     const [selectedRecords, setSelectedRecords] = useState([]);
@@ -92,7 +92,7 @@ const ThemesContent = ({ themes, flash, user_auth }) => {
     }
 
     return (
-        <Layout user_auth={user_auth}>
+        <Layout>
             <h2>Gestione temi</h2>
             <AlertErrors message={message} />
 

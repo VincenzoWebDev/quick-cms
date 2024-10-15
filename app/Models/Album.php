@@ -38,17 +38,6 @@ class Album extends Model
         return $this->belongsToMany(AlbumCategories::class, 'album_category', 'album_id', 'category_id')->withTimestamps();
     }
 
-    public function getAlbumThumbAttribute($value)
-    {
-        $url = $value;
-        // Verifica se l'URL già include il protocollo "http"
-        if (!stristr($url, 'http')) {
-            // Aggiungi il protocollo "http" e l'URL di base dello storage
-            $url = env('APP_URL') . '/storage/' . $url . '?v=' . time();
-        }
-        return $url;
-    }
-
     public function getAlbumsPercentage()
     {
         // Data di inizio e fine del mese corrente

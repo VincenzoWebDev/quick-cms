@@ -2,7 +2,7 @@ import { Link, useForm } from '@inertiajs/react';
 import InputErrors from '@/components/Admin/InputErrors';
 import Layout from '@/Layouts/Admin/Layout';
 
-const ThemeCreate = ({ user_auth }) => {
+const ThemeCreate = () => {
     const { data, setData, post, errors } = useForm({
         name: '',
         path: ''
@@ -19,7 +19,7 @@ const ThemeCreate = ({ user_auth }) => {
     };
 
     return (
-        <Layout user_auth={user_auth}>
+        <Layout>
             <h2>Inserisci un nuovo tema</h2>
             <InputErrors errors={errors} />
 

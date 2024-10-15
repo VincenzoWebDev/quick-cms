@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Middleware;
+use Illuminate\Support\Str;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -35,11 +36,12 @@ class HandleInertiaRequests extends Middleware
     {
         return array_merge(parent::share($request), [
             'flash' => [
-                'message' => fn () => $request->session()->get('message'),
-                'status' => fn () => $request->session()->get('status'),
+                'message' => fn() => $request->session()->get('message'),
+                'status' => fn() => $request->session()->get('status'),
             ],
             'pages' => Page::all(), /* pagine per la topbar front end */
             'notifications' => Auth::user() ? Auth::user()->unreadNotifications : null,
+            'cart_items' => Auth::user() ? Auth::user()->cartItems : null,
         ]);
     }
 
@@ -48,9 +50,12 @@ class HandleInertiaRequests extends Middleware
         $uri = $request->route()->uri;
 
         if (str_contains($uri, 'admin') || str_contains($uri, 'login') || str_contains($uri, 'register') || str_contains($uri, 'password')) {
+            if (Str::endsWith($uri, 'user-profile/login')) {
+                return 'layouts.quick_cms.app';
+            }
             return 'layouts.admin.app';
         }
-        return 'layouts.tema1.app';
+        return 'layouts.quick_cms.app';
 
         return parent::rootView($request);
     }

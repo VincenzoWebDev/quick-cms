@@ -4,7 +4,7 @@ import InputErrors from "@/components/Admin/InputErrors";
 import PhotoFileUpload from '@/components/Admin/PhotoFileUpload';
 import { STORAGE_URL } from '@/constants/constants';
 
-const PhotoEdit = ({ photo, albums, user_auth }) => {
+const PhotoEdit = ({ photo, albums }) => {
     const { errors } = usePage().props;
 
     const { data, setData } = useForm({
@@ -38,7 +38,7 @@ const PhotoEdit = ({ photo, albums, user_auth }) => {
     }
 
     return (
-        <Layout user_auth={user_auth}>
+        <Layout>
             <h2>Modifica foto album</h2>
             <InputErrors errors={errors} />
 

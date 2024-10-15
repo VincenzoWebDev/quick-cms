@@ -119,15 +119,6 @@ a:focus {
 /* ---------------------------------------------------
     FORM INPUT CONTROL STYLE start
 ----------------------------------------------------- */
-
-.form-control {
-    width: 50%;
-}
-
-select {
-    width: 50% !important;
-}
-
 .form-group {
     position: relative;
 }

@@ -63,7 +63,7 @@ const ShippingMethodContent = ({ shippingMethods, flash }) => {
                                 {
                                     shippingMethods.length > 0 ? (
                                         shippingMethods.map(shipping => (
-                                            <tr key={shipping.id}>
+                                            <tr key={shipping.id} className="align-middle">
                                                 <th scope="row" className='col-1'>
                                                     <div className="form-check d-flex justify-content-center align-items-center">
                                                         <input className="form-check-input" type="checkbox" />

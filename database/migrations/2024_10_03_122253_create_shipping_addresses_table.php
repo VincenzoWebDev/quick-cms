@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('order_id');
             $table->string('address');
+            $table->string('civic');
+            $table->string('province');
             $table->string('city');
             $table->string('postal_code');
-            $table->string('country');
             $table->timestamps();
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
         });

@@ -1,10 +1,16 @@
 import { Link, useForm, usePage, router } from '@inertiajs/react';
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setDarkTheme } from '@/redux/darkThemeSlice';
+import { setCollapsed } from '@/redux/collapsedSlice';
+import { setRespCollapsed } from '@/redux/respCollapsedSlice';
+import { STORAGE_URL } from '@/constants/constants';
 
-const Topbar = ({ user_auth, collapsed, setCollapsed, respCollapsed, setRespCollapsed, dataTheme, setTheme }) => {
-    const { notifications } = usePage().props;
+const Topbar = () => {
+    const { notifications, user_auth } = usePage().props;
     const { post } = useForm();
     const [unreadNotifications, setUnreadNotifications] = useState(notifications);
+    const dispatch = useDispatch();
 
     const markAsRead = (notificationId) => {
         router.put(route('notifications.markAsRead', notificationId));
@@ -18,20 +24,27 @@ const Topbar = ({ user_auth, collapsed, setCollapsed, respCollapsed, setRespColl
         post(route('logout'));
     }
 
+    const collapsed = useSelector(state => state.collapsed.collapsed);
+
     const handleClick = (e) => {
         e.preventDefault();
-        setCollapsed(!collapsed);
-    }
-    const handleResponsiveClick = (e) => {
-        e.preventDefault();
-        setRespCollapsed(!respCollapsed);
+        dispatch(setCollapsed(!collapsed));
     }
 
+    const respCollapsed = useSelector(state => state.respCollapsed.respCollapsed);
+
+    const handleResponsiveClick = (e) => {
+        e.preventDefault();
+        dispatch(setRespCollapsed(!respCollapsed));
+    }
+
+    const darkTheme = useSelector(state => state.darkTheme.darkTheme);
+
     const handleSwitchTheme = () => {
-        if (dataTheme) {
-            setTheme(false);
+        if (darkTheme) {
+            dispatch(setDarkTheme(false));
         } else {
-            setTheme(true);
+            dispatch(setDarkTheme(true));
         }
     }
     return (
@@ -55,7 +68,7 @@ const Topbar = ({ user_auth, collapsed, setCollapsed, respCollapsed, setRespColl
                         )}
                     </div>
 
-                    <div className=''>
+                    <div className='d-flex align-items-center'>
                         <button className={`d-inline-block d-lg-none ml-auto more-button`} onClick={handleResponsiveClick} type="button" data-bs-toggle="collapse"
                             data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                             aria-label="Toggle navigation">
@@ -80,9 +93,13 @@ const Topbar = ({ user_auth, collapsed, setCollapsed, respCollapsed, setRespColl
                                                 )}
                                                 {unreadNotifications.map(notification => (
                                                     <li key={notification.id} className='text-center d-flex align-items-center'>
-                                                        <a href="#" className='dropdown-item my-2'>{notification.data.message} - {notification.data.user_name}</a>
+                                                        <a href={notification.data.order_url ? notification.data.order_url : '#'} className='dropdown-item my-2'>
+                                                            {notification.data.message} - {notification.data.user_name ? notification.data.user_name : '#' + notification.data.order_id}
+                                                        </a>
                                                         {!notification.read_at && (
-                                                            <a href='#' onClick={() => markAsRead(notification.id)} className='pe-3'><i className="fa-solid fa-trash text-danger"></i></a>
+                                                            <a href='#' onClick={() => markAsRead(notification.id)} className='pe-3'>
+                                                                <i className="fa-solid fa-trash text-danger"></i>
+                                                            </a>
                                                         )}
                                                     </li>
                                                 ))}
@@ -97,7 +114,7 @@ const Topbar = ({ user_auth, collapsed, setCollapsed, respCollapsed, setRespColl
                                                     <div className="form-check form-switch d-flex p-0">
                                                         <span className='dropdown-item'>Light mode</span>
                                                         <input className="form-check-input theme-switch ms-0" type="checkbox" role="switch" id="flexSwitchCheckDefault8"
-                                                            style={{ width: '40px', height: '20px' }} checked={dataTheme ? true : false} onChange={handleSwitchTheme} />
+                                                            style={{ width: '40px', height: '20px' }} checked={darkTheme ? true : false} onChange={handleSwitchTheme} />
                                                         <span className='dropdown-item'>Dark mode</span>
                                                     </div>
                                                 </li>
@@ -121,7 +138,7 @@ const Topbar = ({ user_auth, collapsed, setCollapsed, respCollapsed, setRespColl
                                             <li className="nav-item dropdown">
                                                 <a id="navbarDropdown" className="nav-link user user-box " href="#" role="button"
                                                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <img src={user_auth.profile_img} alt={user_auth.name} title={user_auth.name} className="user-img" />
+                                                    <img src={STORAGE_URL + user_auth.profile_img} alt={user_auth.name} title={user_auth.name} className="user-img object-fit-cover" />
                                                     <div className="user-info">
                                                         <div className="user-name border-bottom">{user_auth.name}</div>
                                                         <div className="user-role">{user_auth.role}</div>

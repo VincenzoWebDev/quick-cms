@@ -1,5 +1,10 @@
-###gestione cambio immagine profilo user - fatto, ma ricontrolla bene ###
+IMPORTANTE:
+- continua tabs products
+- continua varianti, creare combinazione e salvare nel db
+- ottimizza con redux stato varianti
+- dati passati correttamente al controller, continuare la gestione e salvataggio nel db
 
+###continua caricamento file ###
 
 ### Continuare corso react stytled component - Ref hook - memo hook ###
 

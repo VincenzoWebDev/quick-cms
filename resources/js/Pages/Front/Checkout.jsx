@@ -1,10 +1,22 @@
+import { CheckoutHeader } from "@/components/Front/Index";
 import { STORAGE_URL } from "@/constants/constants";
 import FrontLayout from "@/Layouts/FrontLayout";
 import { useForm, usePage } from "@inertiajs/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+const url = "https://axqvoqvbfjpaamphztgd.functions.supabase.co/province";
 
 const Checkout = ({ cartItems, shippingMethods }) => {
     const { user_auth } = usePage().props;
+    const [province, setProvince] = useState([]);
+
+    const getTotalPrice = () => {
+        let totalPrice = 0;
+        cartItems.forEach((item) => {
+            totalPrice += item.price * item.quantity;
+        });
+        return totalPrice.toFixed(2);
+    }
+
     const { post, data, setData, errors } = useForm({
         name: user_auth.name,
         lastname: user_auth.lastname,
@@ -12,11 +24,21 @@ const Checkout = ({ cartItems, shippingMethods }) => {
         phone: user_auth.phone || '+39 ',
         address: '',
         civic: '',
+        province: '',
         city: '',
-        country: '',
+        cap: '',
         shipping_method_id: '',
+        total_price: getTotalPrice(),
     });
-    console.log(data);
+
+    useEffect(() => {
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                setProvince(data);
+            })
+            .catch(error => console.error(error));
+    }, []);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -30,39 +52,15 @@ const Checkout = ({ cartItems, shippingMethods }) => {
         setData({ ...data, shipping_method_id: shippingId });
     };
 
-    const getTotalPrice = () => {
-        let totalPrice = 0;
-        cartItems.forEach((item) => {
-            totalPrice += item.price * item.quantity;
-        });
-        return totalPrice.toFixed(2);
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        post(route('checkout.store'));
     }
 
     return (
         <FrontLayout>
-            <div style={{ marginBottom: "120px" }}>
-                <header>
-                    {/* Heading */}
-                    <div className="bg-red">
-                        <div className="container py-4">
-                            {/* Breadcrumb */}
-                            <nav className="d-flex">
-                                <h6 className="mb-0">
-                                    <a href="#" className="text-white-50">Home</a>
-                                    <span className="text-white-50 mx-2"> &gt; </span>
-                                    <a href="#" className="text-white-50">2. Carrello</a>
-                                    <span className="text-white-50 mx-2"> &gt; </span>
-                                    <a href="#" className="text-white"><u>3. Informazioni ordine</u></a>
-                                    <span className="text-white-50 mx-2"> &gt; </span>
-                                    <a href="#" className="text-white-50">4. Pagamento</a>
-                                </h6>
-                            </nav>
-                            {/* Breadcrumb */}
-                        </div>
-                    </div>
-                    {/* Heading */}
-                </header>
-
+            <div>
+                <CheckoutHeader />
                 <section className="bg-light py-5">
                     <div className="container">
                         <div className="row">
@@ -153,24 +151,25 @@ const Checkout = ({ cartItems, shippingMethods }) => {
 
                                             <div className="col-sm-4 mb-3">
                                                 <p className="mb-0">Città</p>
-                                                <select className="form-select">
-                                                    <option value="1">New York</option>
-                                                    <option value="2">Mosca</option>
-                                                    <option value="3">Samarqand</option>
+                                                <select className="form-select" name="province" aria-label="Default select example" onChange={handleInputChange}>
+                                                    <option value="">Seleziona una città</option>
+                                                    {province.map((provincia) => (
+                                                        <option key={provincia.codice} value={provincia.nome}>{provincia.nome}</option>
+                                                    ))}
                                                 </select>
                                             </div>
 
                                             <div className="col-sm-4 mb-3">
                                                 <p className="mb-0">Paese</p>
                                                 <div className="form-outline">
-                                                    <input type="text" name="country" id="typeText" placeholder="Digita qui" className="form-control" onChange={handleInputChange} />
+                                                    <input type="text" name="city" id="typeText" placeholder="Digita qui" className="form-control" onChange={handleInputChange} />
                                                 </div>
                                             </div>
 
                                             <div className="col-sm-4 col-6 mb-3">
                                                 <p className="mb-0">CAP</p>
                                                 <div className="form-outline">
-                                                    <input type="text" id="typeText" className="form-control" onChange={handleInputChange} />
+                                                    <input type="text" name="cap" id="typeText" className="form-control" onChange={handleInputChange} />
                                                 </div>
                                             </div>
                                         </div>
@@ -188,8 +187,8 @@ const Checkout = ({ cartItems, shippingMethods }) => {
                                         </div>
 
                                         <div className="float-end">
-                                            <button className="btn btn-light border me-2">Annulla</button>
-                                            <button className="btn btn-success shadow-0 border">Continua</button>
+                                            <button className="btn btn-light border me-2">Indietro</button>
+                                            <button className="btn btn-success shadow-0 border" onClick={handleSubmit}>Continua</button>
                                         </div>
                                     </div>
                                 </div>

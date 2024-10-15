@@ -45,6 +45,7 @@ class CartController extends \App\Http\Controllers\Controller
             $cartItem->color = $request->color;
             $cartItem->size = $request->size;
             $cartItem->quantity = $request->quantity;
+            $cartItem->combination_id = $request->combination_id;
             $cartItem->save();
         }
     }

@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Requests\CategoryRequest;
+use App\Http\Requests\AlbumCategoryRequest;
 use App\Http\Requests\EditAlbumCategoryRequest;
 use App\Models\AlbumCategories;
-use App\Models\AlbumCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -23,18 +22,18 @@ class AlbumCategoryController extends \App\Http\Controllers\Controller
         return Inertia::render('Admin/AlbumCategories/Create');
     }
 
-    public function store(CategoryRequest $request)
+    public function store(AlbumCategoryRequest $request)
     {
         $albumsCategory = new AlbumCategories;
         $albumsCategory->category_name = $request->input('category_name');
         $albumsCategory->user_id = Auth::id();
         $res = $albumsCategory->save();
 
-        $messaggio = $res ? 'Categoria ' . $albumsCategory->id . ' inserita correttamente' : 'Categoria ' . $albumsCategory->id . ' non inserita';
+        $messaggio = $res ? 'Categoria ' . $albumsCategory->id . ' inserita correttamente' : 'Categoria non inserita';
         $tipoMessaggio = $res ? 'success' : 'danger';
         session()->flash('message', ['tipo' => $tipoMessaggio, 'testo' => $messaggio]);
 
-        return redirect()->route('categories.index');
+        return redirect()->route('album.categories.index');
     }
 
     public function show(string $id)
@@ -61,18 +60,12 @@ class AlbumCategoryController extends \App\Http\Controllers\Controller
         $tipoMessaggio = $res ? 'success' : 'danger';
         session()->flash('message', ['tipo' => $tipoMessaggio, 'testo' => $messaggio]);
 
-        return redirect()->route('categories.index');
+        return redirect()->route('album.categories.index');
     }
 
     public function destroy(AlbumCategories $category)
     {
         $res = $category->delete();
-
-        // if (request()->ajax()) {
-        //     return $res;
-        // } else {
-        //     return redirect()->route('categories.index');
-        // }
     }
 
     public function destroyBatch(Request $request)

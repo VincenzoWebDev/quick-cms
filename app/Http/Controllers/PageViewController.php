@@ -39,7 +39,7 @@ class PageViewController extends Controller
     {
         $currentPage = Page::where('slug', $slug)->where('active', 1)->firstOrFail();
         $pageLayout = $currentPage->layout;
-        return Inertia::render('Page', ['currentPage' => $currentPage, 'pageLayout' => $pageLayout]);
+        return Inertia::render('Front/Page', ['currentPage' => $currentPage, 'pageLayout' => $pageLayout]);
     }
 
     /**

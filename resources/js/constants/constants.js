@@ -19,18 +19,24 @@ export const STORAGE_URL = storageUrl;
 
 /* Editor config */
 export const EDITOR_CONFIG = {
-    height: 300,
+    height: 500,
     menubar: false,
     direction: 'ltr',
     menubar: 'file edit view insert format tools table help',
     plugins: [
-        'code',
+        'code', 'image',
     ],
     toolbar: 'undo redo | styles | formatselect | ' +
         'bold italic backcolor forecolor | alignleft aligncenter ' +
         'alignright alignjustify | bullist numlist outdent indent | ' +
-        'removeformat | help | code | h1 h2 h3 h4 h5 h6',
-    content_style: 'body { font-family:Roboto, sans-serif; font-size:14px }'
+        'removeformat | help | code | h1 h2 h3 h4 h5 h6' + '| image',
+    images_file_types: 'jpg,jpeg,png,gif,svg,webp',
+    image_title: true,
+    images_reuse_filename: true,
+    images_upload_credentials: true,
+    convert_urls: false,
+    images_upload_url: route('pages.images.store'),
+    content_style: 'body { font-family:Roboto, sans-serif; font-size:14px }',
 };
 export const API_KEY_EDITOR = 'q2q8szpna6www4mstibaoriqw2mrsaeqivcmkec6fp3i2prq';
 /* End Editor config */

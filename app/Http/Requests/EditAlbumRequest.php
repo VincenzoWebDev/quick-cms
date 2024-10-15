@@ -13,7 +13,7 @@ class EditAlbumRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        $album = Album::find($this->id);
+        $album = Album::find($this->album->id);
         if (Gate::denies('update', $album)) {
             return false;
         }

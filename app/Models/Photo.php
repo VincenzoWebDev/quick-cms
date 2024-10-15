@@ -29,29 +29,4 @@ class Photo extends Model
         }
         return $url;
     }
-
-    public function getPhotosPercentage()
-    {
-        // Data di inizio e fine del mese corrente
-        $startOfMonth = Carbon::now()->startOfMonth();
-        $endOfMonth = Carbon::now()->endOfMonth();
-
-        // Data di inizio e fine del mese scorso
-        $startOfLastMonth = Carbon::now()->subMonth()->startOfMonth();
-        $endOfLastMonth = Carbon::now()->subMonth()->endOfMonth();
-
-        // Conteggio degli utenti nel mese corrente
-        $currentMonthUsersCount = Photo::whereBetween('created_at', [$startOfMonth, $endOfMonth])->count();
-
-        // Conteggio degli utenti nel mese scorso
-        $lastMonthUsersCount = Photo::whereBetween('created_at', [$startOfLastMonth, $endOfLastMonth])->count();
-
-        // Calcolo della percentuale di crescita
-        if ($lastMonthUsersCount != 0) {
-            $growthPercentage = (($currentMonthUsersCount - $lastMonthUsersCount) / $lastMonthUsersCount) * 100;
-        } else {
-            $growthPercentage = 0; // per evitare divisione per zero
-        }
-        return $growthPercentage;
-    }
 }

@@ -54,13 +54,13 @@ const AlbumDeleteSelected = ({ e, formDelete, setMessage, selectedRecords, setSe
                         setSelectedRecords([]);
                         setSelectAll(false);
                         if (selectedRecords.length === 1) {
-                            setMessage({ tipo: 'success', testo: `Album selezionato cancellato correttamente` });
+                            setMessage({ tipo: 'success', testo: `Album selezionato eliminato correttamente` });
                         } else {
-                            setMessage({ tipo: 'success', testo: `Albums selezionati cancellati correttamente` });
+                            setMessage({ tipo: 'success', testo: `Albums selezionati eliminati correttamente` });
                         }
                     },
                     onError: () => {
-                        setMessage({ tipo: 'danger', testo: `Errore durante la cancellazione degli albums` });
+                        setMessage({ tipo: 'danger', testo: `Errore durante l'eliminazione' degli albums` });
                     }
                 });
             }

@@ -3,7 +3,7 @@ import InputErrors from '@/components/Admin/InputErrors';
 import Layout from '@/Layouts/Admin/Layout';
 import { STORAGE_URL } from '@/constants/constants';
 
-const UserEdit = ({ user, user_auth }) => {
+const UserEdit = ({ user }) => {
     const { errors } = usePage().props;
 
     const { data, setData } = useForm({
@@ -35,7 +35,7 @@ const UserEdit = ({ user, user_auth }) => {
 
     return (
         <>
-            <Layout user_auth={user_auth}>
+            <Layout>
                 <h2>Modifica user</h2>
                 <InputErrors errors={errors} />
 
@@ -77,13 +77,13 @@ const UserEdit = ({ user, user_auth }) => {
 
                             <div className="mb-3">
                                 <button type="submit" className="btn cb-primary me-3">Modifica</button>
-                                <Link href={route('users')} className="btn btn-secondary">Torna indietro</Link>
+                                <Link href={route('users.index')} className="btn btn-secondary">Torna indietro</Link>
                             </div>
                         </form >
                     </div>
                     <div className="col-md-4 text-center">
                         <p className="mb-3">Foto profilo</p>
-                        <img src={user.profile_img} title={user.name} alt={user.name}
+                        <img src={STORAGE_URL + user.profile_img} title={user.name} alt={user.name}
                             width="300" className='img-fluid' />
                     </div>
                 </div>

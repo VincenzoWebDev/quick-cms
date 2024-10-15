@@ -5,7 +5,8 @@ import { router, useForm, usePage } from "@inertiajs/react";
 import AlertErrors from "@/components/Admin/AlertErrors";
 import InputErrors from "@/components/Admin/InputErrors";
 
-const ProfileContent = ({ user_auth }) => {
+const ProfileContent = () => {
+    const { user_auth } = usePage().props;
     const [editable, setEditable] = useState(false);
     const { data, setData, errors, patch } = useForm({ ...user_auth });
     const [message, setMessage] = useState(null);
@@ -19,7 +20,7 @@ const ProfileContent = ({ user_auth }) => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setData({ ...user_auth, [name]: value || '' });
+        setData({ ...data, [name]: value || '' });
     }
 
     const handleFileChange = (e) => {
@@ -50,7 +51,7 @@ const ProfileContent = ({ user_auth }) => {
     }
 
     return (
-        <Layout user_auth={user_auth}>
+        <Layout>
             <AlertErrors message={message} />
             <div className="main-body">
                 <div className="row gutters-sm">
@@ -58,7 +59,7 @@ const ProfileContent = ({ user_auth }) => {
                         <div className="card">
                             <div className="card-body">
                                 <div className="d-flex flex-column align-items-center text-center">
-                                    <img src={user_auth.profile_img} alt={user_auth.name} title={user_auth.name} className="border rounded-circle img-fluid" width="auto" />
+                                    <img src={STORAGE_URL + user_auth.profile_img} alt={user_auth.name} title={user_auth.name} className="border rounded-circle img-fluid object-fit-cover" style={{ height: '250px', width: '250px' }} />
                                     {editable && (
                                         <div className="outer">
                                             <div className="inner">

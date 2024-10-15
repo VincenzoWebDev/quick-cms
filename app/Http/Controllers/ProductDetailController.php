@@ -25,7 +25,7 @@ class ProductDetailController extends Controller
                 DB::raw('GROUP_CONCAT(pv.name ORDER BY pv.id ASC) as variant_name'), // Ordinamento per ID
                 DB::raw('GROUP_CONCAT(pvv.value ORDER BY pvv.id ASC) as variant_value') // Ordinamento per ID
             )
-            ->join('combination_variant_values as vcv', 'vc.id', '=', 'vcv.variant_combination_id')
+            ->join('variant_combination_values as vcv', 'vc.id', '=', 'vcv.variant_combination_id')
             ->join('product_variant_values as pvv', 'vcv.product_variant_value_id', '=', 'pvv.id')
             ->join('product_variants as pv', 'pvv.product_variant_id', '=', 'pv.id')
             ->where('vc.product_id', $product->id)

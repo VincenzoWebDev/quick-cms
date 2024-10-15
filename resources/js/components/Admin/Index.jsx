@@ -9,7 +9,7 @@ import Copyright from "./Copyright";
 import InputErrors from "./InputErrors";
 import Fancybox from "./Fancybox";
 import AlbumCategoryCombo from "./Albums/AlbumCategoryCombo";
-import AlbumFileUpload from "./Albums/AlbumFileUpload";
+import AlbumThumbUpload from "./Albums/AlbumThumbUpload";
 import AlbumPhotoSelect from "./Albums/AlbumPhotoSelect";
 import CardsHome from "./CardsHome";
 import CategoryCombo from "./Categories/CategoryCombo";
@@ -27,9 +27,19 @@ import ImagesTab from "./Products/ImagesTab";
 import VariantsTab from "./Products/VariantsTab";
 import SeoTab from "./Products/SeoTab";
 import InfoTab from "./Products/InfoTab";
-import GalleryUpload from "./Products/GalleryUpload";
+import GalleryUpload from "./GalleryUpload";
 import GalleryImages from "./Products/GalleryImages";
 import HeaderTitle from "./HeaderTitle";
+import { OrderDelete, OrderDeleteSelected } from "./Orders/OrderDelete";
+import OrderShowDetails from "./Orders/OrderShowDetails";
+import AlbumTabs from "./Albums/AlbumTabs";
+import AlbumGallery from "./Albums/AlbumGallery";
+import OrdersContentTable from "./Orders/OrdersContentTable";
+import SearchAndPerPageSelector from "./SearchAndPerPageSelector";
+import UserPagination from "./Users/UserPagination";
+import UserRow from "./Users/UserRow";
+import ProductRow from "./Products/ProductRow";
+import OrderRow from "./Orders/OrderRow";
 
 
 
@@ -39,9 +49,10 @@ import HeaderTitle from "./HeaderTitle";
 
 export {
     ButtonDelete, ButtonEdit, ButtonShow, ButtonCancel, ButtonSave, Pagination, AlertErrors, Copyright, InputErrors,
-    Fancybox, AlbumCategoryCombo, AlbumFileUpload, AlbumPhotoSelect, CardsHome,
+    Fancybox, AlbumCategoryCombo, AlbumThumbUpload, AlbumPhotoSelect, CardsHome,
     CategoryCombo, PhotoFileUpload, Sidebar, Topbar, CategoryDelete, CategoryDeleteSelected,
     UsersDelete, UsersDeleteSelected, AlbumDelete, AlbumDeleteSelected, AlbumCategoryDelete, AlbumCategoryDeleteSelected,
     PageDelete, PageDeleteSelected, ProductDelete, ProductDeleteSelected, ProductTabs, ImagesTab, VariantsTab, SeoTab,
-    InfoTab, GalleryUpload, GalleryImages, HeaderTitle
+    InfoTab, GalleryUpload, GalleryImages, HeaderTitle, OrderDelete, OrderDeleteSelected, OrderShowDetails, AlbumTabs,
+    AlbumGallery, OrdersContentTable, SearchAndPerPageSelector, UserPagination, UserRow, ProductRow, OrderRow
 }

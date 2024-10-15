@@ -79,7 +79,7 @@ class ProfileController extends \App\Http\Controllers\Controller
             return false;
         }
         $fileName = $user->name . '_' . $id . '.' . $file->extension();
-        $file = $file->storeAs('public/' . env('PROFILE_IMG_DIR'), $fileName);
+        $file = $file->storeAs(env('PROFILE_IMG_DIR'), $fileName, 'public');
         $filePath = public_path('storage/' . env('PROFILE_IMG_DIR') . '/' . $fileName);
         $this->createThumbnail($filePath);
         $user->profile_img = env('PROFILE_IMG_DIR') . $fileName;

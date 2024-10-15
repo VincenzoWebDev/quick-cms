@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\EditProductRequest;
+use App\Http\Requests\ProductFilterRequest;
 use App\Http\Requests\ProductRequest;
 use App\Models\Category;
 use App\Models\Product;
@@ -21,10 +22,34 @@ use Illuminate\Support\Str;
 class ProductController extends \App\Http\Controllers\Controller
 {
 
-    public function index()
+    public function index(ProductFilterRequest $request)
     {
-        $products = Product::with('categories')->orderBy('id', 'desc')->get();
-        return Inertia::render('Admin/Products/ProductsContent', ['products' => $products]);
+        $sortBy = $request->input('sortBy', 'id');
+        $sortDirection = $request->input('sortDirection', 'desc');
+        $perPage = $request->input('perPage', 10);
+        $searchQuery = $request->input('q', '');
+
+        $products = Product::with('categories')->orderBy($sortBy, $sortDirection)
+            ->when($searchQuery, function ($query) use ($searchQuery) {
+                $query->where(function ($query) use ($searchQuery) {
+                    $query->where('name', 'like', '%' . $searchQuery . '%')
+                        ->orWhere('price', 'like', '%' . $searchQuery . '%')
+                        ->orWhere('stock', 'like', '%' . $searchQuery . '%')
+                        ->orWhereHas('categories', function ($query) use ($searchQuery) {
+                            $query->where('name', 'like', '%' . $searchQuery . '%');
+                        });
+                });
+            })
+            ->paginate($perPage);
+
+        // $products = Product::with('categories')->orderBy('id', 'desc')->get();
+        return Inertia::render('Admin/Products/ProductsContent', [
+            'products' => $products,
+            'sortBy' => $sortBy,
+            'sortDirection' => $sortDirection,
+            'perPage' => $perPage,
+            'sortSearch' => $searchQuery,
+        ]);
     }
 
     function createSlug($title)
@@ -102,7 +127,7 @@ class ProductController extends \App\Http\Controllers\Controller
             $sizeId = DB::table('product_variant_values')->where('value', $combination['size'])->value('id');
 
             // Associa la combinazione a taglia e colore
-            DB::table('combination_variant_values')->insert([
+            DB::table('variant_combination_values')->insert([
                 ['variant_combination_id' => $combinationId, 'product_variant_value_id' => $colorId],
                 ['variant_combination_id' => $combinationId, 'product_variant_value_id' => $sizeId]
             ]);
@@ -132,7 +157,7 @@ class ProductController extends \App\Http\Controllers\Controller
                 DB::raw('GROUP_CONCAT(pv.name ORDER BY pv.id ASC) as variant_name'), // Ordinamento per ID
                 DB::raw('GROUP_CONCAT(pvv.value ORDER BY pvv.id ASC) as variant_value') // Ordinamento per ID
             )
-            ->join('combination_variant_values as vcv', 'vc.id', '=', 'vcv.variant_combination_id')
+            ->join('variant_combination_values as vcv', 'vc.id', '=', 'vcv.variant_combination_id')
             ->join('product_variant_values as pvv', 'vcv.product_variant_value_id', '=', 'pvv.id')
             ->join('product_variants as pv', 'pvv.product_variant_id', '=', 'pv.id')
             ->where('vc.product_id', $product->id)

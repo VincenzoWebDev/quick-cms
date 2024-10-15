@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { GalleryImages } from "../Index";
-import GalleryUpload from "./GalleryUpload";
+import GalleryUpload from "../GalleryUpload";
 
 const ImagesTab = ({ ThumbChanged, GalleryChanged }) => {
     const productImages = useSelector((state) => state.product.productImages);
@@ -25,7 +25,7 @@ const ImagesTab = ({ ThumbChanged, GalleryChanged }) => {
                 <GalleryUpload handleGalleryChange={handleGalleryChange} />
             </div>
             {
-                productImages != '' &&
+                productImages.length > 0 &&
                 <div className="mb-3">
                     <label className="form-label fw-bold">Immagini inserite</label>
                     <GalleryImages />

@@ -43,7 +43,7 @@ const Copyright = () => {
                     </div>
                     <div className="col-md-6">
                         <p className="copyright d-flex justify-content-end"> &copy; {currentDate} Design & Develop by
-                            <a href="https://www.instagram.com/vincenzo.designer/" target='_blank'>&nbsp;Vincenzo Designer&nbsp;</a>
+                            <a href="https://www.instagram.com/vincenzo.web.dev/" target='_blank'>&nbsp;Vincenzo Designer&nbsp;</a>
                         </p>
                     </div>
                 </div>

@@ -1,14 +1,30 @@
 import Layout from "@/Layouts/Admin/Layout";
-import { usePage, Link, useForm } from "@inertiajs/react";
-import { useState, useEffect } from "react";
-import { STORAGE_URL, BASE_URL } from '@/constants/constants'
-import { ButtonDelete, Pagination, AlertErrors, ProductDelete, ProductDeleteSelected, ButtonEdit } from "@/components/Admin";
+import { Link, useForm, usePage } from "@inertiajs/react";
+import React, { useState, useEffect, useCallback } from "react";
+import { AlertErrors, ProductDelete, ProductDeleteSelected, SearchAndPerPageSelector, InputErrors, ProductRow, Pagination } from "@/components/Admin";
+import { useFilterHandlers } from "@/hooks/admin/useFilterHandlers";
 
-const ProductsContent = ({ products, flash }) => {
+const ProductsContent = ({ products, flash, sortBy, sortDirection, perPage, sortSearch }) => {
     const { delete: formDelete } = useForm();
     const [message, setMessage] = useState(flash.message);
+    const { errors } = usePage().props;
+
     const [selectedRecords, setSelectedRecords] = useState([]);
     const [selectAll, setSelectAll] = useState(false);
+    const [searchQuery, setSearchQuery] = useState(sortSearch || '');
+    const [currentPerPage, setCurrentPerPage] = useState(perPage);
+    const [loading, setLoading] = useState(false);
+
+    const { handleSearchChange, handlePerPageChange, handleSort, getSortIcon } = useFilterHandlers(
+        'products.index', // qui passi solo il nome della rotta senza route()
+        sortBy,
+        sortDirection,
+        currentPerPage,
+        setCurrentPerPage,
+        searchQuery,
+        setSearchQuery,
+        setLoading
+    );
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -18,24 +34,24 @@ const ProductsContent = ({ products, flash }) => {
         return () => clearTimeout(timer);
     }, [message]);
 
-    const handleCheckboxChange = (e, productId) => {
+    const handleCheckboxChange = useCallback((e, productId) => {
         if (e.target.checked) {
             setSelectedRecords(prevSelectedRecords => [...prevSelectedRecords, productId]);
         } else {
             setSelectedRecords(prevSelectedRecords => prevSelectedRecords.filter(id => id !== productId));
         }
-    };
+    }, []);
 
-    const handleSelectAllChange = (e) => {
+    const handleSelectAllChange = useCallback((e) => {
         const isChecked = e.target.checked;
         setSelectAll(isChecked);
-        const allRecordIds = products.map(product => product.id);
+        const allRecordIds = products.data.map(product => product.id);
         if (isChecked) {
             setSelectedRecords(allRecordIds);
         } else {
             setSelectedRecords([]);
         }
-    };
+    }, [products]);
 
     const handleDelete = (e) => {
         ProductDelete({ e, formDelete, setMessage });
@@ -49,6 +65,7 @@ const ProductsContent = ({ products, flash }) => {
         <Layout>
             <h2>Gestione prodotti</h2>
             <AlertErrors message={message} />
+            <InputErrors errors={errors} />
 
             <div className="d-grid gap-2 d-md-flex justify-content-md-start">
                 <Link href={route('products.create')} className="btn cb-primary mb-3">Inserisci un nuovo prodotto</Link>
@@ -59,6 +76,7 @@ const ProductsContent = ({ products, flash }) => {
 
             <div className="card shadow-2-strong" style={{ backgroundColor: '#f5f7fa' }}>
                 <div className="card-body">
+                    <SearchAndPerPageSelector currentPerPage={currentPerPage} handlePerPageChange={handlePerPageChange} loading={loading} searchQuery={searchQuery} handleSearchChange={handleSearchChange} />
                     <div className="table-responsive">
                         <table className="table table-hover mb-0">
                             <thead>
@@ -70,48 +88,30 @@ const ProductsContent = ({ products, flash }) => {
                                                 checked={selectAll} />
                                         </div>
                                     </th>
-                                    <th scope="col">Id</th>
+                                    <th scope="col" onClick={() => handleSort('id')} style={{ cursor: 'pointer' }}>Id {getSortIcon('id')}</th>
                                     <th scope="col">Immagine</th>
                                     <th scope="col">Nome prodotto</th>
-                                    <th scope="col">Prezzo</th>
-                                    <th scope="col">Stock</th>
+                                    <th scope="col" onClick={() => handleSort('price')} style={{ cursor: 'pointer' }}>Prezzo {getSortIcon('price')}</th>
+                                    <th scope="col" onClick={() => handleSort('stock')} style={{ cursor: 'pointer' }}>Stock {getSortIcon('stock')}</th>
                                     <th scope="col">Categoria</th>
                                     <th scope="col" className="text-center">Operazioni</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {
-                                    products.length > 0 ? (
-                                        products.map(product => (
-                                            <tr key={product.id} className="align-middle">
-                                                <th scope="row" className='col-md-1'>
-                                                    <div className="form-check d-flex justify-content-center align-items-center">
-                                                        <input className="form-check-input" type="checkbox" value={product.id}
-                                                            onChange={(e) => handleCheckboxChange(e, product.id)}
-                                                            checked={selectedRecords.includes(product.id)} />
-                                                    </div>
-                                                </th>
-                                                <th scope="row" className='col-md-1'>{product.id}</th>
-                                                <td scope="row" className='col-md-2'>
-                                                    <img src={`${BASE_URL}storage/${product.image_path}`} alt="product" width={60} key={product.id} />
-                                                </td>
-                                                <td scope="row" className='col-md-2'>{product.name}</td>
-                                                <td scope="row" className='col-md-1'>{product.price}</td>
-                                                <td scope="row" className='col-md-1'>{product.stock}</td>
-                                                <td scope="row" className='col-md-1'>{product.categories.map(category => category.name).join(', ')}</td>
-                                                <td scope="row" className="text-center col-md-3">
-                                                    <Link href={route('products.edit', product.id)} className="btn px-2">
-                                                        <ButtonEdit url={BASE_URL} />
-                                                    </Link>
-                                                    <form onSubmit={handleDelete} className="d-inline" id={product.id}>
-                                                        <ButtonDelete url={BASE_URL} />
-                                                    </form>
-                                                </td>
-                                            </tr>
+                                    products.data.length > 0 ? (
+                                        products.data.map(product => (
+                                            <ProductRow
+                                                key={product.id}
+                                                product={product}
+                                                handleCheckboxChange={handleCheckboxChange}
+                                                selectedRecords={selectedRecords}
+                                                handleDelete={handleDelete}
+                                            />
                                         ))
                                     ) : (
                                         <tr>
-                                            <td colSpan='9' className='text-center'>Non ci sono prodotti</td>
+                                            <td colSpan='8' className='text-center'>Non ci sono prodotti</td>
                                         </tr>
                                     )}
                             </tbody>
@@ -119,6 +119,14 @@ const ProductsContent = ({ products, flash }) => {
                     </div>
                 </div>
             </div>
+            <Pagination
+                links={products.links}
+                sortBy={sortBy}
+                sortDirection={sortDirection}
+                perPage={currentPerPage}
+                q={searchQuery}
+                rotta={'products.index'}
+            />
         </Layout>
     )
 }
