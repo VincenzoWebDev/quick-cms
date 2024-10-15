@@ -1,12 +1,9 @@
 import 'bootstrap/dist/js/bootstrap.bundle.js';
-import { useState, useEffect } from 'react';
-import Sidebar from '@/components/Admin/Sidebar';
-import Topbar from '@/components/Admin/Topbar';
-import Copyright from '@/components/Admin/Copyright';
+import { useEffect } from 'react';
 import 'animate.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { setRespCollapsed } from '@/redux/respCollapsedSlice';
-import { HeaderTitle } from '@/components/Admin';
+import { Sidebar, Topbar, Copyright, HeaderTitle } from '@/components/Admin/Index';
 
 const Layout = ({ children }) => {
     const dispatch = useDispatch();
@@ -38,7 +35,7 @@ const Layout = ({ children }) => {
 
     return (
         <>
-        <HeaderTitle />
+            <HeaderTitle />
             <div className="wrapper">
                 <div className={`body-overlay ${respCollapsed ? 'show-nav' : ''}`} onClick={() => dispatch(setRespCollapsed(!respCollapsed))}></div>
                 <Sidebar />
