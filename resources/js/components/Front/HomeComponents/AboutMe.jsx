@@ -25,7 +25,7 @@ const AboutMe = () => {
                     <div className="col-md-7 col-lg-7 p-5">
                         <h4 className='text-red'>About Me</h4>
                         <h2 className='my-4'>Vincenzo De Leonardis<br />Web designer & Web developer</h2>
-                        <p className='text-about'>Sono <span className='text-red'>Vincenzo De Leonardis</span>, un appassionato web designer e sviluppo web.
+                        <p className='text-about'>Sono <span className='text-red'>Vincenzo De Leonardis</span>, un appassionato web designer e sviluppatore web.
                             Unisco creatività e tecnologia per creare esperienze digitali coinvolgenti.
                             <br />
                             La mia missione è trasformare idee in siti web funzionali e esteticamente sorprendenti.
