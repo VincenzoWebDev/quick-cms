@@ -1,7 +1,7 @@
 import { Link, router, usePage } from '@inertiajs/react';
 import Layout from '@/Layouts/Admin/Layout';
 import { BASE_URL } from '@/constants/constants';
-import { ImagesTab, InfoTab, InputErrors, ProductTabs, SeoTab, VariantsTab } from "@/components/Admin";
+import { ImagesTab, InfoTab, InputErrors, ProductTabs, SeoTab, VariantsTab } from "@/components/Admin/Index";
 import { useDispatch, useSelector } from 'react-redux';
 import { getErrors, getProductImages, resetProductInfo, setCategories, setGallery, setInitialProductData, setProductInfo, setThumb } from '@/redux/productSlice';
 import { useEffect } from 'react';

@@ -1,7 +1,7 @@
 import { Link, useForm, usePage } from '@inertiajs/react';
 import React, { useCallback, useEffect, useState } from 'react';
 import Layout from '@/Layouts/Admin/Layout';
-import { AlertErrors, UsersDelete, UsersDeleteSelected, Pagination, SearchAndPerPageSelector, InputErrors, UserRow } from '@/components/Admin';
+import { AlertErrors, UsersDelete, UsersDeleteSelected, Pagination, SearchAndPerPageSelector, InputErrors, UserRow } from '@/components/Admin/Index';
 import { useFilterHandlers } from "@/hooks/admin/useFilterHandlers";
 
 const UsersContent = ({ users, sortBy, sortDirection, perPage, sortSearch, flash }) => {

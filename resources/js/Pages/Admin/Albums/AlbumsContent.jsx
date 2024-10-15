@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useForm } from '@inertiajs/react';
 import Layout from "@/Layouts/Admin/Layout"
-import { ButtonDelete, ButtonEdit, Pagination, AlertErrors, AlbumDelete, AlbumDeleteSelected } from '@/components/Admin';
+import { ButtonDelete, ButtonEdit, Pagination, AlertErrors, AlbumDelete, AlbumDeleteSelected } from '@/components/Admin/Index';
 import { STORAGE_URL, BASE_URL } from '@/constants/constants'
 
 const AlbumsContent = ({ albums, flash }) => {

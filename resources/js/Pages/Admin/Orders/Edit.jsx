@@ -1,7 +1,6 @@
 import { InputErrors } from "@/components/Admin/Index";
 import Layout from "@/Layouts/Admin/Layout";
 import { Link, useForm } from "@inertiajs/react";
-import { useState } from "react";
 
 const OrderEdit = ({ order }) => {
     const { data, setData, errors, patch } = useForm({ ...order });

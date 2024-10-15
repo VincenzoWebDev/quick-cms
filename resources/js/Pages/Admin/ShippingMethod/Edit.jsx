@@ -1,6 +1,6 @@
 import Layout from "@/Layouts/Admin/Layout";
 import { Link, router, useForm, usePage } from '@inertiajs/react';
-import { InputErrors } from "@/components/Admin";
+import { InputErrors } from "@/components/Admin/Index";
 
 const Edit = ({ shippingMethod }) => {
     const { errors } = usePage().props;

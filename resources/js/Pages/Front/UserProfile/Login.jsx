@@ -1,7 +1,6 @@
 import { AlertErrors, InputErrors } from "@/components/Front/Index";
 import FrontLayout from "@/Layouts/FrontLayout"
 import { useForm, usePage } from "@inertiajs/react"
-import { redirect } from "react-router-dom";
 
 const Login = ({ pages }) => {
     const { user_auth, flash } = usePage().props;

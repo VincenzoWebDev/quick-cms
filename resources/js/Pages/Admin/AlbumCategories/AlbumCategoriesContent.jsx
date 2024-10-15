@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useForm } from '@inertiajs/react';
 import Layout from "@/Layouts/Admin/Layout";
-import { ButtonDelete, ButtonEdit, Pagination, AlertErrors, AlbumCategoryDelete, AlbumCategoryDeleteSelected } from '@/components/Admin';
+import { ButtonDelete, ButtonEdit, Pagination, AlertErrors, AlbumCategoryDelete, AlbumCategoryDeleteSelected } from '@/components/Admin/Index';
 import { BASE_URL } from "@/constants/constants";
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'

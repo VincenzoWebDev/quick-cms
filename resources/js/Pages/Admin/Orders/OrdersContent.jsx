@@ -1,4 +1,4 @@
-import { AlertErrors, InputErrors, OrderDelete, OrderDeleteSelected, OrdersContentTable, Pagination, SearchAndPerPageSelector } from "@/components/Admin/Index";
+import { AlertErrors, InputErrors, OrderDeleteSelected, OrdersContentTable, Pagination, SearchAndPerPageSelector } from "@/components/Admin/Index";
 import Layout from "@/Layouts/Admin/Layout";
 import { useForm, usePage } from "@inertiajs/react";
 import { useEffect, useState } from "react";

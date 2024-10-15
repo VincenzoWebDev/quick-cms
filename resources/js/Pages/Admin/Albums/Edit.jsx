@@ -1,5 +1,5 @@
 import Layout from "@/Layouts/Admin/Layout";
-import { AlbumCategoryCombo, AlbumGallery, AlbumTabs, AlbumThumbUpload, GalleryUpload, InputErrors } from "@/components/Admin";
+import { AlbumCategoryCombo, AlbumGallery, AlbumTabs, AlbumThumbUpload, GalleryUpload, InputErrors } from "@/components/Admin/Index";
 import { STORAGE_URL } from "@/constants/constants";
 import { Link, useForm, router, usePage } from "@inertiajs/react";
 

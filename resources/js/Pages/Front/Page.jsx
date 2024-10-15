@@ -1,5 +1,5 @@
 import React from "react";
-import { PageContent } from "@/components/Front";
+import { PageContent } from "@/components/Front/Index";
 import FrontLayout from "@/Layouts/FrontLayout";
 
 const Page = ({ currentPage, pageLayout, pages }) => {

@@ -1,5 +1,5 @@
 import Layout from "@/Layouts/Admin/Layout";
-import { AlertErrors, ButtonDelete, ButtonEdit, ButtonShow, PageDelete, PageDeleteSelected } from "@/components/Admin";
+import { AlertErrors, ButtonDelete, ButtonEdit, ButtonShow, PageDelete, PageDeleteSelected } from "@/components/Admin/Index";
 import { useEffect, useState } from 'react';
 import { Link, useForm, router } from "@inertiajs/react";
 import { BASE_URL } from '@/constants/constants';

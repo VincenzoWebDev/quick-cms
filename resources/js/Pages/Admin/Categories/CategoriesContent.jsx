@@ -1,4 +1,4 @@
-import { ButtonDelete, ButtonEdit, AlertErrors, CategoryDelete, CategoryDeleteSelected } from "@/components/Admin";
+import { ButtonDelete, ButtonEdit, AlertErrors, CategoryDelete, CategoryDeleteSelected } from "@/components/Admin/Index";
 import Layout from "@/Layouts/Admin/Layout"
 import { useState, useEffect } from "react"
 import { usePage, Link, useForm } from "@inertiajs/react";

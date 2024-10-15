@@ -1,6 +1,6 @@
 import { Link, useForm, router } from '@inertiajs/react';
 import Layout from '@/Layouts/Admin/Layout';
-import { ImagesTab, InputErrors, ProductTabs, VariantsTab, SeoTab, InfoTab } from "@/components/Admin";
+import { ImagesTab, InputErrors, ProductTabs, VariantsTab, SeoTab, InfoTab } from "@/components/Admin/Index";
 import { useDispatch, useSelector } from 'react-redux';
 import { setProductInfo, setCategories, setThumb, getErrors, resetProductInfo, setGallery, getProductImages } from '@/redux/productSlice';
 import { useEffect } from 'react';

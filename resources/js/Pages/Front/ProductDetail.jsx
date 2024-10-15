@@ -1,6 +1,6 @@
 import FrontLayout from "@/Layouts/FrontLayout"
 import Fancybox from "@/components/Front/Fancybox";
-import { ProductDetailCard } from "@/components/Front";
+import { ProductDetailCard } from "@/components/Front/Index";
 import { STORAGE_URL } from "@/constants/constants";
 import { Link } from "@inertiajs/react";
 

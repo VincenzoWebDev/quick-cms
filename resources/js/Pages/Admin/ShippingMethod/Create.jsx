@@ -1,6 +1,6 @@
 import Layout from "@/Layouts/Admin/Layout";
 import { Link, useForm } from '@inertiajs/react';
-import { InputErrors } from "@/components/Admin";
+import { InputErrors } from "@/components/Admin/Index";
 
 const Create = () => {
     const { data, setData, post, errors } = useForm({

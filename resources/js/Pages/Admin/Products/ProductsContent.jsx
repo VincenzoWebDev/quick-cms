@@ -1,7 +1,7 @@
 import Layout from "@/Layouts/Admin/Layout";
 import { Link, useForm, usePage } from "@inertiajs/react";
 import React, { useState, useEffect, useCallback } from "react";
-import { AlertErrors, ProductDelete, ProductDeleteSelected, SearchAndPerPageSelector, InputErrors, ProductRow, Pagination } from "@/components/Admin";
+import { AlertErrors, ProductDelete, ProductDeleteSelected, SearchAndPerPageSelector, InputErrors, ProductRow, Pagination } from "@/components/Admin/Index";
 import { useFilterHandlers } from "@/hooks/admin/useFilterHandlers";
 
 const ProductsContent = ({ products, flash, sortBy, sortDirection, perPage, sortSearch }) => {
