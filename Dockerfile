@@ -1,20 +1,25 @@
+# Usa un'immagine base con PHP e Nginx
 FROM php:8.1-fpm
 
-COPY . .
+# Installa le estensioni PHP necessarie
+RUN apt-get update && apt-get install -y nginx libpng-dev libjpeg-dev libfreetype6-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install gd pdo pdo_pgsql
 
-# Image config
-ENV SKIP_COMPOSER 1
-ENV WEBROOT /var/www/html/public
-ENV PHP_ERRORS_STDERR 1
-ENV RUN_SCRIPTS 1
-ENV REAL_IP_HEADER 1
+# Copia il codice dell'applicazione
+COPY . /var/www/html
 
-# Laravel config
-ENV APP_ENV production
-ENV APP_DEBUG false
-ENV LOG_CHANNEL stderr
+# Imposta la directory di lavoro
+WORKDIR /var/www/html
 
-# Allow composer to run as root
-ENV COMPOSER_ALLOW_SUPERUSER 1
+# Installa Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-CMD ["/start.sh"]
+# Configura Nginx
+COPY nginx/default.conf /etc/nginx/conf.d/default.conf
+
+# Espone la porta 80
+EXPOSE 80
+
+# Comando per avviare Nginx
+CMD ["nginx", "-g", "daemon off;"]

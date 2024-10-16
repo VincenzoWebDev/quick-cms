@@ -1,6 +1,5 @@
 #!/usr/bin/env bash 
 echo "Esecuzione di composer" 
-composer global require hirak/prestissimo 
 composer install --no-dev --working-dir=/var/www/html 
 
 echo "Generazione della chiave dell'applicazione..." 
