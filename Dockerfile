@@ -3,6 +3,10 @@ FROM php:8.1-fpm
 
 COPY . .
 
+# Copia lo script di deploy nel container
+COPY scripts/00-laravel-deploy.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh  # Assicurati che il file sia eseguibile
+
 # Image config
 ENV SKIP_COMPOSER 1
 ENV WEBROOT /var/www/html/public
