@@ -1,32 +1,21 @@
 # Usa un'immagine base con PHP e Nginx
 FROM php:8.1-fpm
 
-# Installa le estensioni PHP necessarie
-RUN apt-get update && apt-get install -y nginx libpng-dev libjpeg-dev libfreetype6-dev libpq-dev \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo pdo_pgsql
+COPY . .
 
-# Copia il codice dell'applicazione
-COPY . /var/www/html
+# Image config
+ENV SKIP_COMPOSER 1
+ENV WEBROOT /var/www/html/public
+ENV PHP_ERRORS_STDERR 1
+ENV RUN_SCRIPTS 1
+ENV REAL_IP_HEADER 1
 
-# Imposta la directory di lavoro
-WORKDIR /var/www/html
+# Laravel config
+ENV APP_ENV production
+ENV APP_DEBUG false
+ENV LOG_CHANNEL stderr
 
-# Installa Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# Allow composer to run as root
+ENV COMPOSER_ALLOW_SUPERUSER 1
 
-# Installa le dipendenze di Composer
-RUN composer install --no-dev --optimize-autoloader
-
-# Copia lo script di deploy nel container
-COPY scripts/00-laravel-deploy.sh /usr/local/bin/start.sh
-RUN chmod +x /usr/local/bin/start.sh  # Assicurati che il file sia eseguibile
-
-# Configura Nginx
-COPY nginx/default.conf /etc/nginx/conf.d/default.conf
-
-# Espone la porta 80
-EXPOSE 80
-
-# Comando per avviare lo script di deploy
-CMD ["/usr/local/bin/start.sh"]
+CMD ["/start.sh"]
