@@ -13,5 +13,11 @@ COPY . .
 # Installa Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
+# Assicurati che il servizio Apache sia attivo
+RUN apt-get update && apt-get install -y apache2
+
 # Espone la porta 80 (Render gestirà le porte)
 EXPOSE 80
+
+# Comando di avvio di Apache
+CMD ["apache2-foreground"]
