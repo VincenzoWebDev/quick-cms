@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('combination_variant_values', function (Blueprint $table) {
+        Schema::create('variant_combination_values', function (Blueprint $table) {
             $table->id();
             $table->foreignId('variant_combination_id')->constrained('variant_combinations')->onDelete('cascade');
             $table->foreignId('product_variant_value_id')->constrained('product_variant_values')->onDelete('cascade'); // Colore o Taglia

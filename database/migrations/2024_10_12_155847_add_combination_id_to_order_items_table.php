@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('order_items', function (Blueprint $table) {
             $table->unsignedBigInteger('combination_id')->nullable()->after('price'); // Aggiungi il campo
-            $table->foreign('combination_id')->references('id')->on('product_combinations')->onDelete('cascade'); // Imposta la foreign key
+            $table->foreign('combination_id')->references('id')->on('variant_combinations')->onDelete('cascade'); // Imposta la foreign key
         });
     }
 
