@@ -1,22 +1,20 @@
-# Usa l'immagine base con Nginx e PHP-FPM
+# Usa l'immagine richarvey/nginx-php-fpm
 FROM richarvey/nginx-php-fpm:3.1.6
 
-# Imposta la directory di lavoro
-WORKDIR /var/www/html
-
-# Copia il codice del progetto nella directory di lavoro del container
-COPY . .
-
-# Installa le dipendenze PHP necessarie
-RUN apt-get update && apt-get install -y \
+# Installa le dipendenze di sistema e le estensioni PHP necessarie
+RUN apk add --no-cache \
     git \
     unzip \
-    libpng-dev \
-    libjpeg-dev \
-    libpq-dev \
-    libfreetype6-dev \
+    libpng \
+    libjpeg-turbo \
+    postgresql-dev \
+    freetype-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd pdo pdo_pgsql
+
+# Copia il codice del progetto nella directory di lavoro del container
+WORKDIR /var/www/html
+COPY . .
 
 # Installa Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -24,11 +22,12 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Installa le dipendenze di PHP con Composer
 RUN composer install --no-dev --optimize-autoloader
 
-# Espone la porta 80
+# Copia lo script di deploy nel container e rendilo eseguibile
+COPY scripts/00-laravel-deploy.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+
+# Espone la porta
 EXPOSE 80
 
-# Copia il file di configurazione Nginx
-COPY conf/nginx/nginx-site.conf /etc/nginx/conf.d/default.conf
-
 # Comando di avvio per Nginx e PHP-FPM
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["/usr/local/bin/start.sh"]
