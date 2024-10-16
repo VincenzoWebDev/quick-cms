@@ -2,7 +2,7 @@
 FROM php:8.1-fpm
 
 # Installa le estensioni PHP necessarie
-RUN apt-get update && apt-get install -y nginx libpng-dev libjpeg-dev libfreetype6-dev \
+RUN apt-get update && apt-get install -y nginx libpng-dev libjpeg-dev libfreetype6-dev libpq-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd pdo pdo_pgsql
 
