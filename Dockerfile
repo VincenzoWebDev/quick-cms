@@ -9,6 +9,10 @@ RUN apt-get update && apt-get install -y nginx libpng-dev libjpeg-dev libfreetyp
 # Copia il codice dell'applicazione
 COPY . /var/www/html
 
+# Copia lo script di deploy nel container
+COPY scripts/00-laravel-deploy.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh  # Assicurati che il file sia eseguibile
+
 # Imposta la directory di lavoro
 WORKDIR /var/www/html
 
@@ -21,5 +25,5 @@ COPY nginx/default.conf /etc/nginx/conf.d/default.conf
 # Espone la porta 80
 EXPOSE 80
 
-# Comando per avviare Nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Comando per avviare lo script di deploy
+CMD ["/usr/local/bin/start.sh"]
