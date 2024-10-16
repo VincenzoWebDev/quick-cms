@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
 # Esegui i comandi necessari per il deploy
-service php-fpm start --force
-
 echo "Running composer"
 composer install --no-dev --working-dir=/var/www/html
 
