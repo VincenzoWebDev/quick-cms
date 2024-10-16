@@ -1,5 +1,5 @@
-# Usa un'immagine base con PHP 8.2 e le estensioni richieste
-FROM php:8.2-fpm
+# Usa un'immagine base PHP
+FROM richarvey/nginx-php-fpm:3.1.6
 
 # Installa le dipendenze di sistema e le estensioni PHP necessarie
 RUN apt-get update && apt-get install -y \
@@ -26,6 +26,10 @@ RUN composer install --no-dev --optimize-autoloader
 # Copia lo script di deploy nel container e rendilo eseguibile
 COPY scripts/00-laravel-deploy.sh /usr/local/bin/start.sh
 RUN chmod +x /usr/local/bin/start.sh
+
+RUN npm install
+
+RUN npm run build
 
 # Espone la porta
 EXPOSE 80
