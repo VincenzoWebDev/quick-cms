@@ -1,19 +1,20 @@
 #!/bin/bash
 
-# Aggiorna i pacchetti Composer
-composer install --no-dev --optimize-autoloader
+# Comandi esistenti per Composer, cache, migrazioni ecc.
+echo "Running composer"
+composer install --no-dev --working-dir=/var/www/html
 
-# Genera la chiave dell'applicazione
-php artisan key:generate
+echo "Caching config..."
+php artisan config:cache
 
-# Esegui le migrazioni
+echo "Caching routes..."
+php artisan route:cache
+
+echo "Running migrations..."
 php artisan migrate --force
 
-# Compila gli asset
-npm run production
+# Avvia Nginx in background
+service nginx start
 
-# Cancella la cache
-php artisan cache:clear
-
-# Avvia il server web (Nginx)
-nginx -g "daemon off;"
+# Avvia PHP-FPM
+php-fpm
