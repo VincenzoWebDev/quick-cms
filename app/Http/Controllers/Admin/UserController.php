@@ -144,7 +144,7 @@ class UserController extends \App\Http\Controllers\Controller
         $tipoMessaggio = $res ? 'success' : 'danger';
         session()->flash('message', ['tipo' => $tipoMessaggio, 'testo' => $messaggio]);
 
-        return redirect()->route('users');
+        return redirect()->route('users.index');
     }
 
     public function create()
@@ -172,7 +172,7 @@ class UserController extends \App\Http\Controllers\Controller
         $tipoMessaggio = $res ? 'success' : 'danger';
         session()->flash('message', ['tipo' => $tipoMessaggio, 'testo' => $messaggio]);
 
-        return redirect()->route('users');
+        return redirect()->route('users.index');
     }
 
     public function processFile($id, &$user)
