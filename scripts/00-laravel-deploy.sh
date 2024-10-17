@@ -1,21 +1,19 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-# Esegui i comandi necessari per il deploy
-echo "Running composer"
-composer install --no-dev --working-dir=/var/www/html
+# Aggiorna i pacchetti Composer
+composer install --no-dev --optimize-autoloader
 
-echo "Generating application key..."
-php artisan key:generate --show --no-interaction
+# Genera la chiave dell'applicazione
+php artisan key:generate
 
-echo "Caching config..."
-php artisan config:cache
-
-echo "Caching routes..."
-php artisan route:cache
-
-echo "Running migrations..."
+# Esegui le migrazioni
 php artisan migrate --force
 
-# Avvia Nginx in foreground
-echo "Starting Nginx..."
-nginx -g 'daemon off;'
+# Compila gli asset
+npm run production
+
+# Cancella la cache
+php artisan cache:clear
+
+# Avvia il server web (Nginx)
+nginx -g "daemon off;"
