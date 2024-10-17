@@ -11,6 +11,7 @@ use App\Mail\testEmail;
 use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
@@ -38,6 +39,20 @@ use Illuminate\Support\Facades\Route;
 
 //     return response()->json(['message' => 'User created successfully', 'user' => $user], 201);
 // });
+
+Route::get('/create-symbolic-link', function () {
+    // Verifica se il link simbolico esiste già
+    $linkPath = public_path('storage');
+    $targetPath = storage_path('app/public');
+
+    if (!File::exists($linkPath)) {
+        // Crea il link simbolico
+        symlink($targetPath, $linkPath);
+        return "Link simbolico creato con successo.";
+    }
+
+    return "Il link simbolico esiste già.";
+});
 
 Auth::routes();
 
