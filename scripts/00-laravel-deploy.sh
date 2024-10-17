@@ -2,7 +2,9 @@
 
 # Installazione delle dipendenze con Composer
 echo "Running composer"
-composer install --no-dev --working-dir=/var/www/html
+composer install --no-dev
+
+cp -r /var/www/html/vendor/laravel/ui/auth-backend /var/www/html/vendor/laravel/ui/auth-backend
 
 # Installazione delle dipendenze JavaScript
 echo "Installing npm packages"
@@ -28,19 +30,15 @@ chown www-data:www-data /var/www/html/storage/logs/laravel.log
 
 # Cache della configurazione
 echo "Caching config..."
-php artisan config:cache --working-dir=/var/www/html
+php artisan config:cache
 
 # Cache delle rotte
 echo "Caching routes..."
-php artisan route:cache --working-dir=/var/www/html
-
-# Clear delle rotte
-echo "Clearing routes..."
-php artisan route:clear --working-dir=/var/www/html
+php artisan route:cache
 
 # Esecuzione delle migrazioni
 echo "Running migrations..."
-php artisan migrate --force --working-dir=/var/www/html
+php artisan migrate --force
 
 # Avvio di PHP-FPM
 php-fpm &
