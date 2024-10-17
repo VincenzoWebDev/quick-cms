@@ -26,6 +26,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/test', function () {
+    // Crea un nuovo utente
+    $user = User::create([
+        'name' => 'test',
+        'lastname' => 'test',
+        'email' => 'test@test.it',
+        'role' => 'admin',
+        'password' => Hash::make('test'), // Assicurati di utilizzare una password sicura
+    ]);
+
+    return response()->json(['message' => 'User created successfully', 'user' => $user], 201);
+});
+
 Auth::routes();
 
 require __DIR__ . '/admin.php';
@@ -56,23 +69,6 @@ Route::post('/user-profile/login', [UserProfileController::class, 'loginPost'])-
 
 Route::get('/{slug}', [PageViewController::class, 'show'])->name('page.show')->where('slug', '[a-z0-9-]+');
 
-Route::get('/clear-cache', function () {
-    Artisan::call('route:clear');
-    return "Route cache cleared";
-});
-
-Route::get('/test', function () {
-    // Crea un nuovo utente
-    $user = User::create([
-        'name' => 'test',
-        'lastname' => 'test',
-        'email' => 'test@test.it',
-        'role' => 'admin',
-        'password' => Hash::make('test'), // Assicurati di utilizzare una password sicura
-    ]);
-
-    return response()->json(['message' => 'User created successfully', 'user' => $user], 201);
-});
 
 // require __DIR__ . '/theme.php';
 
