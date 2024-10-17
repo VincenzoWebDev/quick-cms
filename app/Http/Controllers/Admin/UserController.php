@@ -49,22 +49,6 @@ class UserController extends \App\Http\Controllers\Controller
         ]);
     }
 
-    public function searchUsers(Request $request)
-    {
-        $searchQuery = $request->input('q');
-        $users = User::query()->orderBy('id', 'desc')
-            ->when($searchQuery, function ($query) use ($searchQuery) {
-                $query->where('id', 'like', '%' . $searchQuery . '%')
-                    ->orWhere('name', 'like', '%' . $searchQuery . '%')
-                    ->orWhere('email', 'like', '%' . $searchQuery . '%')
-                    ->orWhere('role', 'like', '%' . $searchQuery . '%');
-            })
-            ->paginate(10);
-        return Inertia::render('Admin/Users/UsersContent', [
-            'users' => $users,
-        ]);
-    }
-
     public function destroy(int $id)
     {
         $user = User::find($id);
@@ -130,7 +114,9 @@ class UserController extends \App\Http\Controllers\Controller
 
         if ($oldName != $user->name || $oldLastName != $user->lastname || $oldEmail != $user->email || $oldRole != $user->role || $request->hasFile('profile_img')) {
             if ($request->file('profile_img') != null) {
-                Storage::delete($oldProfile);
+                if (Storage::exists($oldProfile)) {
+                    Storage::delete($oldProfile);
+                }
                 $this->processFile($user->id, $user);
             } else {
                 $user->profile_img = $oldProfile;

@@ -40,20 +40,6 @@ use Illuminate\Support\Facades\Route;
 //     return response()->json(['message' => 'User created successfully', 'user' => $user], 201);
 // });
 
-Route::get('/create-symbolic-link', function () {
-    // Verifica se il link simbolico esiste già
-    $linkPath = public_path('storage');
-    $targetPath = storage_path('app/public');
-
-    if (!File::exists($linkPath)) {
-        // Crea il link simbolico
-        symlink($targetPath, $linkPath);
-        return "Link simbolico creato con successo.";
-    }
-
-    return "Il link simbolico esiste già.";
-});
-
 Auth::routes();
 
 require __DIR__ . '/admin.php';

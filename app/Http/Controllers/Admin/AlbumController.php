@@ -143,7 +143,9 @@ class AlbumController extends \App\Http\Controllers\Controller
             $request->hasFile('album_thumb') || $request->hasFile('gallery')
         ) {
             if ($request->hasFile('album_thumb')) {
-                Storage::delete($oldImage);
+                if (Storage::exists($oldImage)) {
+                    Storage::delete($oldImage);
+                }
                 $this->processFile($request, $album);
             }
             if ($request->hasFile('gallery')) {
