@@ -27,6 +27,10 @@ RUN composer install --no-dev --optimize-autoloader
 COPY scripts/00-laravel-deploy.sh /usr/local/bin/00-laravel-deploy.sh
 RUN chmod +x /usr/local/bin/00-laravel-deploy.sh
 
+RUN npm install
+
+RUN npm run build
+
 # Copia la configurazione personalizzata di Nginx nel container
 COPY conf/nginx/nginx-site.conf /etc/nginx/sites-enabled/default
 

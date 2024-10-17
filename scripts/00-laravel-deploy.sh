@@ -4,14 +4,6 @@
 echo "Running composer"
 composer install --no-dev --working-dir=/var/www/html
 
-# Installazione delle dipendenze JavaScript
-echo "Installing npm packages"
-npm install --prefix /var/www/html
-
-# Costruzione dei file statici con Vite
-echo "Building assets with Vite"
-npm run build --prefix /var/www/html
-
 # Imposta i permessi per le directory storage e bootstrap/cache
 echo "Setting permissions..."
 chmod -R 775 /var/www/html/storage
