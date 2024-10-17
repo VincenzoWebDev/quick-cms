@@ -21,5 +21,4 @@ COPY conf/nginx/nginx-site.conf /etc/nginx/conf.d/default.conf
 WORKDIR /var/www/html/public
 RUN npm install && npm run build
 
-FROM nginx
-CMD ["nginx", "-g", "daemon off;"]
+CMD [ "/start.sh" ]
