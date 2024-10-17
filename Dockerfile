@@ -19,6 +19,7 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /var/www/html
 COPY . .
 
+# Copia la directory auth-backend
 COPY ./vendor/laravel/ui/auth-backend /var/www/html/vendor/laravel/ui/auth-backend
 
 # Installa Composer
