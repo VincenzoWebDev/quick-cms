@@ -9,6 +9,7 @@ use App\Http\Controllers\ProductListController;
 use App\Http\Controllers\Front\UserProfileController;
 use App\Mail\testEmail;
 use App\Models\User;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -54,6 +55,11 @@ Route::get('/user-profile/login', [UserProfileController::class, 'login'])->name
 Route::post('/user-profile/login', [UserProfileController::class, 'loginPost'])->name('front.user.login.post');
 
 Route::get('/{slug}', [PageViewController::class, 'show'])->name('page.show')->where('slug', '[a-z0-9-]+');
+
+Route::get('/clear-cache', function () {
+    Artisan::call('route:clear');
+    return "Route cache cleared";
+});
 
 Route::get('/test', function () {
     // Crea un nuovo utente
