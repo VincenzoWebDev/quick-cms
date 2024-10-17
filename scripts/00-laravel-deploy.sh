@@ -16,9 +16,15 @@ npm run build --prefix /var/www/html
 echo "Setting permissions..."
 chmod -R 775 /var/www/html/storage
 chmod -R 775 /var/www/html/bootstrap/cache
-# Cambia il proprietario (se necessario)
+
+# Imposta il proprietario delle directory storage e bootstrap/cache
 chown -R www-data:www-data /var/www/html/storage
 chown -R www-data:www-data /var/www/html/bootstrap/cache
+
+# Crea il file di log se non esiste
+touch /var/www/html/storage/logs/laravel.log
+chmod 664 /var/www/html/storage/logs/laravel.log
+chown www-data:www-data /var/www/html/storage/logs/laravel.log
 
 # Cache della configurazione
 echo "Caching config..."
