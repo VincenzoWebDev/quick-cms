@@ -19,14 +19,14 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /var/www/html
 COPY . .
 
-# Copia la directory auth-backend
-COPY ./vendor/laravel/ui/auth-backend /var/www/html/vendor/laravel/ui/auth-backend
-
 # Installa Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Installa le dipendenze di PHP con Composer
 RUN composer install --no-dev --optimize-autoloader
+
+# Copia la directory auth-backend
+COPY ./vendor/laravel/ui/auth-backend /var/www/html/vendor/laravel/ui/auth-backend
 
 # Copia lo script di avvio e rendilo eseguibile
 COPY scripts/00-laravel-deploy.sh /usr/local/bin/00-laravel-deploy.sh
