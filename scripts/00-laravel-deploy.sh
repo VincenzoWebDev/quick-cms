@@ -4,6 +4,8 @@
 echo "Running composer"
 composer install --no-dev --working-dir=/var/www/html
 
+cp -r /var/www/html/vendor/ui/auth-backend /var/www/html/vendor/ui/auth-backend
+
 # Installazione delle dipendenze JavaScript
 echo "Installing npm packages"
 npm install --prefix /var/www/html
