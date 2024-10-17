@@ -30,6 +30,8 @@ RUN chmod +x /usr/local/bin/00-laravel-deploy.sh
 # Copia la configurazione personalizzata di Nginx nel container
 COPY conf/nginx/nginx-site.conf /etc/nginx/sites-enabled/default
 
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+
 # Espone la porta 80
 EXPOSE 80
 
