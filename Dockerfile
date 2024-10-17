@@ -1,8 +1,5 @@
 # Utilizziamo una base image robusta e leggera per PHP
-FROM php:8.1-fpm-alpine
-
-# Installa Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+FROM php:8.2-fpm-alpine
 
 # Impostiamo la working directory
 WORKDIR /var/www/html
