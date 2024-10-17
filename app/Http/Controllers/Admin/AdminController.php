@@ -115,6 +115,7 @@ class AdminController extends \App\Http\Controllers\Controller
 
         // Unisci i dati degli utenti e degli album per ogni mese
         $monthData = collect(range(1, 12))->map(function ($month) use ($userCountData, $albumCountData, $productCountData, $orderCountData) {
+            // Trova i conteggi per il mese specifico
             $userCount = $userCountData->firstWhere('month', $month);
             $albumCount = $albumCountData->firstWhere('month', $month);
             $productCount = $productCountData->firstWhere('month', $month);
@@ -122,10 +123,10 @@ class AdminController extends \App\Http\Controllers\Controller
 
             return [
                 'month' => $month,
-                'userCount' => $userCount ? (is_object($userCount) ? $userCount->userCount : $userCount['userCount']) : 0,
-                'albumCount' => $albumCount ? (is_object($albumCount) ? $albumCount->albumCount : $albumCount['albumCount']) : 0,
-                'productCount' => $productCount ? (is_object($productCount) ? $productCount->productCount : $productCount['productCount']) : 0,
-                'orderCount' => $orderCount ? (is_object($orderCount) ? $orderCount->orderCount : $orderCount['orderCount']) : 0,
+                'userCount' => $userCount ? ($userCount->userCount ?? 0) : 0,
+                'albumCount' => $albumCount ? ($albumCount->albumCount ?? 0) : 0,
+                'productCount' => $productCount ? ($productCount->productCount ?? 0) : 0,
+                'orderCount' => $orderCount ? ($orderCount->orderCount ?? 0) : 0,
             ];
         });
 
