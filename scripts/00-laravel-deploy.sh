@@ -13,8 +13,8 @@ php artisan route:cache
 echo "Running migrations..."
 php artisan migrate --force
 
-# Avvia Nginx in background
-service nginx start
+# Avvia PHP-FPM in background
+php-fpm &
 
-# Avvia PHP-FPM
-php-fpm
+# Avvia Nginx come processo principale
+nginx -g 'daemon off;'
