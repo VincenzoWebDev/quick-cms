@@ -51,7 +51,9 @@ class ProfileController extends \App\Http\Controllers\Controller
 
         if ($oldName != $user->name || $oldLastName != $user->lastname || $oldEmail != $user->email || $oldRole != $user->role || $request->hasFile('profile_img')) {
             if ($request->file('profile_img') != null) {
-                Storage::delete($oldProfile);
+                if (Storage::exists($oldProfile)) {
+                    Storage::delete($oldProfile);
+                }
                 $this->processFile($user->id, $user);
             } else {
                 $user->profile_img = $oldProfile;
