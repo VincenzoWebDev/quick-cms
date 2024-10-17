@@ -34,6 +34,10 @@ php artisan config:cache --working-dir=/var/www/html
 echo "Caching routes..."
 php artisan route:cache --working-dir=/var/www/html
 
+# Clear delle rotte
+echo "Clearing routes..."
+php artisan route:clear --working-dir=/var/www/html
+
 # Esecuzione delle migrazioni
 echo "Running migrations..."
 php artisan migrate --force --working-dir=/var/www/html
