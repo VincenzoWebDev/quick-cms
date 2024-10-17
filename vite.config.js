@@ -24,6 +24,7 @@ export default defineConfig(({ command, mode }) => {
         plugins: [
             laravel({
                 input: ['resources/css/admin/app.css', 'resources/css/quick_cms/app.css', 'resources/sass/app.scss', 'resources/js/app.jsx'],
+                buildDirectory: 'build',
                 refresh: true,
             }),
             react(),
@@ -32,9 +33,5 @@ export default defineConfig(({ command, mode }) => {
             ...serverConfig, // Usa la configurazione in base all'ambiente
             middleware: [cors()],
         },
-        build: {
-            manifest: true,
-            outDir: 'public/build',
-        }
     };
 });
