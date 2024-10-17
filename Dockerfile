@@ -24,8 +24,8 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN composer install --no-dev --optimize-autoloader
 
 # Copia lo script di avvio e rendilo eseguibile
-COPY scripts/00-laravel-deploy.sh /usr/local/bin/start.sh
-RUN chmod +x /usr/local/bin/start.sh
+COPY scripts/00-laravel-deploy.sh /usr/local/bin/00-laravel-deploy.sh
+RUN chmod +x /usr/local/bin/00-laravel-deploy.sh
 
 # Espone la porta 80
 EXPOSE 80
