@@ -4,6 +4,11 @@
 echo "Running composer"
 composer install --no-dev --working-dir=/var/www/html
 
+npm install
+
+# Costruisce i file statici con Vite
+npm run build
+
 echo "Caching config..."
 php artisan config:cache
 
