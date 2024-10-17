@@ -32,5 +32,9 @@ export default defineConfig(({ command, mode }) => {
             ...serverConfig, // Usa la configurazione in base all'ambiente
             middleware: [cors()],
         },
+        build: {
+            manifest: true,
+            outDir: 'public/build',
+        }
     };
 });
