@@ -31,7 +31,7 @@ Route::get('/test', function () {
     $user = User::create([
         'name' => 'test',
         'lastname' => 'test',
-        'email' => 'test@test.it',
+        'email' => 'test@test.com',
         'role' => 'admin',
         'password' => Hash::make('test'), // Assicurati di utilizzare una password sicura
     ]);

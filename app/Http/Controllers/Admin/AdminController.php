@@ -25,6 +25,7 @@ class AdminController extends \App\Http\Controllers\Controller
 
     public function index()
     {
+
         $users = User::orderBy('id', 'desc')->get();
         $albums = Album::all();
         $products = Product::all();
@@ -55,34 +56,62 @@ class AdminController extends \App\Http\Controllers\Controller
 
     public function getDataChart()
     {
+        $dbDriver = DB::getDriverName();
+
         // Ottieni l'anno corrente
         $currentYear = Carbon::now()->year;
 
-        // Ottieni i dati degli utenti registrati per ogni mese dell'anno corrente
-        $userCountData = DB::table('users')
-            ->select(DB::raw('MONTH(created_at) as month'), DB::raw('COUNT(*) as userCount'))
-            ->whereYear('created_at', $currentYear)
-            ->groupBy(DB::raw('MONTH(created_at)'))
-            ->get();
+        if ($dbDriver === 'mysql') {
+            // Ottieni i dati degli utenti registrati per ogni mese dell'anno corrente
+            $userCountData = DB::table('users')
+                ->select(DB::raw('MONTH(created_at) as month'), DB::raw('COUNT(*) as userCount'))
+                ->whereYear('created_at', $currentYear)
+                ->groupBy(DB::raw('MONTH(created_at)'))
+                ->get();
 
-        // Ottieni i dati degli album creati per ogni mese dell'anno corrente
-        $albumCountData = DB::table('albums')
-            ->select(DB::raw('MONTH(created_at) as month'), DB::raw('COUNT(*) as albumCount'))
-            ->whereYear('created_at', $currentYear)
-            ->groupBy(DB::raw('MONTH(created_at)'))
-            ->get();
+            // Ottieni i dati degli album creati per ogni mese dell'anno corrente
+            $albumCountData = DB::table('albums')
+                ->select(DB::raw('MONTH(created_at) as month'), DB::raw('COUNT(*) as albumCount'))
+                ->whereYear('created_at', $currentYear)
+                ->groupBy(DB::raw('MONTH(created_at)'))
+                ->get();
 
-        $productCountData = DB::table('products')
-            ->select(DB::raw('MONTH(created_at) as month'), DB::raw('COUNT(*) as productCount'))
-            ->whereYear('created_at', $currentYear)
-            ->groupBy(DB::raw('MONTH(created_at)'))
-            ->get();
+            $productCountData = DB::table('products')
+                ->select(DB::raw('MONTH(created_at) as month'), DB::raw('COUNT(*) as productCount'))
+                ->whereYear('created_at', $currentYear)
+                ->groupBy(DB::raw('MONTH(created_at)'))
+                ->get();
 
-        $orderCountData = DB::table('orders')
-            ->select(DB::raw('MONTH(created_at) as month'), DB::raw('COUNT(*) as orderCount'))
-            ->whereYear('created_at', $currentYear)
-            ->groupBy(DB::raw('MONTH(created_at)'))
-            ->get();
+            $orderCountData = DB::table('orders')
+                ->select(DB::raw('MONTH(created_at) as month'), DB::raw('COUNT(*) as orderCount'))
+                ->whereYear('created_at', $currentYear)
+                ->groupBy(DB::raw('MONTH(created_at)'))
+                ->get();
+        } elseif ($dbDriver === 'pgsql') {
+            $userCountData = DB::table('users')
+                ->select(DB::raw('EXTRACT(MONTH FROM created_at) as month'), DB::raw('COUNT(*) as userCount'))
+                ->whereYear('created_at', $currentYear)
+                ->groupBy(DB::raw('EXTRACT(MONTH FROM created_at)'))
+                ->get();
+
+            $albumCountData = DB::table('albums')
+                ->select(DB::raw('EXTRACT(MONTH FROM created_at) as month'), DB::raw('COUNT(*) as albumCount'))
+                ->whereYear('created_at', $currentYear)
+                ->groupBy(DB::raw('EXTRACT(MONTH FROM created_at)'))
+                ->get();
+
+            $productCountData = DB::table('products')
+                ->select(DB::raw('EXTRACT(MONTH FROM created_at) as month'), DB::raw('COUNT(*) as productCount'))
+                ->whereYear('created_at', $currentYear)
+                ->groupBy(DB::raw('EXTRACT(MONTH FROM created_at)'))
+                ->get();
+
+            $orderCountData = DB::table('orders')
+                ->select(DB::raw('EXTRACT(MONTH FROM created_at) as month'), DB::raw('COUNT(*) as orderCount'))
+                ->whereYear('created_at', $currentYear)
+                ->groupBy(DB::raw('EXTRACT(MONTH FROM created_at)'))
+                ->get();
+        }
 
         // Unisci i dati degli utenti e degli album per ogni mese
         $monthData = collect(range(1, 12))->map(function ($month) use ($userCountData, $albumCountData, $productCountData, $orderCountData) {
