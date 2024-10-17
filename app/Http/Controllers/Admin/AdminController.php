@@ -119,12 +119,13 @@ class AdminController extends \App\Http\Controllers\Controller
             $albumCount = $albumCountData->firstWhere('month', $month);
             $productCount = $productCountData->firstWhere('month', $month);
             $orderCount = $orderCountData->firstWhere('month', $month);
+
             return [
                 'month' => $month,
-                'userCount' => $userCount ? $userCount->userCount : 0,
-                'albumCount' => $albumCount ? $albumCount->albumCount : 0,
-                'productCount' => $productCount ? $productCount->productCount : 0,
-                'orderCount' => $orderCount ? $orderCount->orderCount : 0,
+                'userCount' => $userCount ? (is_object($userCount) ? $userCount->userCount : $userCount['userCount']) : 0,
+                'albumCount' => $albumCount ? (is_object($albumCount) ? $albumCount->albumCount : $albumCount['albumCount']) : 0,
+                'productCount' => $productCount ? (is_object($productCount) ? $productCount->productCount : $productCount['productCount']) : 0,
+                'orderCount' => $orderCount ? (is_object($orderCount) ? $orderCount->orderCount : $orderCount['orderCount']) : 0,
             ];
         });
 

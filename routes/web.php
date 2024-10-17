@@ -26,18 +26,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/test', function () {
-    // Crea un nuovo utente
-    $user = User::create([
-        'name' => 'test',
-        'lastname' => 'test',
-        'email' => 'test@test.com',
-        'role' => 'admin',
-        'password' => Hash::make('test'), // Assicurati di utilizzare una password sicura
-    ]);
+// Route::get('/test', function () {
+//     // Crea un nuovo utente
+//     $user = User::create([
+//         'name' => 'test',
+//         'lastname' => 'test',
+//         'email' => 'test@test.com',
+//         'role' => 'admin',
+//         'password' => Hash::make('test'), // Assicurati di utilizzare una password sicura
+//     ]);
 
-    return response()->json(['message' => 'User created successfully', 'user' => $user], 201);
-});
+//     return response()->json(['message' => 'User created successfully', 'user' => $user], 201);
+// });
 
 Auth::routes();
 
