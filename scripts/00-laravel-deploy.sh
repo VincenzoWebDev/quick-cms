@@ -12,6 +12,14 @@ npm install --prefix /var/www/html
 echo "Building assets with Vite"
 npm run build --prefix /var/www/html
 
+# Imposta i permessi per le directory storage e bootstrap/cache
+echo "Setting permissions..."
+chmod -R 775 /var/www/html/storage
+chmod -R 775 /var/www/html/bootstrap/cache
+# Cambia il proprietario (se necessario)
+chown -R www-data:www-data /var/www/html/storage
+chown -R www-data:www-data /var/www/html/bootstrap/cache
+
 # Cache della configurazione
 echo "Caching config..."
 php artisan config:cache --working-dir=/var/www/html
