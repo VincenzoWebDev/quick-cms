@@ -17,10 +17,6 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /var/www/html
 COPY . .
 
-RUN npm install
-
-RUN npm run build
-
 # Installa Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
@@ -38,6 +34,10 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 
 # Espone la porta 80
 EXPOSE 80
+
+RUN npm install
+
+RUN npm run build
 
 # Comando di avvio per Nginx e PHP-FPM
 CMD ["/usr/local/bin/00-laravel-deploy.sh"]
