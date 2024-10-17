@@ -1,25 +1,31 @@
 #!/bin/bash
 
-# Comandi esistenti per Composer, cache, migrazioni ecc.
+# Installazione delle dipendenze con Composer
 echo "Running composer"
 composer install --no-dev --working-dir=/var/www/html
 
-npm install
+# Installazione delle dipendenze JavaScript
+echo "Installing npm packages"
+npm install --prefix /var/www/html
 
-# Costruisce i file statici con Vite
-npm run build
+# Costruzione dei file statici con Vite
+echo "Building assets with Vite"
+npm run build --prefix /var/www/html
 
+# Cache della configurazione
 echo "Caching config..."
-php artisan config:cache
+php artisan config:cache --working-dir=/var/www/html
 
+# Cache delle rotte
 echo "Caching routes..."
-php artisan route:cache
+php artisan route:cache --working-dir=/var/www/html
 
+# Esecuzione delle migrazioni
 echo "Running migrations..."
-php artisan migrate --force
+php artisan migrate --force --working-dir=/var/www/html
 
-# Avvia PHP-FPM in background
+# Avvio di PHP-FPM
 php-fpm &
 
-# Avvia Nginx come processo principale
+# Avvio di Nginx come processo principale
 nginx -g 'daemon off;'
