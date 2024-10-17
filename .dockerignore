@@ -3,7 +3,7 @@
 /public/storage 
 /storage/*.key 
 /vendor
-!vendor/laravel/ui/auth-backend/ 
+!vendor/laravel/ui/ 
 .env 
 .phpunit.result.cache 
 Homestead.json 

@@ -5,7 +5,7 @@
 /public/storage
 /storage/*.key
 /vendor
-!vendor/laravel/ui/auth-backend/ 
+!vendor/laravel/ui/
 .env
 .env.backup
 .env.production
