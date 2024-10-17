@@ -4,8 +4,6 @@
 echo "Running composer"
 composer install --no-dev
 
-cp -r /var/www/html/vendor/laravel/ui/auth-backend /var/www/html/vendor/laravel/ui/auth-backend
-
 # Installazione delle dipendenze JavaScript
 echo "Installing npm packages"
 npm install --prefix /var/www/html
