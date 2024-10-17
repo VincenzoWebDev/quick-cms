@@ -114,7 +114,10 @@ class UserController extends \App\Http\Controllers\Controller
 
         if ($oldName != $user->name || $oldLastName != $user->lastname || $oldEmail != $user->email || $oldRole != $user->role || $request->hasFile('profile_img')) {
             if ($request->file('profile_img') != null) {
-                if (Storage::exists($oldProfile)) {
+                if ($oldProfile == null) {
+                    $this->processFile($user->id, $user);
+                }
+                if ($oldProfile != null) {
                     Storage::delete($oldProfile);
                 }
                 $this->processFile($user->id, $user);
