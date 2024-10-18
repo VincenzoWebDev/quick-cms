@@ -24,7 +24,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('combination_variant_values', function (Blueprint $table) {
+        Schema::table('variant_combination_values', function (Blueprint $table) {
             //
         });
     }
