@@ -18,7 +18,7 @@ class PageController extends \App\Http\Controllers\Controller
     public function togglePageSwitch(Request $request, $pageId)
     {
         $page = Page::findOrFail($pageId);
-        $active = $request->input('active') === 1;
+        $active = $request->input('active') === true ? 1 : 0;
         $page->update(['active' => $active]);
     }
 

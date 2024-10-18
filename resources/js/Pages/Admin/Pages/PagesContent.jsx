@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Link, useForm, router } from "@inertiajs/react";
 import { BASE_URL } from '@/constants/constants';
 
-const PageContent = ({ pages, flash}) => {
+const PageContent = ({ pages, flash }) => {
     const [message, setMessage] = useState(flash.message);
     const { delete: formDelete } = useForm();
     const [selectedRecords, setSelectedRecords] = useState([]);
@@ -21,20 +21,21 @@ const PageContent = ({ pages, flash}) => {
     const handleSwitchChange = (e) => {
         e.preventDefault();
         const pageId = e.target.dataset.pageId;
-        const active = e.target.checked ? 1 : 0;
+        const active = e.target.checked ? true : false;
         // Invia una richiesta al server per aggiornare lo stato del tema
-        router.post(route('pages.switch', pageId), { active }, {
-            onSuccess: () => {
-                if (active) {
-                    setMessage({ tipo: 'success', testo: `Pagina ${pageId} attivata correttamente` });
-                } else {
-                    setMessage({ tipo: 'success', testo: `Pagina ${pageId} disattivata correttamente` });
+        router.post(route('pages.switch', pageId), { active },
+            {
+                onSuccess: () => {
+                    if (active) {
+                        setMessage({ tipo: 'success', testo: `Pagina ${pageId} attivata correttamente` });
+                    } else {
+                        setMessage({ tipo: 'success', testo: `Pagina ${pageId} disattivata correttamente` });
+                    }
+                },
+                onError: (error) => {
+                    setMessage({ tipo: 'danger', testo: error.message });
                 }
-            },
-            onError: (error) => {
-                setMessage({ tipo: 'danger', testo: error.message });
-            }
-        });
+            });
     };
 
     const handleCheckboxChange = (e, pageId) => {
@@ -57,13 +58,13 @@ const PageContent = ({ pages, flash}) => {
     };
 
     const handleDelete = (e) => {
-        PageDelete({e, formDelete, setMessage});
+        PageDelete({ e, formDelete, setMessage });
     }
 
     const handleDeleteSelected = (e) => {
-        PageDeleteSelected({e, formDelete, setMessage, selectedRecords, setSelectedRecords, setSelectAll});
+        PageDeleteSelected({ e, formDelete, setMessage, selectedRecords, setSelectedRecords, setSelectAll });
     }
-    
+
     return (
         <Layout>
             <h2>Gestione pagine</h2>
