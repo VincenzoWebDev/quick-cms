@@ -139,38 +139,70 @@ class ProductController extends \App\Http\Controllers\Controller
 
     public function edit(Product $product)
     {
+        $dbDriver = DB::getDriverName();
+
         $categories = Category::orderBy('name', 'asc')->get();
         $selectedCategories = $product->categories->pluck('id')->toArray();
         $productImages = $product->productImages;
         $variants = ProductVariant::orderBy('name', 'asc')->get();
         $variantColors = ProductVariantValue::where('product_variant_id', 1)->orderBy('id', 'asc')->get();
         $variantSizes = ProductVariantValue::where('product_variant_id', 2)->orderBy('id', 'asc')->get();
-        $variantCombinationsGroup = VariantCombination::from('variant_combinations as vc') // Definisci l'alias
-            ->select(
-                'vc.id as combination_id',
-                'vc.product_id',
-                'vc.price',
-                'vc.stock',
-                'vc.sku',
-                'vc.ean',
-                'vc.quantity',
-                DB::raw('GROUP_CONCAT(pv.name ORDER BY pv.id ASC) as variant_name'), // Ordinamento per ID
-                DB::raw('GROUP_CONCAT(pvv.value ORDER BY pvv.id ASC) as variant_value') // Ordinamento per ID
-            )
-            ->join('variant_combination_values as vcv', 'vc.id', '=', 'vcv.variant_combination_id')
-            ->join('product_variant_values as pvv', 'vcv.product_variant_value_id', '=', 'pvv.id')
-            ->join('product_variants as pv', 'pvv.product_variant_id', '=', 'pv.id')
-            ->where('vc.product_id', $product->id)
-            ->groupBy(
-                'vc.id',
-                'vc.product_id',
-                'vc.price',
-                'vc.stock',
-                'vc.sku',
-                'vc.ean',
-                'vc.quantity'
-            )
-            ->get();
+
+        if ($dbDriver === 'mysql') {
+            $variantCombinationsGroup = VariantCombination::from('variant_combinations as vc')
+                ->select(
+                    'vc.id as combination_id',
+                    'vc.product_id',
+                    'vc.price',
+                    'vc.stock',
+                    'vc.sku',
+                    'vc.ean',
+                    'vc.quantity',
+                    DB::raw('GROUP_CONCAT(pv.name ORDER BY pv.id ASC) as variant_name'),
+                    DB::raw('GROUP_CONCAT(pvv.value ORDER BY pvv.id ASC) as variant_value')
+                )
+                ->join('variant_combination_values as vcv', 'vc.id', '=', 'vcv.variant_combination_id')
+                ->join('product_variant_values as pvv', 'vcv.product_variant_value_id', '=', 'pvv.id')
+                ->join('product_variants as pv', 'pvv.product_variant_id', '=', 'pv.id')
+                ->where('vc.product_id', $product->id)
+                ->groupBy(
+                    'vc.id',
+                    'vc.product_id',
+                    'vc.price',
+                    'vc.stock',
+                    'vc.sku',
+                    'vc.ean',
+                    'vc.quantity'
+                )
+                ->get();
+        } elseif ($dbDriver === 'pgsql') {
+            $variantCombinationsGroup = VariantCombination::from('variant_combinations as vc')
+                ->select(
+                    'vc.id as combination_id',
+                    'vc.product_id',
+                    'vc.price',
+                    'vc.stock',
+                    'vc.sku',
+                    'vc.ean',
+                    'vc.quantity',
+                    DB::raw('STRING_AGG(pv.name, \',\' ORDER BY pv.id ASC) as variant_name'),
+                    DB::raw('STRING_AGG(pvv.value, \',\' ORDER BY pvv.id ASC) as variant_value')
+                )
+                ->join('variant_combination_values as vcv', 'vc.id', '=', 'vcv.variant_combination_id')
+                ->join('product_variant_values as pvv', 'vcv.product_variant_value_id', '=', 'pvv.id')
+                ->join('product_variants as pv', 'pvv.product_variant_id', '=', 'pv.id')
+                ->where('vc.product_id', $product->id)
+                ->groupBy(
+                    'vc.id',
+                    'vc.product_id',
+                    'vc.price',
+                    'vc.stock',
+                    'vc.sku',
+                    'vc.ean',
+                    'vc.quantity'
+                )
+                ->get();
+        }
 
         return Inertia::render('Admin/Products/Edit', [
             'product' => $product,
