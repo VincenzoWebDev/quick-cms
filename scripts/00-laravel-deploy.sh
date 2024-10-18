@@ -21,12 +21,6 @@ chmod -R 775 /var/www/html/bootstrap/cache
 chown -R www-data:www-data /var/www/html/storage
 chown -R www-data:www-data /var/www/html/bootstrap/cache
 
-# # Crea il collegamento simbolico per lo storage
-# echo "Creating symbolic link for storage..."
-# if [ ! -L /var/www/html/public/storage ]; then
-#     ln -s /var/www/html/storage/app/public /var/www/html/public/storage
-# fi
-
 # Crea il collegamento simbolico per lo storage usando artisan
 echo "Creating symbolic link for storage..."
 php artisan storage:link
