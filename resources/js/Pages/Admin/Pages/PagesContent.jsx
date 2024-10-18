@@ -9,6 +9,7 @@ const PageContent = ({ pages, flash }) => {
     const { delete: formDelete } = useForm();
     const [selectedRecords, setSelectedRecords] = useState([]);
     const [selectAll, setSelectAll] = useState(false);
+    const crsfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -23,7 +24,7 @@ const PageContent = ({ pages, flash }) => {
         const pageId = e.target.dataset.pageId;
         const active = e.target.checked ? true : false;
         // Invia una richiesta al server per aggiornare lo stato del tema
-        router.post(route('pages.switch', pageId), { active },
+        router.post(route('pages.switch', pageId), { active, _token: crsfToken },
             {
                 onSuccess: () => {
                     if (active) {

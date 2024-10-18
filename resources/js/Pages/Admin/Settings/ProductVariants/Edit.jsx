@@ -2,11 +2,11 @@ import Layout from "@/Layouts/Admin/Layout";
 import { Link, router, useForm, usePage } from '@inertiajs/react';
 import { InputErrors } from "@/components/Admin/Index";
 
-const Edit = ({ pageLayout }) => {
+const Edit = ({ variant }) => {
     const { errors } = usePage().props;
 
     const { data, setData } = useForm({
-        name: pageLayout.name,
+        name: variant.name,
     });
 
     const handleChange = (e) => {
@@ -16,7 +16,7 @@ const Edit = ({ pageLayout }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        router.post(route('settings.layouts.update', pageLayout.id), {
+        router.post(route('settings.variants.update', variant.id), {
             ...data,
             _method: 'patch',
             forceFormData: true,
@@ -33,12 +33,12 @@ const Edit = ({ pageLayout }) => {
                     <form onSubmit={handleSubmit} encType="multipart/form-data">
                         <div className="mb-3">
                             <label htmlFor="name">Nome</label>
-                            <input type="text" name="name" id="name" className="form-control" placeholder="Nome layout" value={data.name} onChange={handleChange} />
+                            <input type="text" name="name" id="name" className="form-control" placeholder="Nome variante" value={data.name} onChange={handleChange} />
                         </div>
 
                         <div className="mb-3">
                             <button className="btn cb-primary me-3">Modifica</button>
-                            <Link href={route('settings.layouts.index')} className="btn btn-secondary">Torna indietro</Link>
+                            <Link href={route('settings.variants.index')} className="btn btn-secondary">Torna indietro</Link>
                         </div>
                     </form>
                 </div>

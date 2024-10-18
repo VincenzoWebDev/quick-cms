@@ -174,6 +174,10 @@ const Sidebar = () => {
                             <Link preserveState href={route('settings.layouts.index')} className="layouts"><i
                                 className="material-icons">layers</i><span>Layout pagine</span></Link>
                         </li>
+                        <li className={includeLink("/variants") ? 'active' : ''}>
+                            <Link preserveState href={route('settings.variants.index')} className="variants"><i
+                                className="material-icons">style</i><span>Varianti prodotti</span></Link>
+                        </li>
                     </div>
                 </ul >
             ) : (

@@ -14,25 +14,25 @@ const Create = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        post(route('settings.layouts.store'));
+        post(route('settings.variants.store'));
     }
 
     return (
         <Layout>
-            <h2>Inserisci un nuovo layout</h2>
+            <h2>Inserisci una nuova variante</h2>
             <InputErrors errors={errors} />
 
             <div className="row">
                 <div className="col-md-8">
                     <form onSubmit={handleSubmit} encType="multipart/form-data">
                         <div className="mb-3">
-                            <label htmlFor="name">Nome layout</label>
-                            <input type="text" name="name" id="name" className="form-control" placeholder="Nome layout" value={data.name} onChange={handleChange} />
+                            <label htmlFor="name" className="form-label fw-bold">Nome variante</label>
+                            <input type="text" name="name" id="name" className="form-control" placeholder="Nome variante" value={data.name} onChange={handleChange} />
                         </div>
 
                         <div className="mb-3">
                             <button className="btn cb-primary me-3">Inserisci</button>
-                            <Link href={route('settings.layouts.index')} className="btn btn-secondary">Torna indietro</Link>
+                            <Link href={route('settings.variants.index')} className="btn btn-secondary">Torna indietro</Link>
                         </div>
                     </form>
                 </div>

@@ -7,7 +7,7 @@ use App\Models\PageLayout;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-class PageLayouts extends \App\Http\Controllers\Controller
+class PageLayoutController extends \App\Http\Controllers\Controller
 {
 
     public function index()
@@ -64,6 +64,5 @@ class PageLayouts extends \App\Http\Controllers\Controller
     public function destroy(PageLayout $layout)
     {
         $layout->delete();
-        return redirect()->route('settings.layouts.index');
     }
 }

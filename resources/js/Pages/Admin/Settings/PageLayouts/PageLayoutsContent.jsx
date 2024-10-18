@@ -21,10 +21,10 @@ const PageLayoutsContent = ({ pageLayouts, flash }) => {
         const layoutId = e.target.id;
         router.delete(route('settings.layouts.destroy', layoutId), {
             onSuccess: () => {
-                setMessage({ tipo: 'success', testo: `Layout ${layoutName} eliminato correttamente` });
+                setMessage({ tipo: 'success', testo: `Layout: ${layoutName} eliminato correttamente` });
             },
             onError: () => {
-                setMessage({ tipo: 'danger', testo: `Errore durante l'eliminazione del layout ${layoutName}` });
+                setMessage({ tipo: 'danger', testo: `Errore durante l'eliminazione del layout: ${layoutName}` });
             }
         });
     }
@@ -78,7 +78,7 @@ const PageLayoutsContent = ({ pageLayouts, flash }) => {
                                         ))
                                     ) : (
                                         <tr>
-                                            <td colSpan='7' className='text-center'>Non ci sono spedizioni</td>
+                                            <td colSpan='7' className='text-center'>Non ci sono layout</td>
                                         </tr>
                                     )}
                             </tbody>
