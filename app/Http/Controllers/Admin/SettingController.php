@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class SettingController extends \App\Http\Controllers\Controller

@@ -138,7 +138,7 @@ const PageContent = ({ pages, flash}) => {
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan='8' className="text-center">Non ci sono pagine</td>
+                                        <td colSpan='9' className="text-center">Non ci sono pagine</td>
                                     </tr>
                                 )}
                             </tbody>

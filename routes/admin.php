@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\PageLayouts;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\ShippingMethodController;
@@ -128,6 +129,13 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     });
 
     Route::middleware('VerifyIsAdmin')->group(function () {
-        Route::get('/settings', [SettingController::class, 'index'])->name('settings');
+        Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
+
+        Route::get('/settings/layouts', [PageLayouts::class, 'index'])->name('settings.layouts.index');
+        Route::get('/settings/layouts/create', [PageLayouts::class, 'create'])->name('settings.layouts.create');
+        Route::post('/settings/layouts/store', [PageLayouts::class, 'store'])->name('settings.layouts.store');
+        Route::get('/settings/layouts/{layout}/edit', [PageLayouts::class, 'edit'])->name('settings.layouts.edit');
+        Route::patch('/settings/layouts/{layout}', [PageLayouts::class, 'update'])->name('settings.layouts.update');
+        Route::delete('/settings/layouts/{layout}', [PageLayouts::class, 'destroy'])->name('settings.layouts.destroy');
     });
 });

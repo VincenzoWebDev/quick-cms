@@ -166,9 +166,13 @@ const Sidebar = () => {
                     </div>
                     <div>
                         <span className='mb-2 d-block ps-3 fw-bold text-uppercase border-bottom pb-2'>Impostazioni</span>
-                        <li className={includeLink("/settings") ? 'active' : ''}>
-                            <Link preserveState href={route('settings')} className="files"><i
-                                className="material-icons">settings</i><span>Impostazioni</span></Link>
+                        <li className={endLink("/settings") ? 'active' : ''}>
+                            <Link preserveState href={route('settings.index')} className="settings"><i
+                                className="material-icons">settings</i><span>Generali</span></Link>
+                        </li>
+                        <li className={includeLink("/layouts") ? 'active' : ''}>
+                            <Link preserveState href={route('settings.layouts.index')} className="layouts"><i
+                                className="material-icons">layers</i><span>Layout pagine</span></Link>
                         </li>
                     </div>
                 </ul >

@@ -940,6 +940,9 @@ footer ul li a:hover {
 /*===============small-screen overlay sidebar design media queries==============*/
 
 @media only screen and (max-width:992px) {
+    .navbar {
+        padding: 5px 0px !important;
+    }
     #sidebar {
         position: fixed;
         top: 0;
