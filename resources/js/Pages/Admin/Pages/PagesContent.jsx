@@ -22,12 +22,9 @@ const PageContent = ({ pages, flash }) => {
     const handleSwitchChange = (e) => {
         e.preventDefault();
         const pageId = e.target.dataset.pageId;
-        const active = e.target.checked ? 0 : 1;
+        const active = e.target.checked ? 1 : 0;
         // Invia una richiesta al server per aggiornare lo stato del tema
-        router.post(route('pages.switch', { page: pageId, active }), {}, {
-            headers: {
-                'X-CSRF-TOKEN': crsfToken
-            },
+        router.post(route('pages.switch', { pageId }), { active }, {
             onSuccess: () => {
                 setMessage({ tipo: 'success', testo: `Pagina ${active === 0 ? 'disattivata' : 'attivata'} correttamente` });
             },
@@ -118,7 +115,7 @@ const PageContent = ({ pages, flash }) => {
                                                 <div className="form-check form-switch">
                                                     <input className="form-check-input page-switch" type="checkbox" role="switch"
                                                         id={`flexSwitchCheckDefault${page.id}`} style={{ width: '40px', height: '20px' }}
-                                                        data-page-id={page.id} checked={page.active === 1} onChange={handleSwitchChange} />
+                                                        data-page-id={page.id} checked={page.active} onChange={handleSwitchChange} />
                                                 </div>
                                             </td>
                                             <td scope="row">{new Date(page.created_at).toLocaleDateString()}</td>

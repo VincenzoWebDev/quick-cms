@@ -7,7 +7,6 @@ use App\Http\Requests\PageRequest;
 use App\Models\Page;
 use App\Models\PageLayout;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Intervention\Image\Drivers\Gd\Driver;
@@ -15,10 +14,10 @@ use Intervention\Image\ImageManager;
 
 class PageController extends \App\Http\Controllers\Controller
 {
-    public function togglePageSwitch($pageId, $active)
+    public function togglePageSwitch(Request $request, $pageId)
     {
         $page = Page::findOrFail($pageId);
-        $active = $active == 0 ? 1 : 0;
+        $active = $request->input('active');
         $page->update(['active' => $active]);
     }
 
