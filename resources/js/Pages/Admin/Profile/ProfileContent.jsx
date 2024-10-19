@@ -121,7 +121,7 @@ const ProfileContent = () => {
                                         <h6 className="mb-0">Nome</h6>
                                     </div>
                                     {editable ? (
-                                        <input type="text" name="name" value={data.name} onChange={handleInputChange} className="form-control" />
+                                        <input type="text" name="name" value={data.name} onChange={handleInputChange} className="form-control w-50" />
                                     ) : (
                                         <div className="col-sm-9 text-secondary">
                                             {user_auth.name}
@@ -134,7 +134,7 @@ const ProfileContent = () => {
                                         <h6 className="mb-0">Cognome</h6>
                                     </div>
                                     {editable ? (
-                                        <input type="text" name="lastname" value={data.lastname} onChange={handleInputChange} className="form-control" />
+                                        <input type="text" name="lastname" value={data.lastname} onChange={handleInputChange} className="form-control w-50" />
                                     ) : (
                                         <div className="col-sm-9 text-secondary">
                                             {user_auth.lastname}
@@ -147,7 +147,7 @@ const ProfileContent = () => {
                                         <h6 className="mb-0">Email</h6>
                                     </div>
                                     {editable ? (
-                                        <input type="text" name="email" value={data.email} onChange={handleInputChange} className="form-control" />
+                                        <input type="text" name="email" value={data.email} onChange={handleInputChange} className="form-control w-50" />
                                     ) : (
                                         <div className="col-sm-9 text-secondary">
                                             {user_auth.email}
@@ -161,7 +161,7 @@ const ProfileContent = () => {
                                     </div>
                                     {user_auth.role === 'admin' &&
                                         editable ? (
-                                        <input type="text" name="role" value={data.role} onChange={handleInputChange} className="form-control" />
+                                        <input type="text" name="role" value={data.role} onChange={handleInputChange} className="form-control w-50" />
                                     ) : (
                                         <div className="col-sm-9 text-secondary">
                                             {user_auth.role

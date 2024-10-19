@@ -25,6 +25,9 @@ const PageContent = ({ pages, flash }) => {
         const active = e.target.checked ? 0 : 1;
         // Invia una richiesta al server per aggiornare lo stato del tema
         router.post(route('pages.switch', { page: pageId, active }), {}, {
+            headers: {
+                'X-CSRF-TOKEN': crsfToken
+            },
             onSuccess: () => {
                 setMessage({ tipo: 'success', testo: `Pagina ${active === 0 ? 'disattivata' : 'attivata'} correttamente` });
             },
