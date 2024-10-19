@@ -15,10 +15,10 @@ use Intervention\Image\ImageManager;
 
 class PageController extends \App\Http\Controllers\Controller
 {
-    public function togglePageSwitch(Request $request, $pageId)
+    public function togglePageSwitch($pageId, $active)
     {
         $page = Page::findOrFail($pageId);
-        $active = $request->input('active') === true ? 1 : 0;
+        $active = $active == 0 ? 1 : 0;
         $page->update(['active' => $active]);
     }
 

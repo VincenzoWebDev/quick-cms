@@ -4,8 +4,12 @@ import { BASE_URL } from "@/constants/constants";
 import Layout from "@/Layouts/Admin/Layout"
 import { Link, router } from "@inertiajs/react"
 import { useEffect, useState } from "react";
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+
 
 const ProductVariantsContent = ({ variants, variants_values, flash }) => {
+    const MySwal = withReactContent(Swal);
     const [message, setMessage] = useState(flash.message);
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -18,14 +22,29 @@ const ProductVariantsContent = ({ variants, variants_values, flash }) => {
     const handleVariantDelete = (e, variant) => {
         e.preventDefault();
         const variantName = e.target.dataset.name;
-        router.delete(route('settings.variants.destroy', variant), {
-            onSuccess: () => {
-                setMessage({ tipo: 'success', testo: `Variante: ${variantName} eliminata correttamente` });
-            },
-            onError: () => {
-                setMessage({ tipo: 'danger', testo: `Errore durante l'eliminazione della variante: ${variantName}` });
-            }
-        });
+        if (variantName) {
+            MySwal.fire({
+                title: "Sei sicuro di voler eliminare questa variante?",
+                text: "Non sarà possibile annullare questa operazione!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "var(--bs-cobalto)",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Si, elimina!",
+                cancelButtonText: "Annulla",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    router.delete(route('settings.variants.destroy', variant), {
+                        onSuccess: () => {
+                            setMessage({ tipo: 'success', testo: `Variante: ${variantName} eliminata correttamente` });
+                        },
+                        onError: () => {
+                            setMessage({ tipo: 'danger', testo: `Errore durante l'eliminazione della variante: ${variantName}` });
+                        }
+                    });
+                }
+            });
+        }
     }
 
     const handleValueDelete = (e, variant_value) => {
@@ -134,9 +153,9 @@ const ProductVariantsContent = ({ variants, variants_values, flash }) => {
                                                         <td scope="row" className="col-auto ">{variant_value.id}</td>
                                                         <td scope="row" className="col-auto">{variant_value.value}</td>
                                                         <td scope="row" className="col-auto text-center">
-                                                            <Link href={route('settings.variant-values.edit', variant_value.id)} className="btn px-2">
+                                                            {/* <Link href={route('settings.variant-values.edit', variant_value.id)} className="btn px-2">
                                                                 <ButtonEdit url={BASE_URL} />
-                                                            </Link>
+                                                            </Link> */}
                                                             <form onSubmit={(e) => handleValueDelete(e, variant_value)} className="d-inline" id={variant_value.id}>
                                                                 <ButtonDelete url={BASE_URL} />
                                                             </form>

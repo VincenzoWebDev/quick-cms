@@ -74,7 +74,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::post('/pages', [PageController::class, 'store'])->name('pages.store');
         Route::get('/pages/{page}/edit', [PageController::class, 'edit'])->name('pages.edit')->where('page', '[0-9]+');
         Route::patch('/pages/{page}', [PageController::class, 'update'])->name('pages.update')->where('page', '[0-9]+');
-        Route::post('/pages/{page}', [PageController::class, 'togglePageSwitch'])->name('pages.switch')->where('page', '[0-9]+');
+        Route::post('/pages/{page}/{active}', [PageController::class, 'togglePageSwitch'])->name('pages.switch')->where('page', '[0-9]+');
         Route::delete('/pages/{page}', [PageController::class, 'destroy'])->name('pages.destroy')->where('page', '[0-9]+');
         Route::delete('/pages/destroy/batch', [PageController::class, 'destroyBatch'])->name('pages.destroy.batch');
         Route::post('/pages/images/store', [PageController::class, 'storeImage'])->name('pages.images.store');

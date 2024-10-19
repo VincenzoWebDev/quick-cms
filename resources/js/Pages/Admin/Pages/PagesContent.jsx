@@ -22,21 +22,16 @@ const PageContent = ({ pages, flash }) => {
     const handleSwitchChange = (e) => {
         e.preventDefault();
         const pageId = e.target.dataset.pageId;
-        const active = e.target.checked ? true : false;
+        const active = e.target.checked ? 0 : 1;
         // Invia una richiesta al server per aggiornare lo stato del tema
-        router.post(route('pages.switch', pageId), { active, _token: crsfToken },
-            {
-                onSuccess: () => {
-                    if (active) {
-                        setMessage({ tipo: 'success', testo: `Pagina ${pageId} attivata correttamente` });
-                    } else {
-                        setMessage({ tipo: 'success', testo: `Pagina ${pageId} disattivata correttamente` });
-                    }
-                },
-                onError: (error) => {
-                    setMessage({ tipo: 'danger', testo: error.message });
-                }
-            });
+        router.post(route('pages.switch', { page: pageId, active }), {}, {
+            onSuccess: () => {
+                setMessage({ tipo: 'success', testo: `Pagina ${active === 0 ? 'disattivata' : 'attivata'} correttamente` });
+            },
+            onError: () => {
+                setMessage({ tipo: 'danger', testo: `Errore durante l'attivazione/disattivazione della pagina` });
+            }
+        });
     };
 
     const handleCheckboxChange = (e, pageId) => {
