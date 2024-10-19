@@ -84,7 +84,7 @@ const Topbar = () => {
                             </li>
                             {pages.map((page) => (
                                 <li className="nav-item" key={page.id}>
-                                    {page.active === 1 &&
+                                    {page.active == 1 &&
                                         <Link className="nav-link active rolling-text" aria-current="page" href={route('page.show', page.slug)}>{page.title}</Link>
                                     }
                                 </li>
