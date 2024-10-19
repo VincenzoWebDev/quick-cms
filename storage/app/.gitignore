@@ -1,3 +1,12 @@
+# Ignora tutto
 *
+
+# Includi la directory public
 !public/
+# Includi la directory storage
+!storage/
+!storage/app/
+!storage/app/public/
+!storage/app/public/**
+# Mantieni il .gitignore
 !.gitignore
