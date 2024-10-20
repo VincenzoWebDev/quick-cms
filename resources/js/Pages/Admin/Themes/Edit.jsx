@@ -37,7 +37,7 @@ const ThemeEdit = ({ theme }) => {
 
                 <div className="mb-3">
                     <button className="btn cb-primary me-3">Modifica</button>
-                    <Link href={route('themes')} className="btn btn-secondary">Torna indietro</Link>
+                    <Link href={route('themes.index')} className="btn btn-secondary">Torna indietro</Link>
                 </div>
             </form>
         </Layout>

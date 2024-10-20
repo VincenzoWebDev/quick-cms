@@ -10,6 +10,13 @@ use Inertia\Inertia;
 
 class CartController extends \App\Http\Controllers\Controller
 {
+    protected $themeName;
+
+    public function __construct()
+    {
+        $this->themeName = $this->getActiveTheme();
+    }
+
     public function addToCart(CartRequest $request)
     {
         $user = Auth::user();
@@ -54,7 +61,7 @@ class CartController extends \App\Http\Controllers\Controller
     {
         $user = Auth::user();
         $cartItems = CartItem::where('user_id', $user->id)->with('product')->get();
-        return Inertia::render('Front/Cart', compact('cartItems'));
+        return Inertia::render('Front/Themes/' . $this->themeName . '/Cart', compact('cartItems'));
     }
 
     public function deleteCartItem($id)

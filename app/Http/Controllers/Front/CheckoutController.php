@@ -14,6 +14,13 @@ use Inertia\Inertia;
 
 class CheckoutController extends \App\Http\Controllers\Controller
 {
+    protected $themeName;
+
+    public function __construct()
+    {
+        $this->themeName = $this->getActiveTheme();
+    }
+
     public function index()
     {
         $cartItems = CartItem::with('product')->where('user_id', auth()->id())->get();
@@ -25,7 +32,7 @@ class CheckoutController extends \App\Http\Controllers\Controller
             return redirect()->route('cart.index');
         } else {
             $shippingMethods = ShippingMethod::all();
-            return Inertia::render('Front/Checkout', [
+            return Inertia::render('Front/Themes/'.$this->themeName.'/Checkout', [
                 'cartItems' => $cartItems,
                 'shippingMethods' => $shippingMethods,
             ]);
@@ -72,7 +79,7 @@ class CheckoutController extends \App\Http\Controllers\Controller
 
     public function payment(Request $request)
     {
-        return Inertia::render('Front/Payment', [
+        return Inertia::render('Front/Themes/'.$this->themeName.'/Payment', [
             'orderId' => $request->orderId
         ]);
     }

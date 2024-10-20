@@ -8,14 +8,21 @@ use Inertia\Inertia;
 
 class UserProfileController extends \App\Http\Controllers\Controller
 {
+    protected $themeName;
+
+    public function __construct()
+    {
+        $this->themeName = $this->getActiveTheme();
+    }
+
     public function index()
     {
-        return Inertia::render('Front/UserProfile/UserProfileContent');
+        return Inertia::render('Front/Themes/' . $this->themeName . '/UserProfile/UserProfileContent');
     }
 
     public function login()
     {
-        return Inertia::render('Front/UserProfile/Login');
+        return Inertia::render('Front/' . $this->themeName . '/UserProfile/Login');
     }
     public function loginPost(Request $request)
     {

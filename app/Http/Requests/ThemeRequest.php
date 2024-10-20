@@ -12,9 +12,6 @@ class ThemeRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        if (!Auth::user()->isAdmin()) {
-            return false;
-        }
         return true;
     }
 

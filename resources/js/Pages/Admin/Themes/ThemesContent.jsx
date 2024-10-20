@@ -34,7 +34,7 @@ const ThemesContent = ({ themes, flash }) => {
     const handleSwitchChange = (e) => {
         e.preventDefault();
         const themeId = e.target.dataset.themeId;
-        const active = e.target.checked ? 1 : 0;
+        const active = e.target.checked;
         // Invia una richiesta al server per aggiornare lo stato del tema
         router.post(route('themes.switch', themeId), { active }, {
             onSuccess: () => {

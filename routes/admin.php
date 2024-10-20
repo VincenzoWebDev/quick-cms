@@ -57,7 +57,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::delete('/albums/destroy/batch', [AlbumController::class, 'destroyBatch'])->name('albums.destroy.batch');
 
     Route::middleware('VerifyIsAdmin')->group(function () {
-        Route::get('/themes', [ThemeController::class, 'index'])->name('themes');
+        Route::get('/themes', [ThemeController::class, 'index'])->name('themes.index');
         Route::get('/themes/create', [ThemeController::class, 'create'])->name('themes.create');
         Route::post('/themes', [ThemeController::class, 'store'])->name('themes.store');
         Route::get('/themes/{id}/edit', [ThemeController::class, 'edit'])->name('themes.edit')->where('id', '[0-9]+');

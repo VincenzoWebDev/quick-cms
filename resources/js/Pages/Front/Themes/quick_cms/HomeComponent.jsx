@@ -2,7 +2,7 @@ import FrontLayout from "@/Layouts/FrontLayout";
 import { AboutMe, Cards, MyProject, Technologies } from "@/components/Front/Index";
 import React from "react";
 
-const Home = ({ pages }) => {
+const HomeComponent = ({ pages }) => {
 
     return (
         <FrontLayout pages={pages}>
@@ -14,4 +14,4 @@ const Home = ({ pages }) => {
     )
 }
 
-export default Home;
+export default HomeComponent;

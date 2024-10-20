@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Page;
+use App\Models\Theme;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -13,9 +14,12 @@ class HomeController extends Controller
      *
      * @return void
      */
+
+    protected $themeName;
+
     public function __construct()
     {
-        // $this->middleware('auth');
+        $this->themeName = $this->getActiveTheme();
     }
 
     /**
@@ -25,6 +29,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Front/Home');
+        return Inertia::render('Front/Themes/' . $this->themeName . '/HomeComponent');
     }
 }

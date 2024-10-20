@@ -8,6 +8,12 @@ use Inertia\Inertia;
 
 class PageViewController extends Controller
 {
+    protected $themeName;
+
+    public function __construct()
+    {
+        $this->themeName = $this->getActiveTheme();
+    }
     /**
      * Display a listing of the resource.
      */
@@ -39,7 +45,7 @@ class PageViewController extends Controller
     {
         $currentPage = Page::where('slug', $slug)->where('active', 1)->firstOrFail();
         $pageLayout = $currentPage->layout;
-        return Inertia::render('Front/Page', ['currentPage' => $currentPage, 'pageLayout' => $pageLayout]);
+        return Inertia::render('Front/Themes/'.$this->themeName.'/Page', ['currentPage' => $currentPage, 'pageLayout' => $pageLayout]);
     }
 
     /**

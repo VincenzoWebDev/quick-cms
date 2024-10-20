@@ -1,4 +1,5 @@
 import { STORAGE_URL } from "@/constants/constants";
+import { Link } from "@inertiajs/react";
 
 const ProductCard = ({ product }) => {
     return (
@@ -30,7 +31,7 @@ const ProductCard = ({ product }) => {
                     </div>
                     <h6 className="text-success">Spedizione gratis</h6>
                     <div className="d-flex flex-column mt-4">
-                        <a href={route('productDetail.index', { 'slug': product.slug, 'id': product.id })} className="btn btn-primary btn-sm" type="button">Dettagli</a>
+                        <Link href={route('productDetail.index', { 'slug': product.slug, 'id': product.id })} className="btn btn-primary btn-sm" type="button">Dettagli</Link>
                         <button className="btn btn-outline-primary btn-sm mt-2" type="button">Aggiungi alla lista desideri</button>
                     </div>
                 </div>

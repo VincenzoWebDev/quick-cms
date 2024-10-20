@@ -170,13 +170,17 @@ const Sidebar = () => {
                             <Link preserveState href={route('settings.index')} className="settings"><i
                                 className="material-icons">settings</i><span>Generali</span></Link>
                         </li>
+                        <li className={endLink("/themes") ? 'active' : ''}>
+                            <Link preserveState href={route('themes.index')} className="themes"><i
+                                className="material-icons">style</i><span>Temi</span></Link>
+                        </li>
                         <li className={includeLink("/layouts") ? 'active' : ''}>
                             <Link preserveState href={route('settings.layouts.index')} className="layouts"><i
                                 className="material-icons">layers</i><span>Layout pagine</span></Link>
                         </li>
                         <li className={includeLink("/variants") ? 'active' : ''}>
                             <Link preserveState href={route('settings.variants.index')} className="variants"><i
-                                className="material-icons">style</i><span>Varianti prodotti</span></Link>
+                                className="material-icons">clear_all</i><span>Varianti prodotti</span></Link>
                         </li>
                     </div>
                 </ul >

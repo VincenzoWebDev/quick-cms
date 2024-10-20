@@ -23,7 +23,12 @@ export default defineConfig(({ command, mode }) => {
     return {
         plugins: [
             laravel({
-                input: ['resources/css/admin/app.css', 'resources/css/quick_cms/app.css', 'resources/sass/app.scss', 'resources/js/app.jsx'],
+                input: [
+                    'resources/css/admin/app.css',
+                    'resources/css/quick_cms/app.css',
+                    'resources/sass/app.scss',
+                    'resources/js/app.jsx'
+                ],
                 buildDirectory: 'build',
                 refresh: true,
             }),

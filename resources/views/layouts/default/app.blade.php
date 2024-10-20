@@ -11,7 +11,7 @@
     <meta name="author" content="Vincenzo Designer">
     <meta name="generator" content="">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Quick CMS</title>
+    <title>Tema di default</title>
 
     <script>
         window.Laravel = {!! json_encode([
@@ -21,6 +21,13 @@
 
     @routes
     @viteReactRefresh
-    @vite(['resources/sass/app.scss', 'resources/css/quick_cms/app.css', 'resources/js/app.jsx', "resources/js/Pages/{$page['component']}.jsx"])
+    @vite(['resources/sass/app.scss', 'resources/css/default/app.css', 'resources/js/app.jsx'])
     @inertiaHead
 </head>
+
+<body>
+    @inertia
+
+</body>
+
+</html>

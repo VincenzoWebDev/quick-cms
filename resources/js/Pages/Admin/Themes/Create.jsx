@@ -36,7 +36,7 @@ const ThemeCreate = () => {
 
                 <div className="mb-3">
                     <button className="btn cb-primary me-3">Inserisci</button>
-                    <Link href={route('themes')} className="btn btn-secondary">Torna indietro</Link>
+                    <Link href={route('themes.index')} className="btn btn-secondary">Torna indietro</Link>
                 </div>
             </form>
         </Layout>

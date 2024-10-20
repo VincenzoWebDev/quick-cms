@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\Page;
+use App\Models\Theme;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
@@ -48,14 +49,16 @@ class HandleInertiaRequests extends Middleware
     public function rootView(Request $request)
     {
         $uri = $request->route()->uri;
+        $activeTheme = Theme::where('active', true)->first();
+        $themeName = $activeTheme ? $activeTheme->name : 'default';
 
         if (str_contains($uri, 'admin') || str_contains($uri, 'login') || str_contains($uri, 'register') || str_contains($uri, 'password')) {
             if (Str::endsWith($uri, 'user-profile/login')) {
-                return 'layouts.quick_cms.app';
+                return 'layouts.'.$themeName.'.app';
             }
             return 'layouts.admin.app';
         }
-        return 'layouts.quick_cms.app';
+        return 'layouts.'.$themeName.'.app';
 
         return parent::rootView($request);
     }
