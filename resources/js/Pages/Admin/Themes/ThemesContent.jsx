@@ -34,7 +34,7 @@ const ThemesContent = ({ themes, flash }) => {
     const handleSwitchChange = (e) => {
         e.preventDefault();
         const themeId = e.target.dataset.themeId;
-        const active = e.target.checked;
+        const active = e.target.checked ? 1 : 0;
         // Invia una richiesta al server per aggiornare lo stato del tema
         router.post(route('themes.switch', themeId), { active }, {
             onSuccess: () => {
@@ -140,7 +140,7 @@ const ThemesContent = ({ themes, flash }) => {
                                                     <div className="form-check form-switch">
                                                         <input className="form-check-input" type="checkbox" role="switch"
                                                             id={`flexSwitchCheckDefault${theme.id}`} style={{ width: '40px', height: '20px' }}
-                                                            data-theme-id={theme.id} checked={theme.active === 1} onChange={handleSwitchChange} />
+                                                            data-theme-id={theme.id} checked={theme.active} onChange={handleSwitchChange} />
                                                     </div>
                                                 </td>
                                                 <td className='col-md-3'>
