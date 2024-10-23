@@ -3,7 +3,7 @@ import { Link, useForm } from '@inertiajs/react';
 import { AlbumCategoryCombo, AlbumThumbUpload, AlbumTabs, GalleryUpload, InputErrors } from "@/components/Admin/Index";
 
 const AlbumCreate = ({ categories, selectedCategory }) => {
-    const { data, setData, post, errors } = useForm({
+    const { data, setData, post, errors, processing } = useForm({
         album_name: '',
         description: '',
         categories: [],
@@ -72,7 +72,7 @@ const AlbumCreate = ({ categories, selectedCategory }) => {
                         </div>
 
                         <div className="mb-3">
-                            <button className="btn cb-primary me-3">Inserisci</button>
+                            <button className="btn cb-primary me-3" disabled={processing}>{processing ? 'In corso...' : 'Inserisci'}</button>
                             <Link href={route('albums')} className="btn btn-secondary">Torna indietro</Link>
                         </div>
                     </form>

@@ -943,6 +943,7 @@ footer ul li a:hover {
     .navbar {
         padding: 5px 0px !important;
     }
+
     #sidebar {
         position: fixed;
         top: 0;
@@ -1000,4 +1001,37 @@ EFFECTS REACT
     to {
         opacity: 0;
     }
+}
+
+/* ---------------------------------------------------
+Skeleton 
+----------------------------------------------------- */
+.skeleton {
+    background-color: #f3f3f3;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.skeleton-header {
+    height: 30px;
+    width: 60%;
+    background-color: #e0e0e0;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+
+.skeleton-content-row {
+    height: 15px;
+    width: 100%;
+    background-color: #e0e0e0;
+    margin-bottom: 10px;
+    border-radius: 4px;
+}
+
+.skeleton-large-block {
+    height: 200px;
+    width: 100%;
+    background-color: #e0e0e0;
+    margin-bottom: 20px;
+    border-radius: 8px;
 }

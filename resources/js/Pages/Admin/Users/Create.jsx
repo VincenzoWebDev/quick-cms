@@ -3,7 +3,7 @@ import InputErrors from '@/components/Admin/InputErrors';
 import Layout from '@/Layouts/Admin/Layout';
 
 const UserCreate = () => {
-    const { data, setData, post, errors } = useForm({
+    const { data, setData, post, errors, processing } = useForm({
         name: '',
         lastname: '',
         password: '',
@@ -71,7 +71,7 @@ const UserCreate = () => {
                         </div>
 
                         <div className="mb-3">
-                            <button className="btn cb-primary me-3">Inserisci</button>
+                            <button className="btn cb-primary me-3" disabled={processing}>{processing ? 'In corso...' : 'Inserisci'}</button>
                             <Link href={route('users.index')} className="btn btn-secondary">Torna indietro</Link>
                         </div>
                     </form>

@@ -1,7 +1,7 @@
 import Layout from "@/Layouts/Admin/Layout";
 import { AlbumCategoryCombo, AlbumGallery, AlbumTabs, AlbumThumbUpload, GalleryUpload, InputErrors } from "@/components/Admin/Index";
 import { STORAGE_URL } from "@/constants/constants";
-import { Link, useForm, router, usePage } from "@inertiajs/react";
+import { Link, useForm, router } from "@inertiajs/react";
 
 const AlbumEdit = ({ album, categories, selectedCategory }) => {
     const { data, setData, errors } = useForm({

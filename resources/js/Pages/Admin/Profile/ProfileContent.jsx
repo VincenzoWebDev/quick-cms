@@ -175,9 +175,12 @@ const ProfileContent = () => {
                                     <div className="col-sm-12">
                                         {/* <a className="btn cb-primary" href="">Edit</a> */}
                                         {editable ? (
-                                            <button className="btn btn-success" onClick={handleSaveClick}>Salva</button>
+                                            <>
+                                                <button className="btn btn-success me-2" onClick={handleSaveClick}>Salva</button>
+                                                <button className="btn btn-danger" onClick={(e) => setEditable(false)}>Annulla</button>
+                                            </>
                                         ) : (
-                                            <button className="btn cb-primary" onClick={handleEditClick}>Edit</button>
+                                            <button className="btn cb-primary" onClick={handleEditClick}>Modifica</button>
                                         )}
                                     </div>
                                 </div>

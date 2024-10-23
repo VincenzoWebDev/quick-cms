@@ -40,6 +40,7 @@ import UserPagination from "./Users/UserPagination";
 import UserRow from "./Users/UserRow";
 import ProductRow from "./Products/ProductRow";
 import OrderRow from "./Orders/OrderRow";
+import Skeleton from "./Skeleton";
 
 
 
@@ -54,5 +55,6 @@ export {
     UsersDelete, UsersDeleteSelected, AlbumDelete, AlbumDeleteSelected, AlbumCategoryDelete, AlbumCategoryDeleteSelected,
     PageDelete, PageDeleteSelected, ProductDelete, ProductDeleteSelected, ProductTabs, ImagesTab, VariantsTab, SeoTab,
     InfoTab, GalleryUpload, ProductGallery, HeaderTitle, OrderDelete, OrderDeleteSelected, OrderShowDetails, AlbumTabs,
-    AlbumGallery, OrdersContentTable, SearchAndPerPageSelector, UserPagination, UserRow, ProductRow, OrderRow
+    AlbumGallery, OrdersContentTable, SearchAndPerPageSelector, UserPagination, UserRow, ProductRow, OrderRow,
+    Skeleton,
 }

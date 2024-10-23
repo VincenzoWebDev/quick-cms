@@ -104,12 +104,12 @@ const Sidebar = () => {
                     <div>
                         <span className='mb-2 d-block ps-3 fw-bold text-uppercase border-bottom pb-2'>Amministrazione</span>
                         <li className={includeLink("/admin") && endLink("/admin") ? 'active' : ''}>
-                            <Link preserveState href={route('admin')} className="dashboard"><i
+                            <Link href={route('admin')} className="dashboard"><i
                                 className="material-icons">dashboard</i><span>Dashboard</span></Link>
                         </li>
 
                         <li className={includeLink("/users") ? 'active' : ''}>
-                            <Link preserveState href={route('users.index')} className="users"><i
+                            <Link href={route('users.index')} className="users"><i
                                 className="material-icons">person</i><span>Users</span></Link>
                         </li>
                     </div>
@@ -118,17 +118,17 @@ const Sidebar = () => {
                         <span className='mb-2 d-block ps-3 fw-bold text-uppercase border-bottom pb-2'>Contenuti</span>
                         <li
                             className={includeLink("/albums") || includeLink("/photos") ? 'active' : ''}>
-                            <Link preserveState href={route('albums')} className="albums"><i
+                            <Link href={route('albums')} className="albums"><i
                                 className="material-icons">photo_library</i><span>Albums</span></Link>
                         </li>
 
                         <li className={includeLink("/album_categories") ? 'active' : ''}>
-                            <Link preserveState href={route('album.categories.index')} className="themes"><i
+                            <Link href={route('album.categories.index')} className="themes"><i
                                 className="material-icons">view_comfy</i><span>Categorie</span></Link>
                         </li>
 
                         <li className={includeLink("/admin/pages") ? 'active' : ''}>
-                            <Link preserveState href={route('pages.index')} className="pages"><i
+                            <Link href={route('pages.index')} className="pages"><i
                                 className="material-icons">content_copy</i><span>Pagine</span></Link>
                         </li>
                     </div>
@@ -137,22 +137,22 @@ const Sidebar = () => {
                         <span className='mb-2 d-block ps-3 fw-bold text-uppercase border-bottom pb-2'>Negozio</span>
                         <li
                             className={includeLink("/products") ? 'active' : ''}>
-                            <Link preserveState href={route('products.index')} className="products"><i
+                            <Link href={route('products.index')} className="products"><i
                                 className="material-icons">store</i><span>Prodotti</span></Link>
                         </li>
                         <li
                             className={includeLink("/orders") ? 'active' : ''}>
-                            <Link preserveState href={route('orders.index')} className="orders">
+                            <Link href={route('orders.index')} className="orders">
                                 <i className="material-icons">assignment</i><span>Ordini</span></Link>
                         </li>
                         <li
                             className={includeLink("/categories") ? 'active' : ''}>
-                            <Link preserveState href={route('categories.index')} className="categories"><i
+                            <Link href={route('categories.index')} className="categories"><i
                                 className="material-icons">label_outline</i><span>Categorie</span></Link>
                         </li>
                         <li
                             className={includeLink("/shipping-methods") ? 'active' : ''}>
-                            <Link preserveState href={route('shipping-methods.index')} className="shipping-methods">
+                            <Link href={route('shipping-methods.index')} className="shipping-methods">
                                 <i className="material-icons">local_shipping</i><span>Spedizioni</span></Link>
                         </li>
                     </div>
@@ -160,26 +160,26 @@ const Sidebar = () => {
                     <div>
                         <span className='mb-2 d-block ps-3 fw-bold text-uppercase border-bottom pb-2'>Gestione file</span>
                         <li className={includeLink("/files") ? 'active' : ''}>
-                            <Link preserveState href={route('files')} className="files"><i
+                            <Link href={route('files')} className="files"><i
                                 className="material-icons">storage</i><span>Files</span></Link>
                         </li>
                     </div>
                     <div>
                         <span className='mb-2 d-block ps-3 fw-bold text-uppercase border-bottom pb-2'>Impostazioni</span>
                         <li className={endLink("/settings") ? 'active' : ''}>
-                            <Link preserveState href={route('settings.index')} className="settings"><i
+                            <Link href={route('settings.index')} className="settings"><i
                                 className="material-icons">settings</i><span>Generali</span></Link>
                         </li>
                         <li className={endLink("/themes") ? 'active' : ''}>
-                            <Link preserveState href={route('themes.index')} className="themes"><i
+                            <Link href={route('themes.index')} className="themes"><i
                                 className="material-icons">style</i><span>Temi</span></Link>
                         </li>
                         <li className={includeLink("/layouts") ? 'active' : ''}>
-                            <Link preserveState href={route('settings.layouts.index')} className="layouts"><i
+                            <Link href={route('settings.layouts.index')} className="layouts"><i
                                 className="material-icons">layers</i><span>Layout pagine</span></Link>
                         </li>
                         <li className={includeLink("/variants") ? 'active' : ''}>
-                            <Link preserveState href={route('settings.variants.index')} className="variants"><i
+                            <Link href={route('settings.variants.index')} className="variants"><i
                                 className="material-icons">clear_all</i><span>Varianti prodotti</span></Link>
                         </li>
                     </div>

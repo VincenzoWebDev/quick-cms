@@ -176,8 +176,8 @@ const TableCombinations = ({ variantCombinationsGroup }) => {
                                                         <ButtonEdit url={BASE_URL} />
                                                     </a>
                                                     <div className="over-icon btn" onClick={() => handleDeleteCombination(combination.combination_id)}>
-                                                        <img src={`${BASE_URL}img/icons/delete.png`} alt="delete" className='original' />
-                                                        <img src={`${BASE_URL}img/icons/delete-over.png`} alt="delete" className='overized' />
+                                                        <img src={`${BASE_URL}/img/icons/delete.png`} alt="delete" className='original' />
+                                                        <img src={`${BASE_URL}/img/icons/delete-over.png`} alt="delete" className='overized' />
                                                     </div>
                                                 </>
                                             )}
