@@ -22,13 +22,23 @@ const Cart = ({ pages, cartItems, flash }) => {
             }
         });
     }
+
+    const handleCheckout = (e) => {
+        e.preventDefault();
+        if (cartItems == '') {
+            setMessage({ tipo: 'danger', testo: `Il carrello è vuoto` });
+            return;
+        }
+        router.get(route('checkout.index'));
+    }
+
     return (
         <FrontLayout pages={pages}>
             <CheckoutHeader />
             <section className="bg-light py-5">
                 <div className="container">
                     <div className="row">
-                        <div className="col-md-12">
+                        <div className="col-md-12 p-0">
                             <AlertErrors message={message} />
                         </div>
                     </div>
@@ -38,8 +48,7 @@ const Cart = ({ pages, cartItems, flash }) => {
                                 <thead>
                                     <tr>
                                         <th>Nome prodotto</th>
-                                        <th>Colore</th>
-                                        <th>Taglia</th>
+                                        <th>Variante</th>
                                         <th>Prezzo</th>
                                         <th>Quantità</th>
                                         <th>Totale</th>
@@ -50,8 +59,11 @@ const Cart = ({ pages, cartItems, flash }) => {
                                     {cartItems.map((item) => (
                                         <tr key={item.id} className="align-middle">
                                             <td className="col-3">{item.product.name}</td>
-                                            <td className="col-2">{item.color}</td>
-                                            <td className="col-1">{item.size}</td>
+                                            <td className="col-2">
+                                                {item.variant_combination.variant_combination_values.map(variant => (
+                                                    variant.product_variant_value.value)
+                                                ).join(', ')}
+                                            </td>
                                             <td className="col-2">€{item.price}</td>
                                             <td className="col-1">{item.quantity}</td>
                                             <td className="col-2">€{item.price * item.quantity}</td>
@@ -67,7 +79,7 @@ const Cart = ({ pages, cartItems, flash }) => {
                             <div className="row">
                                 <div className="col-md-12">
                                     <h3>Total: €{cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2)}</h3>
-                                    <button className="btn btn-primary" onClick={(e) => router.get(route('checkout.index'))}>Checkout</button>
+                                    <button className="btn btn-primary" onClick={(e) => handleCheckout(e)}>Checkout</button>
                                 </div>
                             </div>
                         </div>

@@ -80,6 +80,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::post('/pages/images/store', [PageController::class, 'storeImage'])->name('pages.images.store');
     });
 
+    // Photo albums
     Route::resource('/photos', PhotoController::class);
     Route::delete('/photos/destroy/batch', [PhotoController::class, 'destroyBatch'])->name('photos.destroy.batch');
 
@@ -106,6 +107,8 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::delete('/products/{id}/destroy-combination', [ProductController::class, 'destroyCombination'])->name('products.destroy.combination');
         Route::delete('/products/destroy/combination-batch', [ProductController::class, 'destroyCombinationBatch'])->name('products.destroy.combination.batch');
         Route::patch('/products/{id}/update-combination', [ProductController::class, 'updateCombination'])->name('products.update.combination');
+        Route::delete('/products/images/{productImage}', [ProductController::class, 'imagesDestroy'])->name('product.images.destroy');
+        Route::delete('/products/images/destroy/batch', [ProductController::class, 'imagesDestroyBatch'])->name('product.images.destroy.batch');
 
         Route::resource('/categories', CategoryController::class);
         Route::delete('/categories/destroy/batch', [CategoryController::class, 'destroyBatch'])->name('categories.destroy.batch');

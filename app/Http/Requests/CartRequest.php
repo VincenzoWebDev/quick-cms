@@ -25,8 +25,6 @@ class CartRequest extends FormRequest
         return [
             'product_id' => 'required|exists:products,id',
             'quantity' => 'required|integer|min:1',
-            'color' => 'required|string',
-            'size' => 'required|string',
         ];
     }
     public function messages()
@@ -37,8 +35,6 @@ class CartRequest extends FormRequest
             'quantity.required' => 'La quantità è obbligatoria',
             'quantity.integer' => 'La quantità deve essere un numero intero',
             'quantity.min' => 'La quantità deve essere almeno 1',
-            'color.required' => 'Il colore è obbligatorio',
-            'size.required' => 'La taglia è obbligatoria',
         ];
     }
 }

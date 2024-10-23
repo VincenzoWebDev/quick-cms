@@ -88,8 +88,8 @@ const TableCombinations = ({ variantCombinationsGroup }) => {
                                                 checked={selectAll} />
                                         </div>
                                     </th>
-                                    <th>Taglia</th>
                                     <th>Colore</th>
+                                    <th>Taglia</th>
                                     <th>Prezzo</th>
                                     <th>SKU</th>
                                     <th>EAN</th>
@@ -107,8 +107,8 @@ const TableCombinations = ({ variantCombinationsGroup }) => {
                                                     checked={selectedRecords.includes(combination.combination_id)} />
                                             </div>
                                         </th>
-                                        <td className="col-1">{combination.variant_value.split(',')[0]}</td>
-                                        <td className="col-1">{combination.variant_value.split(',')[1]}</td>
+                                        <td className="col-1"><input type="text" className="form-control w-100" value={combination.variant_value.split(',')[0]} disabled /></td>
+                                        <td className="col-1"><input type="text" className="form-control w-100" value={combination.variant_value.split(',')[1]} disabled /></td>
                                         {editingCombination === combination.combination_id ? (
                                             <>
                                                 <td className="col-1">
@@ -146,10 +146,18 @@ const TableCombinations = ({ variantCombinationsGroup }) => {
                                             </>
                                         ) : (
                                             <>
-                                                <td className="col-1">{combination.price}</td>
-                                                <td className="col-2">{combination.sku}</td>
-                                                <td className="col-2">{combination.ean}</td>
-                                                <td className="col-1">{combination.quantity}</td>
+                                                <td className="col-1">
+                                                    <input type="text" className="form-control w-100 f-disabled" value={combination.price || ''} disabled />
+                                                </td>
+                                                <td className="col-2">
+                                                    <input type="text" className="form-control w-100" value={combination.sku || ''} disabled />
+                                                </td>
+                                                <td className="col-2">
+                                                    <input type="text" className="form-control w-100" value={combination.ean || ''} disabled />
+                                                </td>
+                                                <td className="col-1">
+                                                    <input type="number" className="form-control w-100" value={combination.quantity || ''} disabled />
+                                                </td>
                                             </>
                                         )}
                                         <td className="col-1 text-center">

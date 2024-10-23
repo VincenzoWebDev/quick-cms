@@ -1,10 +1,7 @@
-import { useSelector } from "react-redux";
-import { GalleryImages } from "../Index";
+import { ProductGallery } from "../Index";
 import GalleryUpload from "../GalleryUpload";
 
-const ImagesTab = ({ ThumbChanged, GalleryChanged }) => {
-    const productImages = useSelector((state) => state.product.productImages);
-
+const ImagesTab = ({ productImages, ThumbChanged, GalleryChanged }) => {
     const handleThumbChange = (e) => {
         const file = e.target.files[0];
         ThumbChanged(file);
@@ -21,16 +18,11 @@ const ImagesTab = ({ ThumbChanged, GalleryChanged }) => {
                 <input type="file" name="thumbnail" id="thumbnail" className="form-control" onChange={handleThumbChange} />
             </div>
             <div className="mb-3">
-                <label className="form-label fw-bold">Immagini</label>
+                <label className="form-label fw-bold">Inserisci immagini</label>
                 <GalleryUpload handleGalleryChange={handleGalleryChange} />
             </div>
-            {
-                productImages.length > 0 &&
-                <div className="mb-3">
-                    <label className="form-label fw-bold">Immagini inserite</label>
-                    <GalleryImages />
-                </div>
-            }
+            {productImages == null ? null :
+                productImages.length > 0 && <ProductGallery productImages={productImages} />}
         </div>
     )
 }

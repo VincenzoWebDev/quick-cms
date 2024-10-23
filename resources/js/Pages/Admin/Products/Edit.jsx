@@ -1,74 +1,71 @@
-import { Link, router, usePage } from '@inertiajs/react';
+import { Link, router, useForm, usePage } from '@inertiajs/react';
 import Layout from '@/Layouts/Admin/Layout';
 import { BASE_URL } from '@/constants/constants';
 import { ImagesTab, InfoTab, InputErrors, ProductTabs, SeoTab, VariantsTab } from "@/components/Admin/Index";
-import { useDispatch, useSelector } from 'react-redux';
-import { getErrors, getProductImages, resetProductInfo, setCategories, setGallery, setInitialProductData, setProductInfo, setThumb } from '@/redux/productSlice';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-
-const ProductEdit = () => {
-    const {product, categories, selectedCategories, productImages, variants, variantColors, variantSizes, variantCombinationsGroup } = usePage().props;
-    const dispatch = useDispatch();
-    const productData = useSelector(state => state.product.product);
-    const errors = useSelector((state) => state.product.errors);
-    const variantCombinations = useSelector((state) => state.product.variantCombinations);
-
+const ProductEdit = ({ product, categories, selectedCategories, productImages, variants, variantCombinationsGroup }) => {
+    const { data, setData } = useForm({
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        stock: product.stock,
+        categories: selectedCategories,
+        image_path: null,
+        gallery: [],
+        variantCombinations: [],
+    });
+    const { errors } = usePage().props;
     useEffect(() => {
-        dispatch(getProductImages(productImages));
-        dispatch(getErrors([]));
-    }, []);
-
-    useEffect(() => {
-        dispatch(setInitialProductData(product));
-        dispatch(setCategories(selectedCategories));
-    }, [product]);
+        if (variantCombinationsGroup != '') {
+            // Calcola e aggiorna lo stock globale quando cambiano le combinazioni
+            const totalStock = variantCombinationsGroup.reduce((total, combination) => total + combination.quantity, 0);
+            setData('stock', totalStock); // Aggiorna lo stato dello stock globale
+        }
+    }, [variantCombinationsGroup]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        dispatch(setProductInfo({ [name]: value }));
+        setData(name, value);
     };
 
     const handleCatsChange = (cats) => {
-        dispatch(setCategories(cats));
+        setData('categories', cats);
     }
 
     const handleThumbChange = (file) => {
         if (file) {
-            dispatch(setThumb(file));
+            setData('image_path', file);
         } else {
-            dispatch(setThumb(null));
+            setData('image_path', null);
         }
     }
 
     const handleGalleryChange = (files) => {
         if (Array.from(files).length === 1) {
-            dispatch(setGallery(files));
+            setData('gallery', files);
         } else if (Array.from(files).length > 1) {
-            dispatch(setGallery(files));
+            setData('gallery', files);
         } else {
-            dispatch(setGallery(null));
+            setData('gallery', []);
         }
     }
+
+    const setVariantCombinations = (combinations) => {
+        setData('variantCombinations', combinations);
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault();
         router.post(route('products.update', product.id), {
-            ...productData,
-            variantCombinations,
+            ...data,
             _method: 'patch',
             forceFormData: true,
-        }, {
             onSuccess: () => {
-                dispatch(resetProductInfo());
-                dispatch(setCategories([]));
-                dispatch(getErrors([]));
-            },
-            onError: (errors) => {
-                dispatch(getErrors(errors));
+                reset();
             }
         });
-    }
-
+    };
     return (
         <>
             <Layout>
@@ -80,9 +77,9 @@ const ProductEdit = () => {
                     <div className="col-md-8">
                         <form onSubmit={handleSubmit} encType="multipart/form-data">
                             <div className="tab-content" id="myTabContent">
-                                <InfoTab data={productData} handleChange={handleChange} categories={categories} selectedCategories={selectedCategories} handleCatsChange={handleCatsChange} />
-                                <ImagesTab ThumbChanged={handleThumbChange} GalleryChanged={handleGalleryChange} />
-                                <VariantsTab variants={variants} variantColors={variantColors} variantSizes={variantSizes} variantCombinationsGroup={variantCombinationsGroup} />
+                                <InfoTab data={data} handleChange={handleChange} categories={categories} selectedCategories={selectedCategories} handleCatsChange={handleCatsChange} />
+                                <ImagesTab ThumbChanged={handleThumbChange} GalleryChanged={handleGalleryChange} productImages={productImages} />
+                                <VariantsTab variants={variants} setVariantCombinations={setVariantCombinations} variantCombinationsGroup={variantCombinationsGroup} />
                                 <SeoTab />
                             </div>
 

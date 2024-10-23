@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers\Front;
 
+use App\Http\Requests\CheckoutRequest;
 use App\Models\CartItem;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\ShippingAddress;
 use App\Models\ShippingMethod;
 use App\Models\User;
+use App\Models\VariantCombinationValue;
 use App\Notifications\NewOrderNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class CheckoutController extends \App\Http\Controllers\Controller
@@ -23,23 +26,23 @@ class CheckoutController extends \App\Http\Controllers\Controller
 
     public function index()
     {
-        $cartItems = CartItem::with('product')->where('user_id', auth()->id())->get();
-        if ($cartItems->isEmpty()) {
+        $user = Auth::user();
+        $cartItems = CartItem::where('user_id', $user->id)
+            ->with('product', 'VariantCombination.variantCombinationValues.productVariantValue')
+            ->get();
 
-            $messaggio = 'Carrello vuoto!';
-            $tipoMessaggio = 'warning';
-            session()->flash('message', ['tipo' => $tipoMessaggio, 'testo' => $messaggio]);
-            return redirect()->route('cart.index');
+        if ($cartItems->isEmpty()) {
+            return;
         } else {
             $shippingMethods = ShippingMethod::all();
-            return Inertia::render('Front/Themes/'.$this->themeName.'/Checkout', [
+            return Inertia::render('Front/Themes/' . $this->themeName . '/Checkout', [
                 'cartItems' => $cartItems,
                 'shippingMethods' => $shippingMethods,
             ]);
         }
     }
 
-    public function store(Request $request)
+    public function store(CheckoutRequest $request)
     {
         $order = new Order();
         $order->user_id = auth()->id();
@@ -79,7 +82,7 @@ class CheckoutController extends \App\Http\Controllers\Controller
 
     public function payment(Request $request)
     {
-        return Inertia::render('Front/Themes/'.$this->themeName.'/Payment', [
+        return Inertia::render('Front/Themes/' . $this->themeName . '/Payment', [
             'orderId' => $request->orderId
         ]);
     }

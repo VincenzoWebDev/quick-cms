@@ -28,7 +28,7 @@ import VariantsTab from "./Products/VariantsTab";
 import SeoTab from "./Products/SeoTab";
 import InfoTab from "./Products/InfoTab";
 import GalleryUpload from "./GalleryUpload";
-import GalleryImages from "./Products/GalleryImages";
+import ProductGallery from "./Products/ProductGallery";
 import HeaderTitle from "./HeaderTitle";
 import { OrderDelete, OrderDeleteSelected } from "./Orders/OrderDelete";
 import OrderShowDetails from "./Orders/OrderShowDetails";
@@ -53,6 +53,6 @@ export {
     CategoryCombo, PhotoFileUpload, Sidebar, Topbar, CategoryDelete, CategoryDeleteSelected,
     UsersDelete, UsersDeleteSelected, AlbumDelete, AlbumDeleteSelected, AlbumCategoryDelete, AlbumCategoryDeleteSelected,
     PageDelete, PageDeleteSelected, ProductDelete, ProductDeleteSelected, ProductTabs, ImagesTab, VariantsTab, SeoTab,
-    InfoTab, GalleryUpload, GalleryImages, HeaderTitle, OrderDelete, OrderDeleteSelected, OrderShowDetails, AlbumTabs,
+    InfoTab, GalleryUpload, ProductGallery, HeaderTitle, OrderDelete, OrderDeleteSelected, OrderShowDetails, AlbumTabs,
     AlbumGallery, OrdersContentTable, SearchAndPerPageSelector, UserPagination, UserRow, ProductRow, OrderRow
 }

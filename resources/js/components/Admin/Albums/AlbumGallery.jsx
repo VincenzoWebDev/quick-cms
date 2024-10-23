@@ -68,7 +68,7 @@ const AlbumGallery = ({ photos }) => {
                         <div className="col-md-2" key={photo.id}>
                             <div className="card">
                                 <a data-fancybox="gallery" href={STORAGE_URL + photo.img_path} className="d-block">
-                                    <img src={STORAGE_URL + photo.img_path} alt={photo.name} className="card-img-top" />
+                                    <img src={STORAGE_URL + photo.img_path} alt={photo.name} title={photo.name} className="card-img-top" />
                                 </a>
                                 <div className="card-body p-2 d-flex justify-content-between align-items-center">
                                     <div className="form-check d-flex justify-content-center align-items-center">

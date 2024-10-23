@@ -14,7 +14,7 @@ const AlbumEdit = ({ album, categories, selectedCategory }) => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setData(name, value);;
+        setData(name, value);
     }
 
     const handleCatsChange = (cats) => {
@@ -73,13 +73,10 @@ const AlbumEdit = ({ album, categories, selectedCategory }) => {
                                 <div className="tab-pane fade show" id="img-tab-pane" role="tabpanel" aria-labelledby="img-tab" tabIndex="0">
                                     <AlbumThumbUpload album={album} handleThumbChange={handleThumbChange} />
                                     <div className="mb-3">
-                                        <label className="form-label fw-bold">Immagini</label>
+                                        <label className="form-label fw-bold">Inserisci immagini</label>
                                         <GalleryUpload handleGalleryChange={handleGalleryChange} />
                                     </div>
-                                    {
-                                        album.photos.length > 0 &&
-                                        <AlbumGallery photos={album.photos} />
-                                    }
+                                    {album.photos.length > 0 && <AlbumGallery photos={album.photos} />}
                                 </div>
                             </div>
 

@@ -22,7 +22,7 @@ class UserProfileController extends \App\Http\Controllers\Controller
 
     public function login()
     {
-        return Inertia::render('Front/' . $this->themeName . '/UserProfile/Login');
+        return Inertia::render('Front/Themes/' . $this->themeName . '/UserProfile/Login');
     }
     public function loginPost(Request $request)
     {

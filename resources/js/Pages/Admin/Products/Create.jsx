@@ -1,61 +1,56 @@
-import { Link, useForm, router } from '@inertiajs/react';
+import { Link, useForm } from '@inertiajs/react';
 import Layout from '@/Layouts/Admin/Layout';
 import { ImagesTab, InputErrors, ProductTabs, VariantsTab, SeoTab, InfoTab } from "@/components/Admin/Index";
-import { useDispatch, useSelector } from 'react-redux';
-import { setProductInfo, setCategories, setThumb, getErrors, resetProductInfo, setGallery, getProductImages } from '@/redux/productSlice';
-import { useEffect } from 'react';
 
-const ProductCreate = ({ categories, selectedCategories, variants, variantColors, variantSizes }) => {
-    const dispatch = useDispatch();
-    const product = useSelector((state) => state.product.product);
-    const errors = useSelector((state) => state.product.errors);
-    const variantCombinations = useSelector((state) => state.product.variantCombinations);
-
-    useEffect(() => {
-        dispatch(resetProductInfo());
-        dispatch(setCategories([]));
-        dispatch(getProductImages([]));
-        dispatch(getErrors([]));
-    }, []);
+const ProductCreate = ({ categories, selectedCategories, variants }) => {
+    const { data, setData, post, processing, errors, reset } = useForm({
+        name: '',
+        description: '',
+        price: '',
+        stock: '' || 0,
+        categories: [],
+        image_path: null,
+        gallery: [],
+        variantCombinations: [],
+    });
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        dispatch(setProductInfo({ [name]: value }));
+        setData(name, value);
     };
 
     const handleCatsChange = (cats) => {
-        dispatch(setCategories(cats));
+        setData('categories', cats);
     }
 
     const handleThumbChange = (file) => {
         if (file) {
-            dispatch(setThumb(file));
+            setData('image_path', file);
         } else {
-            dispatch(setThumb(null));
+            setData('image_path', null);
         }
-    };
+    }
 
     const handleGalleryChange = (files) => {
         if (Array.from(files).length === 1) {
-            dispatch(setGallery(files));
+            setData('gallery', files);
         } else if (Array.from(files).length > 1) {
-            dispatch(setGallery(files));
+            setData('gallery', files);
         } else {
-            dispatch(setGallery(null));
+            setData('gallery', []);
         }
+    }
+
+    const setVariantCombinations = (combinations) => {
+        setData('variantCombinations', combinations);
     }
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        router.post(route('products.store'), { ...product, variantCombinations }, {
+        post(route('products.store'), {
             onSuccess: () => {
-                dispatch(resetProductInfo());
-                dispatch(setCategories([]));
-                dispatch(getErrors([]));
+                reset();
             },
-            onError: (errors) => {
-                dispatch(getErrors(errors));
-            }
         });
     };
 
@@ -69,14 +64,14 @@ const ProductCreate = ({ categories, selectedCategories, variants, variantColors
                 <div className="col-md-8">
                     <form onSubmit={handleSubmit} encType="multipart/form-data">
                         <div className="tab-content" id="myTabContent">
-                            <InfoTab data={product} handleChange={handleChange} categories={categories} selectedCategories={selectedCategories} handleCatsChange={handleCatsChange} />
+                            <InfoTab data={data} handleChange={handleChange} categories={categories} selectedCategories={selectedCategories} handleCatsChange={handleCatsChange} />
                             <ImagesTab ThumbChanged={handleThumbChange} GalleryChanged={handleGalleryChange} />
-                            <VariantsTab variants={variants} variantColors={variantColors} variantSizes={variantSizes} />
+                            <VariantsTab variants={variants} setVariantCombinations={setVariantCombinations} />
                             <SeoTab />
                         </div>
 
                         <div className="mb-3">
-                            <button className="btn cb-primary me-3">Inserisci</button>
+                            <button className="btn cb-primary me-3" disabled={processing}>{processing ? "In corso..." : "Inserisci"}</button>
                             <Link href={route('products.index')} className="btn btn-secondary">Torna indietro</Link>
                         </div>
                     </form>

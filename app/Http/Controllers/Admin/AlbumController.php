@@ -274,17 +274,4 @@ class AlbumController extends \App\Http\Controllers\Controller
             return false;
         }
     }
-
-    public function getPhotos($id)
-    {
-
-        $album = Album::find($id);
-        $photos = Photo::where("album_id", $id)->latest()->get();
-        // return view('admin.images.album-images', compact('album', 'photos'));
-
-        return Inertia::render('Admin/Photos/AlbumPhotosContent', [
-            'album' => $album,
-            'photos' => $photos
-        ]);
-    }
 }

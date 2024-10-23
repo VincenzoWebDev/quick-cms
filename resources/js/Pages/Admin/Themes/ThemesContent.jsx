@@ -3,6 +3,7 @@ import { Link, useForm, router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import AlertErrors from '@/components/Admin/AlertErrors';
 import { BASE_URL } from "@/constants/constants";
+import { ButtonDelete } from "@/components/Admin/Index";
 
 const ThemesContent = ({ themes, flash }) => {
     const [message, setMessage] = useState(flash.message);
@@ -119,15 +120,15 @@ const ThemesContent = ({ themes, flash }) => {
                                     <th scope="col">Id</th>
                                     <th scope="col">Nome team</th>
                                     <th scope="col">Stato</th>
-                                    <th scope="col">Operazioni</th>
+                                    <th scope="col" className="text-center">Operazioni</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {
                                     themes.map((theme) => {
                                         return (
-                                            <tr key={theme.id}>
-                                                <th scope="row" className='col-md-1'>
+                                            <tr key={theme.id} className="align-middle">
+                                                <th scope="row" className='col-md-2'>
                                                     <div className="form-check d-flex justify-content-center align-items-center">
                                                         <input className="form-check-input" type="checkbox" value={theme.id}
                                                             onChange={(e) => handleCheckboxChange(e, theme.id)}
@@ -136,27 +137,16 @@ const ThemesContent = ({ themes, flash }) => {
                                                 </th>
                                                 <th scope="row" className='col-md-2'>{theme.id}</th>
                                                 <td className='col-md-3'>{theme.name}</td>
-                                                <td scope="row">
+                                                <td scope="row" className="com-md-2">
                                                     <div className="form-check form-switch">
                                                         <input className="form-check-input" type="checkbox" role="switch"
                                                             id={`flexSwitchCheckDefault${theme.id}`} style={{ width: '40px', height: '20px' }}
                                                             data-theme-id={theme.id} checked={theme.active} onChange={handleSwitchChange} />
                                                     </div>
                                                 </td>
-                                                <td className='col-md-3'>
-                                                    <Link href={route('themes.edit', theme.id)} className="btn px-2">
-                                                        <div className="over-icon">
-                                                            <img src={`${BASE_URL}img/icons/edit.png`} alt="edit" width={40} className="original" />
-                                                            <img src={`${BASE_URL}img/icons/edit-over.png`} alt="edit" width={40} className='overized' />
-                                                        </div>
-                                                    </Link>
+                                                <td className='col-md-3 text-center'>
                                                     <form onSubmit={handleSubmit} id={theme.id} className='d-inline'>
-                                                        <button className="btn px-2">
-                                                            <div className="over-icon">
-                                                                <img src={`${BASE_URL}img/icons/delete.png`} alt="delete" width={40} className="original" />
-                                                                <img src={`${BASE_URL}img/icons/delete-over.png`} alt="delete" width={40} className='overized' />
-                                                            </div>
-                                                        </button>
+                                                        <ButtonDelete url={BASE_URL} />
                                                     </form>
                                                 </td>
                                             </tr>

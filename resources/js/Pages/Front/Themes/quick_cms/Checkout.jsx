@@ -1,4 +1,4 @@
-import { CheckoutHeader } from "@/components/Front/Index";
+import { CheckoutHeader, InputErrors } from "@/components/Front/Index";
 import { STORAGE_URL } from "@/constants/constants";
 import FrontLayout from "@/Layouts/FrontLayout";
 import { useForm, usePage } from "@inertiajs/react";
@@ -74,6 +74,7 @@ const Checkout = ({ cartItems, shippingMethods }) => {
                                             </div>)}
                                     </div>
                                 </div>
+                                <InputErrors errors={errors} />
 
                                 {/* Checkout */}
                                 <div className="card shadow-0 border">
@@ -116,7 +117,7 @@ const Checkout = ({ cartItems, shippingMethods }) => {
 
                                         <hr className="my-4" />
 
-                                        <h5 className="card-title mb-3">Informazioni spedizione</h5>
+                                        <h5 className="card-title mb-3">Metodo di spedizione</h5>
 
                                         <div className="row mb-3">
                                             {shippingMethods.map((shipping) => (
@@ -233,10 +234,12 @@ const Checkout = ({ cartItems, shippingMethods }) => {
                                                 />
                                             </div>
                                             <div>
-                                                <a href="#" className="nav-link">
+                                                <span className="d-block">
                                                     {product.product.name} <br />
-                                                    {product.color + ',' + product.size}
-                                                </a>
+                                                    {product.variant_combination.variant_combination_values.map(variant => (
+                                                        variant.product_variant_value.value)
+                                                    ).join(', ')}
+                                                </span>
                                                 <div className="price text-muted">Totale: {product.quantity * product.price}</div>
                                             </div>
                                         </div>

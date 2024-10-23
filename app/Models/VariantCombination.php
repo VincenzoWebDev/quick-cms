@@ -9,8 +9,12 @@ class VariantCombination extends Model
 {
     use HasFactory;
 
-    public function variantValues()
+    public function variantCombinationValues()
     {
-        return $this->hasMany(VariantCombinationValue::class, 'variant_combination_id');
+        return $this->hasMany(VariantCombinationValue::class);
+    }
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
     }
 }

@@ -60,16 +60,12 @@ class ProductController extends \App\Http\Controllers\Controller
     public function create()
     {
         $categories = Category::orderBy('name', 'asc')->get();
-        $variants = ProductVariant::orderBy('name', 'asc')->get();
-        $variantColors = ProductVariantValue::where('product_variant_id', 1)->orderBy('id', 'asc')->get();
-        $variantSizes = ProductVariantValue::where('product_variant_id', 2)->orderBy('id', 'asc')->get();
+        $variants = ProductVariant::orderBy('name', 'asc')->with('values')->get();
 
         return Inertia::render('Admin/Products/Create', [
             'categories' => $categories,
             'selectedCategories' => [],
             'variants' => $variants,
-            'variantColors' => $variantColors,
-            'variantSizes' => $variantSizes,
         ]);
     }
 
@@ -111,10 +107,49 @@ class ProductController extends \App\Http\Controllers\Controller
         return redirect()->route('products.index');
     }
 
+    // public function processVariantCombinations($combinations, $productId)
+    // {
+    //     $stock = DB::table('products')->where('id', $productId)->value('stock');
+    //     foreach ($combinations as $combination) {
+    //         $combinationId = DB::table('variant_combinations')->insertGetId([
+    //             'product_id' => $productId,
+    //             'price' => $combination['price'],
+    //             'sku' => $combination['sku'],
+    //             'ean' => $combination['ean'],
+    //             'quantity' => $combination['quantity'],
+    //         ]);
+    //         // Inserisci nelle varianti collegate
+    //         // $colorId = DB::table('product_variant_values')->where('value', $combination['color'])->value('id');
+    //         // $sizeId = DB::table('product_variant_values')->where('value', $combination['size'])->value('id');
+
+    //         // Associa la combinazione a taglia e colore
+    //         if ($combination['color_id'] != null && $combination['size_id'] != null) {
+    //             DB::table('variant_combination_values')->insert([
+    //                 ['variant_combination_id' => $combinationId, 'product_variant_value_id' => $combination['color_id']],
+    //                 ['variant_combination_id' => $combinationId, 'product_variant_value_id' => $combination['size_id']]
+    //             ]);
+    //         } else if ($combination['color_id'] != null) {
+    //             DB::table('variant_combination_values')->insert([
+    //                 ['variant_combination_id' => $combinationId, 'product_variant_value_id' => $combination['color_id']]
+    //             ]);
+    //         } else if ($combination['size_id'] != null) {
+    //             DB::table('variant_combination_values')->insert([
+    //                 ['variant_combination_id' => $combinationId, 'product_variant_value_id' => $combination['size_id']]
+    //             ]);
+    //         }
+
+    //         $stock += $combination['quantity'];
+    //     }
+    //     DB::table('products')->where('id', $productId)->update(['stock' => $stock]);
+    // }
+
     public function processVariantCombinations($combinations, $productId)
     {
+        // Recupera lo stock corrente del prodotto
         $stock = DB::table('products')->where('id', $productId)->value('stock');
+
         foreach ($combinations as $combination) {
+            // Inserisci la combinazione nel database con prezzo, sku, ean e quantità
             $combinationId = DB::table('variant_combinations')->insertGetId([
                 'product_id' => $productId,
                 'price' => $combination['price'],
@@ -122,20 +157,37 @@ class ProductController extends \App\Http\Controllers\Controller
                 'ean' => $combination['ean'],
                 'quantity' => $combination['quantity'],
             ]);
-            // Inserisci nelle varianti collegate
-            $colorId = DB::table('product_variant_values')->where('value', $combination['color'])->value('id');
-            $sizeId = DB::table('product_variant_values')->where('value', $combination['size'])->value('id');
 
-            // Associa la combinazione a taglia e colore
-            DB::table('variant_combination_values')->insert([
-                ['variant_combination_id' => $combinationId, 'product_variant_value_id' => $colorId],
-                ['variant_combination_id' => $combinationId, 'product_variant_value_id' => $sizeId]
-            ]);
+            // Itera su tutte le chiavi di combinazione che iniziano con "variant_"
+            foreach ($combination as $key => $value) {
+                if (strpos($key, 'variant_') === 0) {
+                    // Estrai l'ID della variante dal nome della chiave (es: "variant_1" diventa 1)
+                    $variantId = str_replace('variant_', '', $key);
 
+                    // Recupera l'ID del valore della variante dal database in base al valore (es: "rosso", "L", ecc.)
+                    $variantValueId = DB::table('product_variant_values')
+                        ->where('product_variant_id', $variantId)
+                        ->where('value', $value)
+                        ->value('id');
+
+                    // Associa la combinazione al valore della variante
+                    if ($variantValueId) {
+                        DB::table('variant_combination_values')->insert([
+                            'variant_combination_id' => $combinationId,
+                            'product_variant_value_id' => $variantValueId,
+                        ]);
+                    }
+                }
+            }
+
+            // Aggiungi la quantità della combinazione allo stock totale del prodotto
             $stock += $combination['quantity'];
         }
+
+        // Aggiorna lo stock totale del prodotto nel database
         DB::table('products')->where('id', $productId)->update(['stock' => $stock]);
     }
+
 
     public function edit(Product $product)
     {
@@ -144,9 +196,7 @@ class ProductController extends \App\Http\Controllers\Controller
         $categories = Category::orderBy('name', 'asc')->get();
         $selectedCategories = $product->categories->pluck('id')->toArray();
         $productImages = $product->productImages;
-        $variants = ProductVariant::orderBy('name', 'asc')->get();
-        $variantColors = ProductVariantValue::where('product_variant_id', 1)->orderBy('id', 'asc')->get();
-        $variantSizes = ProductVariantValue::where('product_variant_id', 2)->orderBy('id', 'asc')->get();
+        $variants = ProductVariant::orderBy('name', 'asc')->with('values')->get();
 
         if ($dbDriver === 'mysql') {
             $variantCombinationsGroup = VariantCombination::from('variant_combinations as vc')
@@ -210,8 +260,6 @@ class ProductController extends \App\Http\Controllers\Controller
             'selectedCategories' => $selectedCategories,
             'productImages' => $productImages,
             'variants' => $variants,
-            'variantColors' => $variantColors,
-            'variantSizes' => $variantSizes,
             'variantCombinationsGroup' => $variantCombinationsGroup,
         ]);
     }
@@ -273,7 +321,7 @@ class ProductController extends \App\Http\Controllers\Controller
         }
         if ($product->combinations()->count() > 0) {
             $product->combinations->each(function ($combination) {
-                $combination->variantValues()->delete();
+                $combination->variantCombinationValues()->delete();
             });
             $product->combinations()->delete();
         }
@@ -300,7 +348,7 @@ class ProductController extends \App\Http\Controllers\Controller
             }
             if ($product->combinations()->count() > 0) {
                 $product->combinations->each(function ($combination) {
-                    $combination->variantValues()->delete();
+                    $combination->variantCombinationValues()->delete();
                 });
                 $product->combinations()->delete();
             }
@@ -308,6 +356,32 @@ class ProductController extends \App\Http\Controllers\Controller
             if ($res) {
                 $this->deleteThumb($productThumb);
                 $this->deleteGallery($productGallery);
+            }
+        }
+    }
+
+    public function imagesDestroy(ProductImage $productImage)
+    {
+        if (!$productImage) {
+            return false;
+        }
+        $res = $productImage->delete();
+        if ($res) {
+            $this->deleteImage($productImage);
+        }
+    }
+    public function imagesDestroyBatch(Request $request)
+    {
+        dd($request->all());
+        $recordIds = $request->input('recordIds');
+        if ($recordIds == null) {
+            return;
+        }
+        foreach ($recordIds as $recordId) {
+            $productImage = ProductImage::findOrFail($recordId);
+            $res = $productImage->delete();
+            if ($res) {
+                $this->deleteImage($productImage);
             }
         }
     }
@@ -392,6 +466,24 @@ class ProductController extends \App\Http\Controllers\Controller
         }
     }
 
+    public function deleteImage($productImage)
+    {
+        $disk = env('IMG_DISK');
+        if ($productImage->image_path && Storage::disk($disk)->exists($productImage->image_path)) {
+            $fileDeleted = Storage::disk($disk)->delete($productImage->image_path);
+
+            $folderPathImg = dirname($productImage->image_path);
+
+            $filesInFolderImg = Storage::disk($disk)->files($folderPathImg);
+            if (empty($filesInFolderImg)) {
+                Storage::disk($disk)->deleteDirectory($folderPathImg);
+            }
+
+            return $fileDeleted;
+        }
+        return false;
+    }
+
     public function createThumbnail($filePath)
     {
         try {
@@ -409,7 +501,6 @@ class ProductController extends \App\Http\Controllers\Controller
     {
         $combination = VariantCombination::find($id);
         $product = Product::find($combination->product_id);
-        $combination->variantValues()->delete();
         $combination->delete();
         if ($product->combinations->count() == 0) {
             $product->stock = 0;

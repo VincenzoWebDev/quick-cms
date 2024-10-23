@@ -49,7 +49,7 @@ class PhotoController extends \App\Http\Controllers\Controller
         }
     }
 
-    public function deleteFile(Photo $photo)
+    public function deleteFile($photo)
     {
         $disk = env('IMG_DISK');
         if ($photo->img_path && Storage::disk($disk)->exists($photo->img_path) && $photo->thumb_path && Storage::disk($disk)->exists($photo->thumb_path)) {

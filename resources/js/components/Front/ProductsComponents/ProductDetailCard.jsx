@@ -1,99 +1,104 @@
 import { InputErrors } from "@/components/Front/Index";
 import { useForm, usePage } from "@inertiajs/react";
-import { useState } from "react";
-import Swal from 'sweetalert2'
-import withReactContent from 'sweetalert2-react-content'
+import { useState, useEffect } from "react";
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
-const ProductDetailCard = ({ product, variantCombinationsGroup }) => {
+const ProductDetailCard = ({ product }) => {
     const { user_auth } = usePage().props;
     const MySwal = withReactContent(Swal);
-    const [selectedColor, setSetelectedColor] = useState(null);
-    const [selectedSize, setSetelectedSize] = useState(null);
-    const [availableQuantity, setAvailableQuantity] = useState(0);
+    const [selectedVariants, setSelectedVariants] = useState({});
+    const [availableQuantity, setAvailableQuantity] = useState(null); // Imposta null per nascondere inizialmente
     const { post, data, setData, errors } = useForm({
         product_id: product.id,
         price: product.price,
-        color: null,
-        size: null,
         quantity: 1,
-        combination_id: null,
+        max_quantity: '',
+        combination_id: '',
     });
 
-    const getColors = () => {
-        let colors = [];
-        variantCombinationsGroup.map((combination, index) => (
-            colors[index] = combination.variant_value.split(',')[0]
-        ));
-        return colors = [...new Set(colors)];
-    }
+    // Effettua il controllo ogni volta che le varianti selezionate cambiano
+    useEffect(() => {
+        // Controlla se tutte le varianti necessarie sono state selezionate
+        // const allVariantsSelected = Object.keys(selectedVariants).length === product.combinations.length;
+        const variantCount = new Set(
+            product.combinations
+                .flatMap(combination =>
+                    combination.variant_combination_values.map(v => v.product_variant_value?.product_variant_id)
+                )
+        ).size;
+        // Verifica se tutte le varianti sono selezionate
+        const allVariantsSelected = Object.keys(selectedVariants).length === variantCount;
 
-    const getSizes = () => {
-        let sizes = [];
-        variantCombinationsGroup.map((combination, index) => (
-            sizes[index] = combination.variant_value.split(',')[1]
-        ));
-        return sizes = [...new Set(sizes)];
-    }
-
-    const handleCombinationChange = (size, color) => {
-        setSetelectedColor(color);
-        setSetelectedSize(size);
-
-        const combination = variantCombinationsGroup.find((combination) => {
-            return combination.variant_value.split(',')[0] === color && combination.variant_value.split(',')[1] === size
-        })
-
-        if (combination) {
-            setData({
-                ...data,
-                color: color,
-                size: size,
-                max_quantity: combination.quantity,
-                combination_id: combination.combination_id,
+        if (allVariantsSelected) {
+            // Trova la combinazione corrispondente in base alle selezioni
+            const combination = product.combinations?.find((comb) => {
+                return Object.entries(selectedVariants).every(([variantId, value]) => {
+                    return comb.variant_combination_values.some(v =>
+                        v.product_variant_value?.product_variant_id === parseInt(variantId) &&
+                        v.product_variant_value?.value === value
+                    );
+                });
             });
-            setAvailableQuantity(combination.quantity);
+            // Se la combinazione esiste, aggiorna la quantità disponibile e il combination_id
+            if (combination) {
+                setData({
+                    ...data,
+                    combination_id: combination.id, // Imposta il combination_id
+                    max_quantity: combination.quantity, // Imposta la quantità massima
+                });
+                setAvailableQuantity(combination.quantity); // Mostra la quantità disponibile
+            } else {
+                setAvailableQuantity(0); // Nessuna combinazione trovata, quindi quantità a zero
+            }
         } else {
-            setAvailableQuantity(0);
+            setAvailableQuantity(null); // Non tutte le varianti sono state selezionate
         }
-    }
+    }, [selectedVariants, product.combinations]);
 
+    // Gestione del cambiamento della selezione delle varianti
+    const handleVariantChange = (variantId, value) => {
+        setSelectedVariants(prev => ({
+            ...prev,
+            [variantId]: value, // Aggiorna la variante selezionata
+        }));
+    };
+    // Gestione dell'aggiunta al carrello
     const handleAddCard = () => {
         if (user_auth) {
             post(route('cart.add'), {
                 onSuccess: (res) => {
-                    setData({
-                        ...data,
-                        color: null,
-                        size: null,
-                        quantity: 1,
-                    });
-                    if (res.props.flash.message != null) {
-                        setSetelectedColor(null);
-                        setSetelectedSize(null);
-                        setAvailableQuantity(0);
-                    } else {
+                    if (res.props.flash.message) {
                         MySwal.fire({
-                            title: 'Prodotto aggiunto al carrelo',
+                            title: 'Quantità massima raggiunta',
+                            icon: 'error',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    } else {
+                        setData({
+                            ...data,
+                            quantity: 1,
+                        });
+                        MySwal.fire({
+                            title: 'Prodotto aggiunto al carrello',
                             icon: 'success',
                             showConfirmButton: false,
                             timer: 1500
                         });
+                        setAvailableQuantity(null); // Resetta la quantità disponibile
                     }
-                    setSetelectedColor(null);
-                    setSetelectedSize(null);
-                    setAvailableQuantity(0);
                 },
             });
-        }
-        else {
+        } else {
             MySwal.fire({
-                title: 'Devi essere loggato per aggiungere un prodotto al carrelo',
+                title: 'Devi essere loggato per aggiungere un prodotto al carrello',
                 icon: 'error',
                 showConfirmButton: false,
                 timer: 1500
             });
         }
-    }
+    };
 
     return (
         <div className="col-md-6 card p-4">
@@ -104,36 +109,49 @@ const ProductDetailCard = ({ product, variantCombinationsGroup }) => {
             <p>In stock</p>
             <p>Spedizione gratuita</p>
             <div className="d-flex align-items-center">
-                <button className="btn btn-success me-2" onClick={handleAddCard}>Aggiungi al carrelo</button>
-                <button className="btn btn-primary">Compra ora</button>
+                <button className="btn btn-success me-2" onClick={handleAddCard} disabled={availableQuantity === null || availableQuantity === 0}>
+                    Aggiungi al carrello
+                </button>
+                {/* <button className="btn btn-primary">Compra ora</button> */}
             </div>
             <div className="row mt-3">
-                <div className="col-md-6">
-                    <h5>Taglia:</h5>
-                    <select className="form-select" aria-label="Default select example" onChange={(e) => handleCombinationChange(e.target.value, selectedColor)} value={selectedSize || ""}>
-                        <option>Seleziona una taglia</option>
-                        {getSizes().map((size) => (
-                            <option key={size} value={size}>
-                                {size}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-                <div className="col-md-6">
-                    <h5>Colore:</h5>
-                    <select className="form-select" aria-label="Default select example" onChange={(e) => handleCombinationChange(selectedSize, e.target.value)} value={selectedColor || ""}>
-                        <option>Seleziona un colore</option>
-                        {getColors().map((color) => (
-                            <option key={color} value={color}>
-                                {color}
-                            </option>
-                        ))}
-                    </select>
-                </div>
+                <label className="form-label fw-bold">Seleziona variante</label>
+                {product.combinations?.length > 0 &&
+                    // Riduci tutte le varianti dalle combinazioni
+                    Object.entries(
+                        product.combinations.reduce((variantOptions, combination) => {
+                            combination.variant_combination_values.forEach(v => {
+                                const variantId = v.product_variant_value?.product_variant_id;
+                                const variantValue = v.product_variant_value?.value;
+
+                                if (variantId) {
+                                    if (!variantOptions[variantId]) {
+                                        variantOptions[variantId] = new Set();
+                                    }
+                                    variantOptions[variantId].add(variantValue);
+                                }
+                            });
+                            return variantOptions;
+                        }, {})
+                    ).map(([variantId, values]) => (
+                        <div className="col-md-6" key={variantId}>
+                            <select
+                                className="form-select"
+                                onChange={(e) => handleVariantChange(variantId, e.target.value)}
+                                value={selectedVariants[variantId] || ""}
+                            >
+                                <option value="">Seleziona</option>
+                                {[...values].map(value => (
+                                    <option key={value} value={value}>{value}</option>
+                                ))}
+                            </select>
+                        </div>
+                    ))
+                }
             </div>
             <div className="mt-3">
                 {/* Quantità disponibile e input per selezione */}
-                {selectedSize && selectedColor && availableQuantity > 0 ? (
+                {availableQuantity > 0 ? (
                     <div className="quantity-selector">
                         <label htmlFor="quantity">Quantità Disponibile: {availableQuantity}</label>
                         <input
@@ -142,32 +160,22 @@ const ProductDetailCard = ({ product, variantCombinationsGroup }) => {
                             id="quantity"
                             min="1"
                             max={availableQuantity}
-                            defaultValue="1"
+                            value={data.quantity}
                             onChange={(e) => setData('quantity', e.target.value)}
                             onInput={(e) => {
-                                // Se il valore inserito è inferiore a 1, imposta 1
-                                if (e.target.value < 1) {
-                                    e.target.value = 1;
-                                }
-                                // Se il valore inserito è maggiore della quantità disponibile, imposta il massimo
-                                if (e.target.value > availableQuantity) {
-                                    e.target.value = availableQuantity;
-                                }
+                                const value = Math.max(1, Math.min(e.target.value, availableQuantity));
+                                setData('quantity', value);
                             }}
                         />
                     </div>
-                ) : selectedSize && selectedColor && availableQuantity <= 0 ? (
-                    <p>Prodotto esaurito per la combinazione selezionata.</p>
-                ) : selectedSize && !selectedColor ? (
-                    <p>Seleziona un colore per vedere la quantità disponibile.</p>
-                ) : !selectedSize && selectedColor ? (
-                    <p>Seleziona una taglia per vedere la quantità disponibile.</p>
+                ) : availableQuantity === 0 ? (
+                    <p>Combinazione non disponibile</p>
                 ) : (
-                    <p>Seleziona una taglia e un colore per vedere la quantità disponibile.</p>
+                    <p>Seleziona tutte le varianti per visualizzare la quantità disponibile</p>
                 )}
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default ProductDetailCard
+export default ProductDetailCard;
