@@ -1,9 +1,10 @@
 import Layout from "@/Layouts/Admin/Layout";
 import AlertErrors from '@/components/Admin/AlertErrors';
 import { useEffect, useState } from 'react';
-import { Line } from 'react-chartjs-2';
+import { Bar, Line } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
 import CardsHome from "@/components/Admin/CardsHome";
+import { STORAGE_URL } from "@/constants/constants";
 Chart.register(...registerables);
 
 const Home = (props) => {
@@ -38,17 +39,21 @@ const Home = (props) => {
                 }
             },
             y: {
-                beginAtZero: false
+                beginAtZero: true
             }
-        }
+        },
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'top',
+            },
+        },
     };
 
-    const prepareChartData = () => {
+    const prepareLineChartData = () => {
         const labels = dataChart.map(entry => getMonthName(entry.month));
         const userCounts = dataChart.map(entry => entry.userCount);
         const albumCounts = dataChart.map(entry => entry.albumCount);
-        const productCounts = dataChart.map(entry => entry.productCount);
-        const orderCounts = dataChart.map(entry => entry.orderCount);
 
         return {
             labels: labels,
@@ -67,20 +72,6 @@ const Home = (props) => {
                     borderColor: 'rgb(255, 0, 153)',
                     tension: 0.1
                 },
-                {
-                    label: 'Prodotti',
-                    data: productCounts,
-                    fill: false,
-                    borderColor: 'rgb(56, 239, 125)',
-                    tension: 0.1
-                },
-                {
-                    label: 'Ordini',
-                    data: orderCounts,
-                    fill: false,
-                    borderColor: 'rgb(255, 186, 86)',
-                    tension: 0.1
-                }
             ]
         };
     };
@@ -89,6 +80,32 @@ const Home = (props) => {
         const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         return monthNames[month - 1];
     };
+
+    const prepareBarChartData = () => {
+        const labels = dataChart.map(entry => getMonthName(entry.month));
+        const productCounts = dataChart.map(entry => entry.productCount);
+        const orderCounts = dataChart.map(entry => entry.orderCount);
+
+        return {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Prodotti',
+                    data: productCounts,
+                    fill: false,
+                    backgroundColor: 'rgb(56, 239, 125)',
+                    tension: 0.1
+                },
+                {
+                    label: 'Ordini',
+                    data: orderCounts,
+                    fill: false,
+                    backgroundColor: 'rgb(255, 186, 86)',
+                    tension: 0.1
+                },
+            ]
+        };
+    }
 
     return (
         <Layout user_auth={user_auth}>
@@ -103,7 +120,7 @@ const Home = (props) => {
                     <div className="card shadow-2-strong" style={{ backgroundColor: '#f5f7fa' }}>
                         <div className="card-body">
                             <div className="bg-white p-3">
-                                <Line data={prepareChartData()} options={options} />
+                                <Line data={prepareLineChartData()} options={options} />
                             </div>
                         </div>
                     </div>
@@ -111,14 +128,27 @@ const Home = (props) => {
                 <div className='col-lg-6 col-md-12'>
                     <div className="card shadow-2-strong" style={{ backgroundColor: '#f5f7fa' }}>
                         <div className="card-body">
+                            <div className="bg-white p-3">
+                                <Bar data={prepareBarChartData()} options={options} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className="row">
+                <div className='col-lg-12 col-md-12'>
+                    <div className="card shadow-2-strong" style={{ backgroundColor: '#f5f7fa' }}>
+                        <div className="card-body">
                             <div className="table-responsive">
-                                <h4 className='text-center'>Ultimi 10 utenti registrati</h4>
+                                <h5 className='text-center'>Ultimi 10 utenti registrati</h5>
                                 <table className="table table-hover mb-0 p-1">
                                     <thead>
                                         <tr>
-                                            <th scope="col" className="text-center">ID</th>
-                                            <th scope="col">Name</th>
+                                            <th scope="col" className="text-center">#</th>
+                                            <th scope="col">Utente</th>
                                             <th scope="col">Email</th>
+                                            <th scope="col">Creato il</th>
+                                            <th scope="col">Aggiornato il</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -126,9 +156,17 @@ const Home = (props) => {
                                             users.slice(0, 10).map((user) => {
                                                 return (
                                                     <tr key={user.id}>
-                                                        <th className='col-md-1 text-center'>{user.id}</th>
-                                                        <td className='col-md-2'>{user.name}</td>
-                                                        <td className='col-md-2'>{user.email}</td>
+                                                        <th className='col-2 text-center'>{user.id}</th>
+                                                        <td className='col-3'>
+                                                            <img src={STORAGE_URL + user.profile_img} alt={user.name} title={user.name}
+                                                                className="img-fluid rounded-circle object-fit-cover me-3"
+                                                                style={{ width: '40px', height: '40px', border: '1px solid #ff0000' }}
+                                                            />
+                                                            {user.name}&nbsp;{user.lastname}
+                                                        </td>
+                                                        <td className='col-3'>{user.email}</td>
+                                                        <td className='col-2'>{new Date(user.created_at).toLocaleDateString()}</td>
+                                                        <td className='col-2'>{new Date(user.updated_at).toLocaleDateString()}</td>
                                                     </tr>
                                                 )
                                             })

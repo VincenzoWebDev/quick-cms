@@ -1,5 +1,5 @@
 import { Link, useForm, usePage, router } from '@inertiajs/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setDarkTheme } from '@/redux/darkThemeSlice';
 import { setCollapsed } from '@/redux/collapsedSlice';
@@ -47,6 +47,10 @@ const Topbar = () => {
             dispatch(setDarkTheme(true));
         }
     }
+    // Animazione personalizzata
+    useEffect(() => {
+        document.documentElement.style.setProperty('--animate-duration', '0.2s');
+    }, []);
     return (
         <div className="top-navbar">
             <nav className="navbar navbar-expand-lg">
@@ -85,7 +89,7 @@ const Topbar = () => {
                                                 <i className="fa-solid fa-bell"></i>
                                                 <span className="notification">{unreadNotifications.length}</span>
                                             </a>
-                                            <ul className="dropdown-menu dropdown-menu-end dropdown-menu">
+                                            <ul className="dropdown-menu dropdown-menu-end dropdown-menu animate__animated animate__fadeInUp">
                                                 {unreadNotifications.length === 0 && (
                                                     <li className='text-center'>
                                                         <span className='dropdown-item'>Nessuna Notifica</span>
@@ -109,7 +113,7 @@ const Topbar = () => {
                                             <a href="#" className="nav-link" role="button" data-bs-toggle="dropdown">
                                                 <i className="fa-solid fa-gear"></i>
                                             </a>
-                                            <ul className="dropdown-menu dropdown-menu-end dropdown-menu">
+                                            <ul className="dropdown-menu dropdown-menu-end dropdown-menu animate__animated animate__fadeInUp">
                                                 <li>
                                                     <div className="form-check form-switch d-flex p-0">
                                                         <span className='dropdown-item'>Light mode</span>
@@ -140,12 +144,11 @@ const Topbar = () => {
                                                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <img src={STORAGE_URL + user_auth.profile_img} alt={user_auth.name} title={user_auth.name} className="user-img object-fit-cover" />
                                                     <div className="user-info">
-                                                        <div className="user-name border-bottom">{user_auth.name}</div>
-                                                        <div className="user-role">{user_auth.role}</div>
+                                                        <div className="user-name">{user_auth.name}</div>
                                                     </div>
                                                 </a>
 
-                                                <div className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                                <div className="dropdown-menu dropdown-menu-end animate__animated animate__fadeInUp" aria-labelledby="navbarDropdown">
                                                     <Link className="dropdown-item border-bottom" href={route('profile')}>Profilo</Link>
                                                     <Link className="dropdown-item" href="#" onClick={handleLogout}>Logout</Link>
                                                 </div>

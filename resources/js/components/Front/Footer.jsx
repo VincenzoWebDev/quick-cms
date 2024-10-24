@@ -50,7 +50,7 @@ const Footer = () => {
                             <i className="fab fa-linkedin-in"></i>
                         </a>
 
-                        <a className="icon m-2" href={'https://github.com/VincenzoDesigner'} role="button" target="_blank">
+                        <a className="icon m-2" href={'https://github.com/VincenzoWebDev'} role="button" target="_blank">
                             <i className="fab fa-github"></i>
                         </a>
                     </div>

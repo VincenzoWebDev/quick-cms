@@ -108,10 +108,10 @@ const Topbar = () => {
                             }
                             {cart_items ?
                                 <li className="nav-item">
-                                    <a className="cart-icon text-white ms-2" aria-current="page" href={route('cart.index')}>
+                                    <Link className="cart-icon text-white ms-2" aria-current="page" href={route('cart.index')}>
                                         <i className="fa-solid fa-cart-shopping"></i>
                                         <span className="cart-count">{cart_items.length}</span>
-                                    </a>
+                                    </Link>
                                 </li>
                                 : null
                             }

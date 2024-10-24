@@ -52,7 +52,10 @@ const Layout = ({ children }) => {
 
     // Animazione personalizzata
     useEffect(() => {
-        document.documentElement.style.setProperty('--animate-duration', '0.5s');
+        const mainContent = document.querySelector('.main-content');
+        if (mainContent) {
+            mainContent.style.setProperty('--animate-duration', '0.5s');
+        }
     }, []);
 
     return (

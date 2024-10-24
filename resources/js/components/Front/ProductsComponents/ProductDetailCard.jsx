@@ -134,7 +134,7 @@ const ProductDetailCard = ({ product }) => {
                             return variantOptions;
                         }, {})
                     ).map(([variantId, values]) => (
-                        <div className="col-md-6" key={variantId}>
+                        <div className="col-md-4" key={variantId}>
                             <select
                                 className="form-select"
                                 onChange={(e) => handleVariantChange(variantId, e.target.value)}
