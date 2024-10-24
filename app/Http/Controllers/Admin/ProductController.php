@@ -107,42 +107,6 @@ class ProductController extends \App\Http\Controllers\Controller
         return redirect()->route('products.index');
     }
 
-    // public function processVariantCombinations($combinations, $productId)
-    // {
-    //     $stock = DB::table('products')->where('id', $productId)->value('stock');
-    //     foreach ($combinations as $combination) {
-    //         $combinationId = DB::table('variant_combinations')->insertGetId([
-    //             'product_id' => $productId,
-    //             'price' => $combination['price'],
-    //             'sku' => $combination['sku'],
-    //             'ean' => $combination['ean'],
-    //             'quantity' => $combination['quantity'],
-    //         ]);
-    //         // Inserisci nelle varianti collegate
-    //         // $colorId = DB::table('product_variant_values')->where('value', $combination['color'])->value('id');
-    //         // $sizeId = DB::table('product_variant_values')->where('value', $combination['size'])->value('id');
-
-    //         // Associa la combinazione a taglia e colore
-    //         if ($combination['color_id'] != null && $combination['size_id'] != null) {
-    //             DB::table('variant_combination_values')->insert([
-    //                 ['variant_combination_id' => $combinationId, 'product_variant_value_id' => $combination['color_id']],
-    //                 ['variant_combination_id' => $combinationId, 'product_variant_value_id' => $combination['size_id']]
-    //             ]);
-    //         } else if ($combination['color_id'] != null) {
-    //             DB::table('variant_combination_values')->insert([
-    //                 ['variant_combination_id' => $combinationId, 'product_variant_value_id' => $combination['color_id']]
-    //             ]);
-    //         } else if ($combination['size_id'] != null) {
-    //             DB::table('variant_combination_values')->insert([
-    //                 ['variant_combination_id' => $combinationId, 'product_variant_value_id' => $combination['size_id']]
-    //             ]);
-    //         }
-
-    //         $stock += $combination['quantity'];
-    //     }
-    //     DB::table('products')->where('id', $productId)->update(['stock' => $stock]);
-    // }
-
     public function processVariantCombinations($combinations, $productId)
     {
         // Recupera lo stock corrente del prodotto
@@ -194,73 +158,73 @@ class ProductController extends \App\Http\Controllers\Controller
         $dbDriver = DB::getDriverName();
 
         $categories = Category::orderBy('name', 'asc')->get();
-        $selectedCategories = $product->categories->pluck('id')->toArray();
-        $productImages = $product->productImages;
-        $variants = ProductVariant::orderBy('name', 'asc')->with('values')->get();
+        // $productImages = $product->productImages;
 
-        if ($dbDriver === 'mysql') {
-            $variantCombinationsGroup = VariantCombination::from('variant_combinations as vc')
-                ->select(
-                    'vc.id as combination_id',
-                    'vc.product_id',
-                    'vc.price',
-                    'vc.stock',
-                    'vc.sku',
-                    'vc.ean',
-                    'vc.quantity',
-                    DB::raw('GROUP_CONCAT(pv.name ORDER BY pv.id ASC) as variant_name'),
-                    DB::raw('GROUP_CONCAT(pvv.value ORDER BY pvv.id ASC) as variant_value')
-                )
-                ->join('variant_combination_values as vcv', 'vc.id', '=', 'vcv.variant_combination_id')
-                ->join('product_variant_values as pvv', 'vcv.product_variant_value_id', '=', 'pvv.id')
-                ->join('product_variants as pv', 'pvv.product_variant_id', '=', 'pv.id')
-                ->where('vc.product_id', $product->id)
-                ->groupBy(
-                    'vc.id',
-                    'vc.product_id',
-                    'vc.price',
-                    'vc.stock',
-                    'vc.sku',
-                    'vc.ean',
-                    'vc.quantity'
-                )
-                ->get();
-        } elseif ($dbDriver === 'pgsql') {
-            $variantCombinationsGroup = VariantCombination::from('variant_combinations as vc')
-                ->select(
-                    'vc.id as combination_id',
-                    'vc.product_id',
-                    'vc.price',
-                    'vc.stock',
-                    'vc.sku',
-                    'vc.ean',
-                    'vc.quantity',
-                    DB::raw('STRING_AGG(pv.name, \',\' ORDER BY pv.id ASC) as variant_name'),
-                    DB::raw('STRING_AGG(pvv.value, \',\' ORDER BY pvv.id ASC) as variant_value')
-                )
-                ->join('variant_combination_values as vcv', 'vc.id', '=', 'vcv.variant_combination_id')
-                ->join('product_variant_values as pvv', 'vcv.product_variant_value_id', '=', 'pvv.id')
-                ->join('product_variants as pv', 'pvv.product_variant_id', '=', 'pv.id')
-                ->where('vc.product_id', $product->id)
-                ->groupBy(
-                    'vc.id',
-                    'vc.product_id',
-                    'vc.price',
-                    'vc.stock',
-                    'vc.sku',
-                    'vc.ean',
-                    'vc.quantity'
-                )
-                ->get();
-        }
+        $selectedCategories = $product->categories->pluck('id')->toArray();
+        $variants = ProductVariant::orderBy('name', 'asc')->with('values')->get();
+        $product = $product->with('productImages', 'combinations.variantCombinationValues.productVariantValue')->where('id', $product->id)->first();
+
+        // if ($dbDriver === 'mysql') {
+        //     $variantCombinationsGroup = VariantCombination::from('variant_combinations as vc')
+        //         ->select(
+        //             'vc.id as combination_id',
+        //             'vc.product_id',
+        //             'vc.price',
+        //             'vc.stock',
+        //             'vc.sku',
+        //             'vc.ean',
+        //             'vc.quantity',
+        //             DB::raw('GROUP_CONCAT(pv.name ORDER BY pv.id ASC) as variant_name'),
+        //             DB::raw('GROUP_CONCAT(pvv.value ORDER BY pvv.id ASC) as variant_value')
+        //         )
+        //         ->join('variant_combination_values as vcv', 'vc.id', '=', 'vcv.variant_combination_id')
+        //         ->join('product_variant_values as pvv', 'vcv.product_variant_value_id', '=', 'pvv.id')
+        //         ->join('product_variants as pv', 'pvv.product_variant_id', '=', 'pv.id')
+        //         ->where('vc.product_id', $product->id)
+        //         ->groupBy(
+        //             'vc.id',
+        //             'vc.product_id',
+        //             'vc.price',
+        //             'vc.stock',
+        //             'vc.sku',
+        //             'vc.ean',
+        //             'vc.quantity'
+        //         )
+        //         ->get();
+        // } elseif ($dbDriver === 'pgsql') {
+        //     $variantCombinationsGroup = VariantCombination::from('variant_combinations as vc')
+        //         ->select(
+        //             'vc.id as combination_id',
+        //             'vc.product_id',
+        //             'vc.price',
+        //             'vc.stock',
+        //             'vc.sku',
+        //             'vc.ean',
+        //             'vc.quantity',
+        //             DB::raw('STRING_AGG(pv.name, \',\' ORDER BY pv.id ASC) as variant_name'),
+        //             DB::raw('STRING_AGG(pvv.value, \',\' ORDER BY pvv.id ASC) as variant_value')
+        //         )
+        //         ->join('variant_combination_values as vcv', 'vc.id', '=', 'vcv.variant_combination_id')
+        //         ->join('product_variant_values as pvv', 'vcv.product_variant_value_id', '=', 'pvv.id')
+        //         ->join('product_variants as pv', 'pvv.product_variant_id', '=', 'pv.id')
+        //         ->where('vc.product_id', $product->id)
+        //         ->groupBy(
+        //             'vc.id',
+        //             'vc.product_id',
+        //             'vc.price',
+        //             'vc.stock',
+        //             'vc.sku',
+        //             'vc.ean',
+        //             'vc.quantity'
+        //         )
+        //         ->get();
+        // }
 
         return Inertia::render('Admin/Products/Edit', [
             'product' => $product,
             'categories' => $categories,
             'selectedCategories' => $selectedCategories,
-            'productImages' => $productImages,
             'variants' => $variants,
-            'variantCombinationsGroup' => $variantCombinationsGroup,
         ]);
     }
 

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import TableCombinations from "./TableCombinations";
 
-const VariantsTab = ({ variants, setVariantCombinations, variantCombinationsGroup }) => {
+const VariantsTab = ({ variants, setVariantCombinations, combinationValues }) => {
     const [visibleVariants, setVisibleVariants] = useState([]);
     const [selectedValues, setSelectedValues] = useState({});
     const [combinations, setCombinations] = useState([]);
@@ -198,7 +198,7 @@ const VariantsTab = ({ variants, setVariantCombinations, variantCombinationsGrou
                         </table>
                     )}
 
-                <TableCombinations variantCombinationsGroup={variantCombinationsGroup} />
+                <TableCombinations combinationValues={combinationValues} />
             </div>
         </div >
     );

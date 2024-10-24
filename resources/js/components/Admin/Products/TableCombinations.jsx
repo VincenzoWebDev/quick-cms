@@ -1,11 +1,11 @@
 import { Link, router, useForm } from "@inertiajs/react";
 import { BASE_URL } from "@/constants/constants";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CombinationsDelete, CombinationsDeleteSelected } from "./CombinationsDelete";
 import AlertErrors from "../AlertErrors";
 import { ButtonEdit, ButtonCancel, ButtonSave } from "../Index";
 
-const TableCombinations = ({ variantCombinationsGroup }) => {
+const TableCombinations = React.memo(({ combinationValues }) => {
     const [selectedRecords, setSelectedRecords] = useState([]);
     const [selectAll, setSelectAll] = useState(false);
     const [message, setMessage] = useState(null);
@@ -30,7 +30,7 @@ const TableCombinations = ({ variantCombinationsGroup }) => {
     const handleSelectAllChange = (e) => {
         const isChecked = e.target.checked;
         setSelectAll(isChecked);
-        const allRecordIds = variantCombinationsGroup.map(combination => combination.combination_id);
+        const allRecordIds = combinationValues.map(combination => combination.combination_id);
         if (isChecked) {
             setSelectedRecords(allRecordIds);
         } else {
@@ -65,11 +65,10 @@ const TableCombinations = ({ variantCombinationsGroup }) => {
                 }
             });
     }
-
     return (
         <>
-            {!variantCombinationsGroup ? null :
-                variantCombinationsGroup.length > 0 && (
+            {!combinationValues ? null :
+                combinationValues.length > 0 && (
                     <>
                         <AlertErrors message={message} />
                         <div className="d-grid gap-2 d-md-flex justify-content-md-start mb-3 align-items-center">
@@ -88,8 +87,7 @@ const TableCombinations = ({ variantCombinationsGroup }) => {
                                                 checked={selectAll} />
                                         </div>
                                     </th>
-                                    <th>Colore</th>
-                                    <th>Taglia</th>
+                                    <th>Variante</th>
                                     <th>Prezzo</th>
                                     <th>SKU</th>
                                     <th>EAN</th>
@@ -98,7 +96,7 @@ const TableCombinations = ({ variantCombinationsGroup }) => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {variantCombinationsGroup.map((combination, index) => (
+                                {combinationValues.map((combination, index) => (
                                     <tr key={index} className="align-middle">
                                         <th scope="row" className='col-md-1'>
                                             <div className="form-check d-flex justify-content-center align-items-center">
@@ -107,8 +105,16 @@ const TableCombinations = ({ variantCombinationsGroup }) => {
                                                     checked={selectedRecords.includes(combination.combination_id)} />
                                             </div>
                                         </th>
-                                        <td className="col-1"><input type="text" className="form-control w-100" value={combination.variant_value.split(',')[0]} disabled /></td>
-                                        <td className="col-1"><input type="text" className="form-control w-100" value={combination.variant_value.split(',')[1]} disabled /></td>
+                                        <td className="col-2">
+                                            <input
+                                                type="text"
+                                                className="form-control w-100"
+                                                value={combination.variant_combination_values
+                                                    .map((variantValue) => variantValue.product_variant_value.value) // Mappa i valori delle varianti
+                                                    .join(", ")} // Unisce i valori con una virgola
+                                                disabled
+                                            />
+                                        </td>
                                         {editingCombination === combination.combination_id ? (
                                             <>
                                                 <td className="col-1">
@@ -191,6 +197,6 @@ const TableCombinations = ({ variantCombinationsGroup }) => {
             }
         </>
     )
-}
+});
 
 export default TableCombinations

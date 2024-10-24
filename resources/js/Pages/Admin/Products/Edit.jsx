@@ -16,13 +16,13 @@ const ProductEdit = ({ product, categories, selectedCategories, productImages, v
         variantCombinations: [],
     });
     const { errors } = usePage().props;
-    useEffect(() => {
-        if (variantCombinationsGroup != '') {
-            // Calcola e aggiorna lo stock globale quando cambiano le combinazioni
-            const totalStock = variantCombinationsGroup.reduce((total, combination) => total + combination.quantity, 0);
-            setData('stock', totalStock); // Aggiorna lo stato dello stock globale
-        }
-    }, [variantCombinationsGroup]);
+    // useEffect(() => {
+    //     if (variantCombinationsGroup != '') {
+    //         // Calcola e aggiorna lo stock globale quando cambiano le combinazioni
+    //         const totalStock = variantCombinationsGroup.reduce((total, combination) => total + combination.quantity, 0);
+    //         setData('stock', totalStock); // Aggiorna lo stato dello stock globale
+    //     }
+    // }, [variantCombinationsGroup]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -78,11 +78,10 @@ const ProductEdit = ({ product, categories, selectedCategories, productImages, v
                         <form onSubmit={handleSubmit} encType="multipart/form-data">
                             <div className="tab-content" id="myTabContent">
                                 <InfoTab data={data} handleChange={handleChange} categories={categories} selectedCategories={selectedCategories} handleCatsChange={handleCatsChange} />
-                                <ImagesTab ThumbChanged={handleThumbChange} GalleryChanged={handleGalleryChange} productImages={productImages} />
-                                <VariantsTab variants={variants} setVariantCombinations={setVariantCombinations} variantCombinationsGroup={variantCombinationsGroup} />
+                                <ImagesTab ThumbChanged={handleThumbChange} GalleryChanged={handleGalleryChange} productImages={product.product_images} />
+                                <VariantsTab variants={variants} setVariantCombinations={setVariantCombinations} combinationValues={product.combinations} />
                                 <SeoTab />
                             </div>
-
                             <div className="mb-3">
                                 <button type="submit" className="btn cb-primary me-3">Modifica</button>
                                 <Link href={route('products.index')} className="btn btn-secondary">Torna indietro</Link>
