@@ -100,7 +100,7 @@ const AlbumsContent = ({ albums, flash }) => {
                                                     <span>Nessuna categoria</span>
                                                 )}
                                             </td>
-                                            <td scope="row" className='col-md-2'><img src={STORAGE_URL + album.album_thumb} width="120" alt={album.album_name} /></td>
+                                            <td scope="row" className='col-md-2'><img src={STORAGE_URL + album.album_thumb} width="120" alt={album.album_name} loading="lazy" /></td>
                                             <td scope="row" className="text-center col-md-2">
                                                 <Link href={route('albums.edit', album.id)} className="btn px-2">
                                                     <ButtonEdit url={BASE_URL} />

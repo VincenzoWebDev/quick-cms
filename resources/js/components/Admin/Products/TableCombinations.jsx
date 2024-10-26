@@ -72,7 +72,7 @@ const TableCombinations = React.memo(({ combinationValues }) => {
                     <>
                         <AlertErrors message={message} />
                         <div className="d-grid gap-2 d-md-flex justify-content-md-start mb-3 align-items-center">
-                            <span className="fw-bold my-1">Combinazioni</span>
+                            <span className="fw-bold my-2">Combinazioni</span>
                             {selectedRecords && selectedRecords.length > 0 &&
                                 <button className='btn btn-danger py-1 px-2' onClick={handleDeleteSelected}>Elimina selezionati</button>
                             }

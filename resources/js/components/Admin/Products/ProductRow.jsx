@@ -15,7 +15,7 @@ const ProductRow = React.memo(({ product, handleCheckboxChange, selectedRecords,
             </th>
             <th scope="row" className='col-md-1'>{product.id}</th>
             <td scope="row" className='col-md-2'>
-                <img src={STORAGE_URL + product.image_path} alt="product" width={60} key={product.id} />
+                <img src={STORAGE_URL + product.image_path} alt="product" width={60} key={product.id} loading="lazy" />
             </td>
             <td scope="row" className='col-md-2'>{product.name}</td>
             <td scope="row" className='col-md-1'>{product.price}</td>

@@ -1,29 +1,39 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useForm } from '@inertiajs/react';
 
 export const useFilterHandlers = (rotta, sortBy, sortDirection, currentPerPage, setCurrentPerPage, searchQuery, setSearchQuery, setLoading) => {
     const { get } = useForm();
+    const previousQuery = useRef('');
 
-    const handleSearchChange = useCallback((e) => {
-        const value = e.target.value;
-        setSearchQuery(value);
-        setLoading(true);
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+    };
 
-        // Imposta un nuovo timer per la ricerca
+    // Effettua la ricerca o mostra tutti i dati se `searchQuery` è vuoto
+    useEffect(() => {
+        // Controlla se la query è cambiata rispetto al valore precedente
+        if (searchQuery === previousQuery.current) return;
+
+        // Mostra tutti i risultati se `searchQuery` è vuoto
         const timer = setTimeout(() => {
-            get(route(rotta, { sortBy, sortDirection, perPage: currentPerPage, q: value }), {
-                preserveState: true,
-                onSuccess: () => {
-                    setLoading(false);
-                },
-                onError: (errors) => {
-                    setLoading(false);
-                },
-            });
-        }, 300);
+            setLoading(true);
+            previousQuery.current = searchQuery; // Aggiorna il valore precedente
 
-        return () => clearTimeout(timer);
-    }, [get, currentPerPage, sortBy, sortDirection, searchQuery, rotta, setSearchQuery, setLoading]);
+            const queryParams = searchQuery
+                ? { q: searchQuery, sortBy, sortDirection, perPage: currentPerPage }
+                : { sortBy, sortDirection, perPage: currentPerPage }; // Parametri senza ricerca
+
+            // Effettua la richiesta con i parametri corretti
+            get(route(rotta, queryParams), {
+                preserveState: true,
+                onSuccess: () => setLoading(false),
+                onError: () => setLoading(false),
+            });
+        }, 500);
+
+        return () => clearTimeout(timer); // Cancella il timer precedente
+
+    }, [searchQuery, get, currentPerPage, sortBy, sortDirection, rotta]);
 
     const handlePerPageChange = useCallback((e) => {
         const selectedPerPage = e.target.value;

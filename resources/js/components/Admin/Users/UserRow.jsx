@@ -15,7 +15,8 @@ const UserRow = React.memo(({ user, selectedRecords, handleCheckboxChange, handl
             </th>
             <th scope="row" className='col-md-1'>{user.id}</th>
             <td className='col-md-1'>
-                <img src={STORAGE_URL + user.profile_img} alt={user.name} title={user.name} className="img-fluid rounded-circle object-fit-cover" style={{ width: '40px', height: '40px', border: '1px solid #ff0000' }} />
+                <img src={STORAGE_URL + user.profile_img} alt={user.name} title={user.name} className="img-fluid rounded-circle object-fit-cover"
+                    style={{ width: '40px', height: '40px', border: '1px solid #ff0000' }} loading="lazy" />
             </td>
             <td className='col-md-2'>{user.name}</td>
             <td className='col-md-2'>{user.email}</td>

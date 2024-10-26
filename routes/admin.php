@@ -100,7 +100,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::get('/articles', [ArticleController::class, 'index'])->name('articles');
     });
 
-    Route::middleware('VerifyIsAdmin')->group(function () {
+    Route::middleware('VerifyIsAdmin', 'CheckEcommerceStatus')->group(function () {
         Route::resource('/products', ProductController::class);
         Route::delete('/products/destroy/batch', [ProductController::class, 'destroyBatch'])->name('products.destroy.batch');
         // Route::post('/products/generate-combinations', [ProductController::class, 'generateCombinations'])->name('products.generate.combinations');
@@ -125,7 +125,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
 
     Route::middleware('VerifyIsAdmin')->group(function () {
         Route::get('/files', [FileController::class, 'index'])->name('files');
-        Route::post('/files/store', [FileController::class, 'store'])->name('files.store');
+        Route::post('/files', [FileController::class, 'store'])->name('files.store');
         Route::get('/files/download', [FileController::class, 'fileDownload'])->name('files.download');
         Route::delete('/files/destroy', [FileController::class, 'destroy'])->name('files.destroy');
         Route::get('/files/images', [FileController::class, 'images'])->name('files.images');
@@ -135,25 +135,33 @@ Route::prefix('admin')->middleware('auth')->group(function () {
 
     Route::middleware('VerifyIsAdmin')->group(function () {
         Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
+        Route::get('/settings/create', [SettingController::class, 'create'])->name('settings.create');
+        Route::post('/settings', [SettingController::class, 'store'])->name('settings.store');
+        Route::get('/settings/edit/{setting}', [SettingController::class, 'edit'])->name('settings.edit');
+        Route::patch('/settings/{setting}', [SettingController::class, 'update'])->name('settings.update');
+        Route::delete('/settings/{setting}', [SettingController::class, 'destroy'])->name('settings.destroy');
+        Route::post('/settings/{settingId}', [SettingController::class, 'toggleSettingSwitch'])->name('settings.switch')->where('settingId', '[0-9]+');
 
         Route::get('/settings/layouts', [PageLayoutController::class, 'index'])->name('settings.layouts.index');
         Route::get('/settings/layouts/create', [PageLayoutController::class, 'create'])->name('settings.layouts.create');
-        Route::post('/settings/layouts/store', [PageLayoutController::class, 'store'])->name('settings.layouts.store');
+        Route::post('/settings/layouts', [PageLayoutController::class, 'store'])->name('settings.layouts.store');
         Route::get('/settings/layouts/{layout}/edit', [PageLayoutController::class, 'edit'])->name('settings.layouts.edit');
         Route::patch('/settings/layouts/{layout}', [PageLayoutController::class, 'update'])->name('settings.layouts.update');
         Route::delete('/settings/layouts/{layout}', [PageLayoutController::class, 'destroy'])->name('settings.layouts.destroy');
 
-        Route::get('settings/variants', [ProductVariantController::class, 'index'])->name('settings.variants.index');
-        Route::get('settings/variants/create', [ProductVariantController::class, 'create'])->name('settings.variants.create');
-        Route::post('settings/variants/store', [ProductVariantController::class, 'store'])->name('settings.variants.store');
-        Route::get('settings/variants/{variant}/edit', [ProductVariantController::class, 'edit'])->name('settings.variants.edit');
-        Route::patch('settings/variants/{variant}', [ProductVariantController::class, 'update'])->name('settings.variants.update');
-        Route::delete('settings/variants/{variant}', [ProductVariantController::class, 'destroy'])->name('settings.variants.destroy');
+        Route::middleware(['CheckEcommerceStatus'])->group(function () {
+            Route::get('settings/variants', [ProductVariantController::class, 'index'])->name('settings.variants.index');
+            Route::get('settings/variants/create', [ProductVariantController::class, 'create'])->name('settings.variants.create');
+            Route::post('settings/variants', [ProductVariantController::class, 'store'])->name('settings.variants.store');
+            Route::get('settings/variants/{variant}/edit', [ProductVariantController::class, 'edit'])->name('settings.variants.edit');
+            Route::patch('settings/variants/{variant}', [ProductVariantController::class, 'update'])->name('settings.variants.update');
+            Route::delete('settings/variants/{variant}', [ProductVariantController::class, 'destroy'])->name('settings.variants.destroy');
 
-        Route::get('settings/variant-values/create', [ProductVariantValueController::class, 'create'])->name('settings.variant-values.create');
-        Route::post('settings/variant-values/store', [ProductVariantValueController::class, 'store'])->name('settings.variant-values.store');
-        Route::get('settings/variant-values/{variant_value}/edit', [ProductVariantValueController::class, 'edit'])->name('settings.variant-values.edit');
-        Route::patch('settings/variant-values/{variant_value}', [ProductVariantValueController::class, 'update'])->name('settings.variant-values.update');
-        Route::delete('settings/variant-values/{variant_value}', [ProductVariantValueController::class, 'destroy'])->name('settings.variant-values.destroy');
+            Route::get('settings/variant-values/create', [ProductVariantValueController::class, 'create'])->name('settings.variant-values.create');
+            Route::post('settings/variant-values', [ProductVariantValueController::class, 'store'])->name('settings.variant-values.store');
+            Route::get('settings/variant-values/{variant_value}/edit', [ProductVariantValueController::class, 'edit'])->name('settings.variant-values.edit');
+            Route::patch('settings/variant-values/{variant_value}', [ProductVariantValueController::class, 'update'])->name('settings.variant-values.update');
+            Route::delete('settings/variant-values/{variant_value}', [ProductVariantValueController::class, 'destroy'])->name('settings.variant-values.destroy');
+        });
     });
 });

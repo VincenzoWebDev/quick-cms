@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import logo from '../../../../public/themes/quick_cms/img/logo.png';
 
 const Topbar = () => {
-    const { pages, user_auth, cart_items } = usePage().props;
+    const { pages, user_auth, cart_items, ecommerce_status } = usePage().props;
     const { post } = useForm();
 
     useEffect(() => {
@@ -83,13 +83,12 @@ const Topbar = () => {
                                 <Link className="nav-link active rolling-text" aria-current="page" href={route('home')}>Home</Link>
                             </li>
                             {pages.map((page) => (
+                                page.active == 1 &&
                                 <li className="nav-item" key={page.id}>
-                                    {page.active == 1 &&
-                                        <Link className="nav-link active rolling-text" aria-current="page" href={route('page.show', page.slug)}>{page.title}</Link>
-                                    }
+                                    <Link className="nav-link active rolling-text" aria-current="page" href={route('page.show', page.slug)}>{page.title}</Link>
                                 </li>
                             ))}
-                            {user_auth ?
+                            {user_auth && ecommerce_status === '1' &&
                                 <li className="nav-item dropdown">
                                     <a className="text-white px-1" role="button" data-bs-toggle="dropdown" aria-current="page" ><i className="fa-solid fa-user"></i></a>
                                     <ul className="dropdown-menu dropdown-menu-end bg-white">
@@ -101,19 +100,19 @@ const Topbar = () => {
                                         </li>
                                     </ul>
                                 </li>
-                                :
+                            }
+                            {!user_auth && ecommerce_status === '1' &&
                                 <li className="nav-item">
                                     <Link className="nav-link active rolling-text" aria-current="page" href={route('front.user.login')}>Login</Link>
                                 </li>
                             }
-                            {cart_items ?
+                            {cart_items && ecommerce_status === '1' &&
                                 <li className="nav-item">
                                     <Link className="cart-icon text-white ms-2" aria-current="page" href={route('cart.index')}>
                                         <i className="fa-solid fa-cart-shopping"></i>
                                         <span className="cart-count">{cart_items.length}</span>
                                     </Link>
                                 </li>
-                                : null
                             }
                         </ul>
                     </div>

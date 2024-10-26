@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\Page;
+use App\Models\Setting;
 use App\Models\Theme;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -43,6 +44,8 @@ class HandleInertiaRequests extends Middleware
             'pages' => Page::all(), /* pagine per la topbar front end */
             'notifications' => Auth::user() ? Auth::user()->unreadNotifications : null,
             'cart_items' => Auth::user() ? Auth::user()->cartItems : null,
+            'user_auth' => Auth::user() ? Auth::user() : null,
+            'ecommerce_status' => Setting::where('key', 'ecommerce_status')->first()->value,
         ]);
     }
 
@@ -54,11 +57,11 @@ class HandleInertiaRequests extends Middleware
 
         if (str_contains($uri, 'admin') || str_contains($uri, 'login') || str_contains($uri, 'register') || str_contains($uri, 'password')) {
             if (Str::endsWith($uri, 'user-profile/login')) {
-                return 'layouts.'.$themeName.'.app';
+                return 'layouts.' . $themeName . '.app';
             }
             return 'layouts.admin.app';
         }
-        return 'layouts.'.$themeName.'.app';
+        return 'layouts.' . $themeName . '.app';
 
         return parent::rootView($request);
     }

@@ -38,7 +38,6 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\HandleInertiaRequests::class,
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
-            \App\Http\Middleware\AddUserAuthToView::class,
         ],
 
         'api' => [
@@ -69,5 +68,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         // 'theme' => \App\Http\Middleware\ThemeMiddleware::class,
         'VerifyIsAdmin' => \App\Http\Middleware\VerifyIsAdmin::class,
+        'CheckEcommerceStatus' => \App\Http\Middleware\CheckEcommerceStatus::class,
     ];
 }

@@ -9,7 +9,6 @@ const PageContent = ({ pages, flash }) => {
     const { delete: formDelete } = useForm();
     const [selectedRecords, setSelectedRecords] = useState([]);
     const [selectAll, setSelectAll] = useState(false);
-    const crsfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     useEffect(() => {
         const timer = setTimeout(() => {

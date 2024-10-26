@@ -6,7 +6,7 @@ import { setDarkTheme } from '@/redux/darkThemeSlice';
 import { STORAGE_URL } from '@/constants/constants';
 
 const Sidebar = () => {
-    const { notifications, user_auth } = usePage().props;
+    const { notifications, user_auth, ecommerce_status } = usePage().props;
     const [unreadNotifications, setUnreadNotifications] = useState(notifications);
 
     const darkTheme = useSelector(state => state.darkTheme.darkTheme);
@@ -133,29 +133,31 @@ const Sidebar = () => {
                         </li>
                     </div>
 
-                    <div>
-                        <span className='mb-2 d-block ps-3 fw-bold text-uppercase border-bottom pb-2'>Negozio</span>
-                        <li
-                            className={includeLink("/products") ? 'active' : ''}>
-                            <Link href={route('products.index')} className="products"><i
-                                className="material-icons">store</i><span>Prodotti</span></Link>
-                        </li>
-                        <li
-                            className={includeLink("/orders") ? 'active' : ''}>
-                            <Link href={route('orders.index')} className="orders">
-                                <i className="material-icons">assignment</i><span>Ordini</span></Link>
-                        </li>
-                        <li
-                            className={includeLink("/categories") ? 'active' : ''}>
-                            <Link href={route('categories.index')} className="categories"><i
-                                className="material-icons">label_outline</i><span>Categorie</span></Link>
-                        </li>
-                        <li
-                            className={includeLink("/shipping-methods") ? 'active' : ''}>
-                            <Link href={route('shipping-methods.index')} className="shipping-methods">
-                                <i className="material-icons">local_shipping</i><span>Spedizioni</span></Link>
-                        </li>
-                    </div>
+                    {ecommerce_status === '1' &&
+                        <div>
+                            <span className='mb-2 d-block ps-3 fw-bold text-uppercase border-bottom pb-2'>Negozio</span>
+                            <li
+                                className={includeLink("/products") ? 'active' : ''}>
+                                <Link href={route('products.index')} className="products"><i
+                                    className="material-icons">store</i><span>Prodotti</span></Link>
+                            </li>
+                            <li
+                                className={includeLink("/orders") ? 'active' : ''}>
+                                <Link href={route('orders.index')} className="orders">
+                                    <i className="material-icons">assignment</i><span>Ordini</span></Link>
+                            </li>
+                            <li
+                                className={includeLink("/categories") ? 'active' : ''}>
+                                <Link href={route('categories.index')} className="categories"><i
+                                    className="material-icons">label_outline</i><span>Categorie</span></Link>
+                            </li>
+                            <li
+                                className={includeLink("/shipping-methods") ? 'active' : ''}>
+                                <Link href={route('shipping-methods.index')} className="shipping-methods">
+                                    <i className="material-icons">local_shipping</i><span>Spedizioni</span></Link>
+                            </li>
+                        </div>
+                    }
 
                     <div>
                         <span className='mb-2 d-block ps-3 fw-bold text-uppercase border-bottom pb-2'>Gestione file</span>
@@ -178,10 +180,12 @@ const Sidebar = () => {
                             <Link href={route('settings.layouts.index')} className="layouts"><i
                                 className="material-icons">layers</i><span>Layout pagine</span></Link>
                         </li>
-                        <li className={includeLink("/variants") ? 'active' : ''}>
-                            <Link href={route('settings.variants.index')} className="variants"><i
-                                className="material-icons">clear_all</i><span>Varianti prodotti</span></Link>
-                        </li>
+                        {ecommerce_status === '1' &&
+                            <li className={includeLink("/variants") ? 'active' : ''}>
+                                <Link href={route('settings.variants.index')} className="variants"><i
+                                    className="material-icons">clear_all</i><span>Varianti prodotti</span></Link>
+                            </li>
+                        }
                     </div>
                 </ul >
             ) : (

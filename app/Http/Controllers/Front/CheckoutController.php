@@ -9,7 +9,6 @@ use App\Models\Product;
 use App\Models\ShippingAddress;
 use App\Models\ShippingMethod;
 use App\Models\User;
-use App\Models\VariantCombinationValue;
 use App\Notifications\NewOrderNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -59,8 +58,6 @@ class CheckoutController extends \App\Http\Controllers\Controller
                 'quantity' => $cartItem->quantity,
                 'price' => $cartItem->product->price * $cartItem->quantity,
                 'combination_id' => $cartItem->combination_id,
-                'color' => $cartItem->color,
-                'size' => $cartItem->size,
             ]);
         }
         $shippingAddress = new ShippingAddress();

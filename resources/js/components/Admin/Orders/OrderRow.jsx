@@ -16,7 +16,7 @@ const OrderRow = React.memo(({ order, selectedRecords, handleCheckboxChange, han
             <td scope="row" className="col-1">#{order.id}</td>
             <td scope="row" className="col-2">
                 <img src={STORAGE_URL + order.user.profile_img} alt={order.user.name} className="img-fluid rounded-circle object-fit-cover me-2"
-                    style={{ width: '40px', height: '40px', border: '1px solid #008000' }}
+                    style={{ width: '40px', height: '40px', border: '1px solid #008000' }} loading="lazy"
                 />
                 {order.user.name}&nbsp;{order.user.lastname}
             </td>

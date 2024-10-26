@@ -28,7 +28,8 @@ class UserController extends \App\Http\Controllers\Controller
                 $query->where(function ($query) use ($searchQuery) {
                     $query->where('id', 'like', '%' . $searchQuery . '%')
                         ->orWhere('name', 'like', '%' . $searchQuery . '%')
-                        ->orWhere('email', 'like', '%' . $searchQuery . '%');
+                        ->orWhere('email', 'like', '%' . $searchQuery . '%')
+                        ->orWhere('role', 'like', '%' . $searchQuery . '%');
                 });
             })->paginate($perPage)->through(fn($user) => [
                 'id' => $user->id,
