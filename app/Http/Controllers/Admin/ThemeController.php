@@ -6,6 +6,7 @@ use App\Http\Requests\ThemeRequest;
 use App\Models\Theme;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class ThemeController extends \App\Http\Controllers\Controller
@@ -13,7 +14,7 @@ class ThemeController extends \App\Http\Controllers\Controller
     public function toggleThemeSwitch(Request $request, $themeId)
     {
         $theme = Theme::findOrFail($themeId);
-        $active = $request->input('active') === 1;
+        $active = $request->input('active');
         $theme->update(['active' => $active]);
     }
 
@@ -25,22 +26,30 @@ class ThemeController extends \App\Http\Controllers\Controller
 
     public function destroy(Theme $theme)
     {
-        $theme = Theme::findOrFail($theme->id);
+        // if (!$theme) {
+        //     return response()->json(['error' => 'Tema non trovato'], 404);
+        // }
+        // if ($theme->name == 'quick_cms') {
+        //     $messaggio = 'Non puoi eliminare il tema principale';
+        //     $tipoMessaggio = 'danger';
+        //     session()->flash('message', ['tipo' => $tipoMessaggio, 'testo' => $messaggio]);
+        //     return;
+        // }
+        // // Percorsi per le cartelle da eliminare
+        // $themeDir = resource_path('js/Pages/Front/themes/' . $theme->name);
+        // $cssDir = resource_path('css/' . $theme->name);
+        // $viewsDir = resource_path('views/layouts/' . $theme->name);
+        // $publicDir = public_path('themes/' . $theme->name);
 
-        if (!$theme) {
-            return response()->json(['error' => 'Tema non trovato'], 404);
-        }
+        // // Elimina i file e le directory
+        // File::deleteDirectory($themeDir);
+        // File::deleteDirectory($cssDir);
+        // File::deleteDirectory($viewsDir);
+        // File::deleteDirectory($publicDir);
 
-        // Eliminazione della cartella del tema in public
-        $publicThemePath = public_path("themes/{$theme->name}");
-        File::deleteDirectory($publicThemePath);
-
-        // Eliminazione della cartella del tema in resources/views/themes/
-        $viewsThemePath = resource_path("views/themes/{$theme->name}");
-        File::deleteDirectory($viewsThemePath);
-
-        $res = $theme->delete();
-        // return $res;
+        // // Elimina il tema dal database
+        // $theme->delete();
+        return;
     }
 
     public function destroyBatch(Request $request)
@@ -50,9 +59,7 @@ class ThemeController extends \App\Http\Controllers\Controller
 
     public function create()
     {
-        $theme = new Theme;
-        // return view('admin.themes.create', ['theme' => $theme]);
-        return Inertia::render('Admin/Themes/Create', ['theme' => $theme]);
+        return Inertia::render('Admin/Themes/Create');
     }
 
     public function store(ThemeRequest $request)
@@ -60,67 +67,45 @@ class ThemeController extends \App\Http\Controllers\Controller
         $theme = new Theme();
         $theme->name = $request->input('name');
         $theme->path = $request->input('path');
-
-        // Creazione della cartella del tema in public
-        $publicThemePath = base_path("public/themes/{$theme->name}");
-        File::makeDirectory($publicThemePath, 0755, true);
-
-        // Copia degli asset necessari in public
-        File::copyDirectory(base_path('public/css'), "{$publicThemePath}/css");
-        File::copyDirectory(base_path('public/js'), "{$publicThemePath}/js");
-        File::copyDirectory(base_path('public/img'), "{$publicThemePath}/img");
-        // ... altre copie di asset se necessario
-
-        // Creazione di un file home.blade.php nella cartella del tema in resources/views/themes/
-        $viewsThemePath = resource_path("views/themes/{$theme->name}");
-        File::makeDirectory($viewsThemePath, 0755, true);
-        File::put("{$viewsThemePath}/home.blade.php", '<h1>Benvenuto nel tema ' . $theme->name . '</h1>');
-
         $res = $theme->save();
 
         $messaggio = $res ? 'Tema ' . $theme->name . ' inserito correttamente' : 'Tema ' . $theme->name . ' non inserito';
         $tipoMessaggio = $res ? 'success' : 'danger';
         session()->flash('message', ['tipo' => $tipoMessaggio, 'testo' => $messaggio]);
 
-        return redirect()->route('themes');
+        // Percorsi per le cartelle da creare
+        // $themeDir = resource_path('js/Pages/Front/themes/' . $theme->name);
+        // $cssDir = resource_path('css/' . $theme->name);
+        // $viewsDir = resource_path('views/layouts/' . $theme->name);
+        // $publicDir = public_path('themes/' . $theme->name);
+        // try {
+        //     // Crea le cartelle se non esistono già
+        //     File::ensureDirectoryExists($themeDir);
+        //     File::ensureDirectoryExists($cssDir);
+        //     File::ensureDirectoryExists($viewsDir);
+        //     File::ensureDirectoryExists($publicDir . '/img');
+
+        //     $res = $theme->save();
+
+        //     $messaggio = $res ? 'Tema ' . $theme->name . ' inserito correttamente' : 'Tema ' . $theme->name . ' non inserito';
+        //     $tipoMessaggio = $res ? 'success' : 'danger';
+        //     session()->flash('message', ['tipo' => $tipoMessaggio, 'testo' => $messaggio]);
+
+        //     return redirect()->route('themes.index');
+        // } catch (\Exception $e) {
+        //     // Log dell'errore
+        //     Log::error('Errore durante la creazione del tema: ' . $e->getMessage());
+        //     return redirect()->back()->withErrors(['error' => 'Errore nella creazione del tema.']);
+        // }
     }
 
     public function edit($id)
     {
-        $theme = Theme::find($id);
-
-        /*if(Gate::denies('manage-album', $album)){
-            abort(403, 'Unauthorized');
-        }*/
-        /*if($album->user->id != Auth::user()->id){
-            abort(403, 'Unauthorized');
-        }*/
-        // return view('admin.themes.edit', ['theme' => $theme]);
-        return Inertia::render('Admin/Themes/Edit', ['theme' => $theme]);
+        return;
     }
 
     public function update(Request $request, $id)
     {
-        $theme = Theme::find($id);
-        /*if(Gate::denies('manage-album', $album)){
-            abort(403, 'Unauthorized');
-        }*/
-        $oldName = $theme->name;
-        $oldPath = $theme->path;
-
-        $theme->name = $request->input('name');
-        $theme->path = $request->input('path');
-
-        if ($oldName != $theme->name || $oldPath != $theme->path) {
-            $res = $theme->save();
-        } else {
-            $res = 0;
-        }
-
-        $messaggio = $res ? $theme->name . ' - Aggiornato correttamente' : $theme->name . ' - Non aggiornato';
-        $tipoMessaggio = $res ? 'success' : 'danger';
-        session()->flash('message', ['tipo' => $tipoMessaggio, 'testo' => $messaggio]);
-
-        return redirect()->route('themes');
+        return;
     }
 }

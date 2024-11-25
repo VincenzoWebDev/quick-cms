@@ -1,13 +1,15 @@
-@extends('layouts.auth')
+<?php
+use Inertia\Inertia;
 
-@section('container')
-    <div class="row justify-content-center">
-        <div class="login-wrap p-4 p-md-5">
-            <div class="row justify-content-center">
-                <div class="col-md-6 text-center">
-                    <h2>Errore 403 - Utente non autorizzato</h2>
-                </div>
-            </div>
-        </div>
-    </div>
-@endsection
+$isAdmin = str_starts_with(request()->path(), 'admin');
+
+if (request()->wantsJson()) {
+    echo response()->json(['message' => 'Accesso negato.'], 403);
+} else {
+    echo Inertia::render($isAdmin ? 'Admin/AdminErrorPage' : 'Front/Themes/FrontendErrorPage', [
+        'status' => 403,
+        'message' => 'Accesso negato. Non hai i permessi necessari per accedere a questa pagina.',
+    ])
+        ->toResponse(request())
+        ->getContent();
+}

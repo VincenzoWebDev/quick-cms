@@ -4,10 +4,16 @@ import InputErrors from "@/components/Admin/InputErrors";
 import PhotoFileUpload from '@/components/Admin/PhotoFileUpload';
 import { STORAGE_URL } from '@/constants/constants';
 
-const PhotoEdit = ({ photo, albums, user_auth }) => {
-    const { errors } = usePage().props;
-
-    const { data, setData } = useForm({
+/**
+ * Renders the photo edit page for the admin panel.
+ *
+ * @param {Object} photo - The photo object to be edited.
+ * @param {Object[]} albums - The list of albums to be used in the album selection dropdown.
+ * @returns {JSX.Element} - The rendered photo edit page.
+ */
+const PhotoEdit = ({ photo, albums }) => {
+    const { data, setData, post, errors, processing } = useForm({
+        _method: 'PATCH',
         name: photo.name,
         description: photo.description,
         album_id: photo.album_id,
@@ -30,27 +36,13 @@ const PhotoEdit = ({ photo, albums, user_auth }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        router.post(route('photos.update', photo.id), {
-            ...data,
-            _method: 'patch',
-            forceFormData: true,
-        });
+        post(route('photos.update', photo.id));
     }
 
     return (
-        <Layout user_auth={user_auth}>
+        <Layout>
             <h2>Modifica foto album</h2>
             <InputErrors errors={errors} />
-
-            {/*@if (session()->has('message'))
-            @php
-            $messaggio = session('message');
-            @endphp
-
-            <div className="alert alert-{{ $messaggio['tipo'] }}" role="alert">
-                <strong>{{ $messaggio['testo'] }}</strong>
-            </div>
-            @endif */}
             <div className="row">
                 <div className="col-md-8">
                     <form onSubmit={handleSubmit} encType="multipart/form-data">
@@ -76,7 +68,7 @@ const PhotoEdit = ({ photo, albums, user_auth }) => {
                         <PhotoFileUpload handleFileChange={handleFileChange} />
 
                         <div className="mb-3">
-                            <button className="btn cb-primary me-3">Modifica</button>
+                            <button className="btn cb-primary me-3" disabled={processing}>{processing ? 'In corso...' : 'Modifica'}</button>
                             <Link href={route('albums.photos', photo.album_id)} className="btn btn-secondary">Torna indietro</Link>
                         </div>
                     </form>

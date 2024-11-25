@@ -1,13 +1,14 @@
 import Layout from "@/Layouts/Admin/Layout";
 import { STORAGE_URL } from "@/constants/constants";
 import { useState, useEffect } from "react";
-import { router, useForm, usePage } from "@inertiajs/react";
+import { useForm, usePage } from "@inertiajs/react";
 import AlertErrors from "@/components/Admin/AlertErrors";
 import InputErrors from "@/components/Admin/InputErrors";
 
-const ProfileContent = ({ user_auth }) => {
+const ProfileContent = () => {
+    const { user_auth } = usePage().props;
     const [editable, setEditable] = useState(false);
-    const { data, setData, errors, patch } = useForm({ ...user_auth });
+    const { data, setData, errors, post, processing } = useForm({_method: 'PATCH', ...user_auth});
     const [message, setMessage] = useState(null);
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -19,7 +20,7 @@ const ProfileContent = ({ user_auth }) => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setData({ ...user_auth, [name]: value || '' });
+        setData(name, value);
     }
 
     const handleFileChange = (e) => {
@@ -34,11 +35,7 @@ const ProfileContent = ({ user_auth }) => {
 
     const handleSaveClick = (e) => {
         e.preventDefault();
-        router.post(route('profile.update', user_auth.id), {
-            ...data,
-            _method: 'patch',
-            forceFormData: true,
-        }, {
+        post(route('profile.update', user_auth.id), {
             onSuccess: (res) => {
                 setEditable(false);
                 setMessage(res.props.flash.message);
@@ -50,7 +47,7 @@ const ProfileContent = ({ user_auth }) => {
     }
 
     return (
-        <Layout user_auth={user_auth}>
+        <Layout>
             <AlertErrors message={message} />
             <div className="main-body">
                 <div className="row gutters-sm">
@@ -58,7 +55,7 @@ const ProfileContent = ({ user_auth }) => {
                         <div className="card">
                             <div className="card-body">
                                 <div className="d-flex flex-column align-items-center text-center">
-                                    <img src={user_auth.profile_img} alt={user_auth.name} title={user_auth.name} className="border rounded-circle img-fluid" width="auto" />
+                                    <img src={STORAGE_URL + user_auth.profile_img} alt={user_auth.name} title={user_auth.name} className="border rounded-circle img-fluid object-fit-cover" style={{ height: '250px', width: '250px' }} />
                                     {editable && (
                                         <div className="outer">
                                             <div className="inner">
@@ -120,7 +117,7 @@ const ProfileContent = ({ user_auth }) => {
                                         <h6 className="mb-0">Nome</h6>
                                     </div>
                                     {editable ? (
-                                        <input type="text" name="name" value={data.name} onChange={handleInputChange} className="form-control" />
+                                        <input type="text" name="name" value={data.name} onChange={handleInputChange} className="form-control w-50" />
                                     ) : (
                                         <div className="col-sm-9 text-secondary">
                                             {user_auth.name}
@@ -133,7 +130,7 @@ const ProfileContent = ({ user_auth }) => {
                                         <h6 className="mb-0">Cognome</h6>
                                     </div>
                                     {editable ? (
-                                        <input type="text" name="lastname" value={data.lastname} onChange={handleInputChange} className="form-control" />
+                                        <input type="text" name="lastname" value={data.lastname} onChange={handleInputChange} className="form-control w-50" />
                                     ) : (
                                         <div className="col-sm-9 text-secondary">
                                             {user_auth.lastname}
@@ -146,7 +143,7 @@ const ProfileContent = ({ user_auth }) => {
                                         <h6 className="mb-0">Email</h6>
                                     </div>
                                     {editable ? (
-                                        <input type="text" name="email" value={data.email} onChange={handleInputChange} className="form-control" />
+                                        <input type="text" name="email" value={data.email} onChange={handleInputChange} className="form-control w-50" />
                                     ) : (
                                         <div className="col-sm-9 text-secondary">
                                             {user_auth.email}
@@ -160,7 +157,7 @@ const ProfileContent = ({ user_auth }) => {
                                     </div>
                                     {user_auth.role === 'admin' &&
                                         editable ? (
-                                        <input type="text" name="role" value={data.role} onChange={handleInputChange} className="form-control" />
+                                        <input type="text" name="role" value={data.role} onChange={handleInputChange} className="form-control w-50" />
                                     ) : (
                                         <div className="col-sm-9 text-secondary">
                                             {user_auth.role
@@ -174,9 +171,12 @@ const ProfileContent = ({ user_auth }) => {
                                     <div className="col-sm-12">
                                         {/* <a className="btn cb-primary" href="">Edit</a> */}
                                         {editable ? (
-                                            <button className="btn btn-success" onClick={handleSaveClick}>Salva</button>
+                                            <>
+                                                <button className="btn btn-success me-2" onClick={handleSaveClick} disabled={processing}>{processing ? 'In corso...' : 'Salva'}</button>
+                                                <button className="btn btn-danger" onClick={(e) => setEditable(false)}>Annulla</button>
+                                            </>
                                         ) : (
-                                            <button className="btn cb-primary" onClick={handleEditClick}>Edit</button>
+                                            <button className="btn cb-primary" onClick={handleEditClick}>Modifica</button>
                                         )}
                                     </div>
                                 </div>
@@ -239,9 +239,6 @@ const ProfileContent = ({ user_auth }) => {
                                 </div>
                             </div>
                         </div>
-
-
-
                     </div>
                 </div>
             </div>

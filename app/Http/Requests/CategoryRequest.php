@@ -3,8 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
 
 class CategoryRequest extends FormRequest
 {
@@ -13,7 +11,7 @@ class CategoryRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return Auth::check();
+        return true;
     }
 
     /**
@@ -23,20 +21,19 @@ class CategoryRequest extends FormRequest
      */
     public function rules(): array
     {
-        $userId = Auth::id();
         return [
-            'category_name' => [
-                'required',
-                Rule::unique('album_categories', 'category_name')->where('user_id', $userId),
-            ],
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
         ];
     }
 
     public function messages()
     {
         return [
-            'category_name.required' => 'Nome categoria obbligatorio',
-            'category_name.unique' => 'Nome categoria già esistente'
+            'name.required' => 'Nome categoria obbligatorio',
+            'name.string' => 'Nome categoria deve essere una stringa',
+            'name.max' => 'Nome categoria deve essere minore di 255 caratteri',
+            'description.string' => 'Descrizione deve essere una stringa',
         ];
     }
 }

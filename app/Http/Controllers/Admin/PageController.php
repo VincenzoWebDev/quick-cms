@@ -9,13 +9,15 @@ use App\Models\PageLayout;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\ImageManager;
 
 class PageController extends \App\Http\Controllers\Controller
 {
     public function togglePageSwitch(Request $request, $pageId)
     {
         $page = Page::findOrFail($pageId);
-        $active = $request->input('active') === 1;
+        $active = $request->input('active');
         $page->update(['active' => $active]);
     }
 
@@ -34,6 +36,38 @@ class PageController extends \App\Http\Controllers\Controller
     {
         $pageLayout = PageLayout::all();
         return Inertia::render('Admin/Pages/Create', ['pageLayout' => $pageLayout]);
+    }
+
+    public function storeImage(Request $request)
+    {
+        if (!$request->hasFile('file')) {
+            return false;
+        }
+        $file = $request->file('file');
+        if (!$file->isValid()) {
+            return false;
+        }
+        // $fileName = $request->file('file')->getClientOriginalName();
+        // $imgFileName = str_replace(' ', '_', $fileName);
+        // $imgName = time() . '_' . $imgFileName;        
+        $fileExtension = $file->extension();
+        $fileNameExt = $file->getClientOriginalName();
+        $fileName = pathinfo($fileNameExt, PATHINFO_FILENAME);
+        $fileName = str_replace(' ', '_', $fileName);
+        $fileName = $fileName . '_' . time() . '.' . $fileExtension;
+
+        $imgFile = $file->storeAs(env('UPLOADS_DIR'), $fileName, 'public');
+
+        $manager = new ImageManager(new Driver());
+        $image = $manager->read($file);
+        $width = $image->width();
+        $height = $image->height();
+
+        // Costruire l'URL pubblico per l'immagine
+        $filePath = asset('storage/' . env('UPLOADS_DIR') . $fileName);
+        // dd($filePath);
+
+        return response()->json(['location' => $filePath, 'name' => $fileName, 'width' => $width, 'height' => $height]);
     }
 
     public function store(PageRequest $request)

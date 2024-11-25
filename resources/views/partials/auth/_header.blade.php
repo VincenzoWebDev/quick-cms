@@ -5,16 +5,25 @@
     <title>{{ config('app.name', 'Quick CMS') }}</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    @if (env('APP_ENV') == 'production')
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    @endif
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NBGHM6Y2DL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
 
-    <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}?v={{ time() }}">
-    <link rel="stylesheet" href="{{ asset('css/auth.css') }}?v={{ time() }}">
+        gtag('config', 'G-NBGHM6Y2DL');
+    </script>
 
     @routes
     @viteReactRefresh

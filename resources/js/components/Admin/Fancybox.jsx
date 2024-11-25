@@ -8,7 +8,7 @@ function Fancybox(props) {
 
   useEffect(() => {
     const container = containerRef.current;
-
+    
     const delegate = props.delegate || "[data-fancybox]";
     const options = props.options || {};
 
@@ -17,6 +17,7 @@ function Fancybox(props) {
     return () => {
       NativeFancybox.unbind(container);
       NativeFancybox.close();
+      NativeFancybox.defaults.Hash = false;
     };
   });
 

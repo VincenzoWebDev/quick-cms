@@ -1,54 +1,88 @@
-import { useState, useEffect } from 'react';
-import Sidebar from '@/components/Admin/Sidebar';
-import Topbar from '@/components/Admin/Topbar';
-import Copyright from '@/components/Admin/Copyright';
+import 'bootstrap/dist/js/bootstrap.bundle.js';
+import { useEffect, useState } from 'react';
 import 'animate.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { setRespCollapsed } from '@/redux/respCollapsedSlice';
+import { Sidebar, Topbar, Copyright, HeaderTitle, Skeleton } from '@/components/Admin/Index';
+import { Inertia } from '@inertiajs/inertia';
 
-const Layout = ({ children, user_auth }) => {
-    const savedCollapsed = localStorage.getItem('collapsed') === 'true';
-    const [collapsed, setCollapsed] = useState(savedCollapsed);
-    const savedTheme = localStorage.getItem('data-theme') === 'dark';
-    const [dataTheme, setTheme] = useState(savedTheme);
-    const savedRespCollapsed = localStorage.getItem('show-nav') === 'true';
-    const [respCollapsed, setRespCollapsed] = useState(savedRespCollapsed);
+const Layout = ({ children }) => {
+    const dispatch = useDispatch();
+    const respCollapsed = useSelector(state => state.respCollapsed.respCollapsed);
+    const collapsed = useSelector(state => state.collapsed.collapsed);
+    const darkTheme = useSelector(state => state.darkTheme.darkTheme);
 
+    const [isLoading, setIsLoading] = useState(false); // Stato per il caricamento
+
+    // Gestione del caricamento con Inertia
     useEffect(() => {
-        if (dataTheme) {
+        const start = (event) => {
+            // Mostra lo skeleton solo per una navigazione completa, non per le richieste parziali (ad es. ricerche AJAX)
+            if (!event.detail.visit.preserveState) {
+                setIsLoading(true);
+            }
+        };
+        const finish = () => setIsLoading(false);
+
+        Inertia.on('start', start);
+        Inertia.on('finish', finish);
+
+        // Cleanup event listeners su unmount
+        return () => {
+            Inertia.on('start', start);
+            Inertia.on('finish', finish);
+        };
+    }, []);
+
+    // Memorizzazione di 'collapsed' in localStorage
+    useEffect(() => {
+        localStorage.setItem('collapsed', collapsed);
+    }, [collapsed]);
+
+    // Gestione del tema dark
+    useEffect(() => {
+        if (darkTheme) {
             document.documentElement.setAttribute('data-theme', 'dark');
             localStorage.setItem('data-theme', 'dark');
         } else {
             document.documentElement.setAttribute('data-theme', 'light');
             localStorage.setItem('data-theme', 'light');
         }
-    });
-    // NON SERVE SALVARE LO STATO DELLA SIDEBAR NEL RESPONSIVE
-    // useEffect(() => {
-    //     if (respCollapsed) {
-    //         localStorage.setItem('show-nav', 'true');
-    //     } else {
-    //         localStorage.setItem('show-nav', 'false');
-    //     }
-    // }, [respCollapsed]);
+    }, [darkTheme]);
+
+    // Animazione personalizzata
     useEffect(() => {
-        localStorage.setItem('collapsed', collapsed);
-    }, [collapsed]);
-    useEffect(() => {
-        document.documentElement.style.setProperty('--animate-duration', '0.5s');
+        const mainContent = document.querySelector('.main-content');
+        if (mainContent) {
+            mainContent.style.setProperty('--animate-duration', '0.5s');
+        }
     }, []);
 
     return (
-        <div className="wrapper">
-            <div className={`body-overlay ${respCollapsed ? 'show-nav' : ''}`} onClick={() => setRespCollapsed(!respCollapsed)}></div>
-            <Sidebar user_auth={user_auth} collapsed={collapsed} respCollapsed={respCollapsed} dataTheme={dataTheme} setTheme={setTheme} />
-            <div id="content" className={collapsed ? 'active' : ''}>
-                <Topbar user_auth={user_auth} collapsed={collapsed} setCollapsed={setCollapsed} respCollapsed={respCollapsed} setRespCollapsed={setRespCollapsed} dataTheme={dataTheme} setTheme={setTheme} />
-                <div className="main-content animate__animated animate__fadeIn">
-                    {children}
+        <>
+            <HeaderTitle />
+            <div className="wrapper">
+                <div className={`body-overlay ${respCollapsed ? 'show-nav' : ''}`} onClick={() => dispatch(setRespCollapsed(!respCollapsed))}></div>
+                <Sidebar />
+                <div id="content" className={collapsed ? 'active' : ''}>
+                    <Topbar />
+
+                    {/* Mostra lo Skeleton durante il caricamento */}
+                    {isLoading ? (
+                        <div className="main-content">
+                            <Skeleton />
+                        </div>
+                    ) : (
+                        <div className="main-content animate__animated animate__fadeIn">
+                            {children}
+                        </div>
+                    )}
+
+                    <Copyright />
                 </div>
-                <Copyright />
             </div>
-        </div>
+        </>
     );
-}
+};
 
 export default Layout;

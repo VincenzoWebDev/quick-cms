@@ -2,7 +2,7 @@ import Layout from "@/Layouts/Admin/Layout";
 import InputErrors from "@/components/Admin/InputErrors";
 import { Link, useForm } from '@inertiajs/react';
 
-const ThemeEdit = ({ theme, user_auth }) => {
+const ThemeEdit = ({ theme }) => {
     const { data, setData, patch, errors } = useForm({
         name: theme.name,
         path: theme.path
@@ -19,7 +19,7 @@ const ThemeEdit = ({ theme, user_auth }) => {
     }
 
     return (
-        <Layout user_auth={user_auth}>
+        <Layout>
             <h2>Modifica tema</h2>
             <InputErrors errors={errors} />
 
@@ -37,7 +37,7 @@ const ThemeEdit = ({ theme, user_auth }) => {
 
                 <div className="mb-3">
                     <button className="btn cb-primary me-3">Modifica</button>
-                    <Link href={route('themes')} className="btn btn-secondary">Torna indietro</Link>
+                    <Link href={route('themes.index')} className="btn btn-secondary">Torna indietro</Link>
                 </div>
             </form>
         </Layout>

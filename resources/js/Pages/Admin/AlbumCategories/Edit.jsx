@@ -2,8 +2,8 @@ import Layout from "@/Layouts/Admin/Layout";
 import InputErrors from "@/components/Admin/InputErrors";
 import { Link, useForm } from "@inertiajs/react";
 
-const AlbumCategoryEdit = ({ user_auth, category }) => {
-    const { data, setData, patch, errors } = useForm({
+const AlbumCategoryEdit = ({ category }) => {
+    const { data, setData, patch, errors, processing } = useForm({
         category_name: category.category_name,
     });
 
@@ -14,27 +14,31 @@ const AlbumCategoryEdit = ({ user_auth, category }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        patch(route('categories.update', category.id));
+        patch(route('album.categories.update', category.id));
     }
 
     return (
-        <Layout user_auth={user_auth}>
+        <Layout>
             <h2>Modifica categoria</h2>
-
             <InputErrors errors={errors} />
 
-            <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                    <label htmlFor="category_name">Nome categoria</label>
-                    <input type="text" name="category_name" id="category_name" className="form-control"
-                        value={data.category_name} onChange={handleInputChange} placeholder="Nome categoria" />
-                </div>
+            <div className="row">
+                <div className="col-md-8">
+                    <form onSubmit={handleSubmit}>
+                        <div className="mb-3">
+                            <label htmlFor="category_name">Nome categoria</label>
+                            <input type="text" name="category_name" id="category_name" className="form-control"
+                                value={data.category_name} onChange={handleInputChange} placeholder="Nome categoria" />
+                        </div>
 
-                <div className="mb-3">
-                    <button className="btn cb-primary me-3">Modifica</button>
-                    <Link href={route('categories.index')} className="btn btn-secondary">Torna indietro</Link>
+                        <div className="mb-3">
+                            <button className="btn cb-primary me-3" disabled={processing}>{processing ? 'In corso...' : 'Modifica'}</button>
+                            <Link href={route('album.categories.index')} className="btn btn-secondary">Torna indietro</Link>
+                        </div>
+                    </form>
                 </div>
-            </form>
+                <div className="col-md-4"></div>
+            </div>
         </Layout>
     )
 

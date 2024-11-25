@@ -60,71 +60,19 @@ class User extends Authenticatable
         return $this->hasMany(AlbumCategories::class);
     }
 
+    public function cartItems()
+    {
+        return $this->hasMany(CartItem::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
     public function isAdmin()
     {
         return $this->role === 'admin';
-    }
-
-    public function getProfileImgAttribute($value)
-    {
-        $url = $value;
-        if (empty($url)) {
-            $url = 'https://via.placeholder.com/150';
-        } else if (substr($url, 0, 4) === 'http' || substr($url, 0, 5) === 'https') {
-            $url = $url;
-        } else {
-            $url = config('app.url') . '/storage/' . $url . '?v=' . time();
-        }
-        return $url;
-    }
-
-    public function getUserAlbumCatDataChart()
-    {
-        // Ottieni l'anno corrente
-        $currentYear = Carbon::now()->year;
-
-        // Ottieni i dati degli utenti registrati per ogni mese dell'anno corrente
-        $userCountData = DB::table('users')
-            ->select(DB::raw('MONTH(created_at) as month'), DB::raw('COUNT(*) as userCount'))
-            ->whereYear('created_at', $currentYear)
-            ->groupBy(DB::raw('MONTH(created_at)'))
-            ->get();
-
-        // Ottieni i dati degli album creati per ogni mese dell'anno corrente
-        $albumCountData = DB::table('albums')
-            ->select(DB::raw('MONTH(created_at) as month'), DB::raw('COUNT(*) as albumCount'))
-            ->whereYear('created_at', $currentYear)
-            ->groupBy(DB::raw('MONTH(created_at)'))
-            ->get();
-
-        $categoriesData = DB::table('album_categories')
-            ->select(DB::raw('MONTH(created_at) as month'), DB::raw('COUNT(*) as categoryCount'))
-            ->whereYear('created_at', $currentYear)
-            ->groupBy(DB::raw('MONTH(created_at)'))
-            ->get();
-
-        $photoData = DB::table('photos')
-            ->select(DB::raw('MONTH(created_at) as month'), DB::raw('COUNT(*) as categoryCount'))
-            ->whereYear('created_at', $currentYear)
-            ->groupBy(DB::raw('MONTH(created_at)'))
-            ->get();
-
-        // Unisci i dati degli utenti e degli album per ogni mese
-        $monthData = collect(range(1, 12))->map(function ($month) use ($userCountData, $albumCountData, $categoriesData, $photoData) {
-            $userCount = $userCountData->firstWhere('month', $month);
-            $albumCount = $albumCountData->firstWhere('month', $month);
-            $categoryCount = $categoriesData->firstWhere('month', $month);
-            $photoCount = $photoData->firstWhere('month', $month);
-            return [
-                'month' => $month,
-                'userCount' => $userCount ? $userCount->userCount : 0,
-                'albumCount' => $albumCount ? $albumCount->albumCount : 0,
-                'categoryCount' => $categoryCount ? $categoryCount->categoryCount : 0,
-                'photoCount' => $photoCount ? $photoCount->categoryCount : 0
-            ];
-        });
-
-        return $monthData;
     }
 
     public function getUsersPercentage()

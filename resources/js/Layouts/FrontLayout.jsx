@@ -1,23 +1,26 @@
-import Copyright from "@/components/Front/Copyright";
-import Carousel from "@/components/Front/Carousel";
+import 'bootstrap/dist/js/bootstrap.bundle.js';
 import Topbar from "@/components/Front/Topbar";
-import { useEffect } from "react";
+import Slideshow from "@/components/Front/Slideshow";
+import { React, useEffect } from "react";
+import Footer from "@/components/Front/Footer";
 import 'animate.css';
+import { usePage } from "@inertiajs/react";
 
-const FrontLayout = ({ children, pages }) => {
+const FrontLayout = ({ children }) => {
+    const { url } = usePage();
     useEffect(() => {
-        document.documentElement.style.setProperty('--animate-duration', '0.7s');
+        document.documentElement.style.setProperty('--animate-duration', '0.5s');
     }, []);
 
     return (
         <>
-            <Topbar pages={pages} />
-            <main className="animate__animated animate__fadeInLeft">
-                <Carousel />
-                <div className="container">
+            <Topbar />
+            <main>
+                <Slideshow />
+                <div className={url === '/quick-cms/public/' ? '' : "animate__animated animate__slideInLeft"}>
                     {children}
                 </div>
-                <Copyright />
+                <Footer />
             </main>
         </>
     );

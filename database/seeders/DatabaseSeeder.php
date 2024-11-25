@@ -7,6 +7,7 @@ namespace Database\Seeders;
 use App\Models\Album;
 use App\Models\AlbumCategories;
 use App\Models\Photo;
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;

@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Link, useForm } from '@inertiajs/react';
 import Layout from "@/Layouts/Admin/Layout";
-import Pagination from '@/components/Admin/Pagination';
-import AlertErrors from '@/components/Admin/AlertErrors';
+import { ButtonDelete, ButtonEdit, Pagination, AlertErrors, AlbumCategoryDelete, AlbumCategoryDeleteSelected } from '@/components/Admin/Index';
 import { BASE_URL } from "@/constants/constants";
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 
-const AlbumCategoriesContent = ({ albumCategories, flash, user_auth }) => {
+const AlbumCategoriesContent = ({ albumCategories, flash }) => {
     const { delete: formDelete } = useForm();
     const [message, setMessage] = useState(flash.message);
     const [selectedRecords, setSelectedRecords] = useState([]);
@@ -21,34 +20,6 @@ const AlbumCategoriesContent = ({ albumCategories, flash, user_auth }) => {
 
         return () => clearTimeout(timer);
     }, [message]);
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const albumCategoryId = e.target.id;
-        if (albumCategoryId) {
-            MySwal.fire({
-                title: "Sei sicuro di voler eliminare questa categoria?",
-                text: "Non sarà possibile annullare questa operazione!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "var(--bs-cobalto)",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Si, elimina!",
-                cancelButtonText: "Annulla",
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    formDelete(route('categories.destroy', albumCategoryId), {
-                        onSuccess: () => {
-                            setMessage({ tipo: 'success', testo: `Categoria ${albumCategoryId} cancellata correttamente` });
-                        },
-                        onError: () => {
-                            setMessage({ tipo: 'danger', testo: `Errore durante la cancellazione della categoria ${albumCategoryId}` });
-                        }
-                    });
-                }
-            })
-        }
-    }
 
     const handleCheckboxChange = (e, catId) => {
         if (e.target.checked) {
@@ -69,53 +40,24 @@ const AlbumCategoriesContent = ({ albumCategories, flash, user_auth }) => {
         }
     };
 
+    const handleDelete = (e) => {
+        AlbumCategoryDelete({ e, formDelete, setMessage });
+    }
+
     const handleDeleteSelected = (e) => {
-        e.preventDefault();
-        if (selectedRecords.length === 0) {
-            setMessage({ tipo: 'danger', testo: 'Nessuna categoria selezionata' });
-            return;
-        }
-        if (selectedRecords.length > 0) {
-            MySwal.fire({
-                title: "Sei sicuro di voler eliminare queste categorie?",
-                text: "Non sarà possibile annullare questa operazione!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "var(--bs-cobalto)",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Si, elimina!",
-                cancelButtonText: "Annulla",
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    formDelete(route('categories.destroy.batch', { recordIds: selectedRecords }), {
-                        onSuccess: () => {
-                            setSelectedRecords([]);
-                            setSelectAll(false);
-                            if (selectedRecords.length === 1) {
-                                setMessage({ tipo: 'success', testo: `Categoria selezionata cancellata correttamente` });
-                            } else {
-                                setMessage({ tipo: 'success', testo: `Categorie selezionate cancellate correttamente` });
-                            }
-                        },
-                        onError: () => {
-                            setMessage({ tipo: 'danger', testo: `Errore durante la cancellazione delle categorie` });
-                        }
-                    });
-                }
-            })
-        }
+        AlbumCategoryDeleteSelected({ e, formDelete, setMessage, selectedRecords, setSelectedRecords, setSelectAll });
     }
 
     return (
-        <Layout user_auth={user_auth}>
+        <Layout>
             <h2>Lista categorie albums</h2>
 
             <AlertErrors message={message} />
 
             <div className="d-grid gap-2 d-md-flex justify-content-md-start">
-                <Link href={route('categories.create')} className="btn cb-primary mb-3">Inserisci nuova categoria</Link>
+                <Link href={route('album.categories.create')} className="btn cb-primary mb-3">Inserisci nuova categoria</Link>
                 {selectedRecords && selectedRecords.length > 0 &&
-                    <button className='btn btn-danger mb-3 me-3' onClick={handleDeleteSelected}>Elimina selezionati</button>
+                    <button className='btn btn-danger mb-3' onClick={handleDeleteSelected}>Elimina selezionati</button>
                 }
             </div>
 
@@ -143,7 +85,7 @@ const AlbumCategoriesContent = ({ albumCategories, flash, user_auth }) => {
                             <tbody>
                                 {albumCategories.data.length > 0 ? (
                                     albumCategories.data.map(cat => (
-                                        <tr key={cat.id}>
+                                        <tr key={cat.id} className="align-middle">
                                             <th scope="row" className='col-md-1'>
                                                 <div className="form-check d-flex justify-content-center align-items-center">
                                                     <input className="form-check-input" type="checkbox" value={cat.id}
@@ -157,20 +99,11 @@ const AlbumCategoriesContent = ({ albumCategories, flash, user_auth }) => {
                                             <td scope="row" className="col-md-2">{new Date(cat.updated_at).toLocaleDateString()}</td>
                                             <td scope="row" className="col-md-1">{cat.albums_count}</td>
                                             <td scope="row" className="text-center col-md-2">
-                                                <Link href={route('categories.edit', cat.id)} className="btn px-2">
-                                                    <div className="over-icon">
-                                                        <img src={`${BASE_URL}img/icons/edit.png`} alt="edit" width={40} className='original' />
-                                                        <img src={`${BASE_URL}img/icons/edit-over.png`} alt="edit" width={40} className='overized' />
-                                                    </div>
+                                                <Link href={route('album.categories.edit', cat.id)} className="btn px-2">
+                                                    <ButtonEdit url={BASE_URL} />
                                                 </Link>
-                                                <form onSubmit={handleSubmit} method="post"
-                                                    className="d-inline" id={cat.id}>
-                                                    <button className="btn px-2">
-                                                        <div className="over-icon">
-                                                            <img src={`${BASE_URL}img/icons/delete.png`} alt="delete" width={40} className='original' />
-                                                            <img src={`${BASE_URL}img/icons/delete-over.png`} alt="delete" width={40} className='overized' />
-                                                        </div>
-                                                    </button>
+                                                <form onSubmit={handleDelete} method="post" className="d-inline" id={cat.id}>
+                                                    <ButtonDelete url={BASE_URL} />
                                                 </form>
                                             </td>
                                         </tr>

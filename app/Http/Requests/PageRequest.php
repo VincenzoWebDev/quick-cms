@@ -28,6 +28,7 @@ class PageRequest extends FormRequest
     {
         return [
             'title' => 'required',
+            'layout_id' => 'required',
         ];
     }
 
@@ -35,6 +36,7 @@ class PageRequest extends FormRequest
     {
         return [
             'title' => 'Il titolo della pagina è obbligatorio',
+            'layout_id' => 'Il layout è obbligatorio',
         ];
     }
 }

@@ -1,0 +1,24 @@
+:root {
+    --bc-primary: #f05353;
+    --bc-secondary: #2c455e;
+    --bc-bg: #1c232d;
+    --bc-gray: #e9e9e9;
+  }
+  
+/* CUSTOM BUTTON COLOR*/
+  .cb-primary {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #45C6F5;
+    --bs-btn-border-color: #45C6F5;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #458EF5;
+    --bs-btn-hover-border-color: #458EF5;
+    --bs-btn-focus-shadow-rgb: 49,132,253;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #458EF5;
+    --bs-btn-active-border-color: #458EF5;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #45C6F5;
+    --bs-btn-disabled-border-color: #45C6F5;
+  }

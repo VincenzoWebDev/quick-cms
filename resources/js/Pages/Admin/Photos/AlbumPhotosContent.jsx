@@ -6,7 +6,7 @@ import { STORAGE_URL, BASE_URL } from "@/constants/constants";
 import Fancybox from "@/components/Admin/Fancybox";
 
 
-const AlbumPhotosContent = ({ album, photos, flash, user_auth }) => {
+const AlbumPhotosContent = ({ album, photos, flash }) => {
     const { delete: formDelete } = useForm();
     const [message, setMessage] = useState(flash.message);
     useEffect(() => {
@@ -31,7 +31,7 @@ const AlbumPhotosContent = ({ album, photos, flash, user_auth }) => {
     }
     
     return (
-        <Layout user_auth={user_auth}>
+        <Layout>
             <h2 >Lista immagini: <span className="ct-primary">{album.album_name}</span></h2>
             <AlertErrors message={message} />
 
