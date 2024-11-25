@@ -1,12 +1,11 @@
-import { useForm, Link, router, usePage } from '@inertiajs/react';
+import { useForm, Link } from '@inertiajs/react';
 import InputErrors from '@/components/Admin/InputErrors';
 import Layout from '@/Layouts/Admin/Layout';
 import { STORAGE_URL } from '@/constants/constants';
 
 const UserEdit = ({ user }) => {
-    const { errors } = usePage().props;
-
-    const { data, setData } = useForm({
+    const { data, setData, post, errors, processing } = useForm({
+        _method: 'PATCH',
         name: user.name,
         lastname: user.lastname,
         email: user.email,
@@ -26,11 +25,7 @@ const UserEdit = ({ user }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        router.post(route('users.update', user.id), {
-            ...data,
-            _method: 'patch',
-            forceFormData: true,
-        });
+        post(route('users.update', user.id));
     }
 
     return (
@@ -76,7 +71,7 @@ const UserEdit = ({ user }) => {
                             </div>
 
                             <div className="mb-3">
-                                <button type="submit" className="btn cb-primary me-3">Modifica</button>
+                                <button type="submit" className="btn cb-primary me-3" disabled={processing}>{processing ? 'In corso...' : 'Modifica'}</button>
                                 <Link href={route('users.index')} className="btn btn-secondary">Torna indietro</Link>
                             </div>
                         </form >

@@ -3,7 +3,7 @@ import InputErrors from "@/components/Admin/InputErrors";
 import { Link, useForm } from "@inertiajs/react";
 
 const AlbumCategoryEdit = ({ category }) => {
-    const { data, setData, patch, errors } = useForm({
+    const { data, setData, patch, errors, processing } = useForm({
         category_name: category.category_name,
     });
 
@@ -32,7 +32,7 @@ const AlbumCategoryEdit = ({ category }) => {
                         </div>
 
                         <div className="mb-3">
-                            <button className="btn cb-primary me-3">Modifica</button>
+                            <button className="btn cb-primary me-3" disabled={processing}>{processing ? 'In corso...' : 'Modifica'}</button>
                             <Link href={route('album.categories.index')} className="btn btn-secondary">Torna indietro</Link>
                         </div>
                     </form>

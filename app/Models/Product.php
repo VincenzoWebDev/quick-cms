@@ -27,6 +27,11 @@ class Product extends Model
         return $this->hasMany(VariantCombination::class);
     }
 
+    public function seoMetadata()
+    {
+        return $this->morphOne(SeoMetadata::class, 'seoable');
+    }
+
     public function getProductsPercentage()
     {
         // Data di inizio e fine del mese corrente

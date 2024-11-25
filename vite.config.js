@@ -26,6 +26,7 @@ export default defineConfig(({ command, mode }) => {
                 input: [
                     'resources/css/admin/app.css',
                     'resources/css/quick_cms/app.css',
+                    'resources/css/quick_ecommerce/app.css',
                     'resources/sass/app.scss',
                     'resources/js/app.jsx'
                 ],

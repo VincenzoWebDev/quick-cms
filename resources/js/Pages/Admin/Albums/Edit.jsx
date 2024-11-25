@@ -1,10 +1,11 @@
 import Layout from "@/Layouts/Admin/Layout";
 import { AlbumCategoryCombo, AlbumGallery, AlbumTabs, AlbumThumbUpload, GalleryUpload, InputErrors } from "@/components/Admin/Index";
 import { STORAGE_URL } from "@/constants/constants";
-import { Link, useForm, router } from "@inertiajs/react";
+import { Link, useForm } from "@inertiajs/react";
 
 const AlbumEdit = ({ album, categories, selectedCategory }) => {
-    const { data, setData, errors } = useForm({
+    const { data, setData, post, errors, processing } = useForm({
+        _method: 'PATCH',
         album_name: album.album_name,
         description: album.description,
         categories: selectedCategory,
@@ -37,11 +38,7 @@ const AlbumEdit = ({ album, categories, selectedCategory }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        router.post(route('albums.update', album.id), {
-            ...data,
-            _method: 'patch',
-            forceFormData: true,
-        });
+        post(route('albums.update', album.id));
     }
 
     return (
@@ -81,7 +78,7 @@ const AlbumEdit = ({ album, categories, selectedCategory }) => {
                             </div>
 
                             <div className="mb-3">
-                                <button className="btn cb-primary me-3">Modifica</button>
+                                <button className="btn cb-primary me-3" disabled={processing}>{processing ? 'In corso...' : 'Modifica'}</button>
                                 <Link href={route('albums')} className="btn btn-secondary">Torna indietro</Link>
                             </div>
                         </form>

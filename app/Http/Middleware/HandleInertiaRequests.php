@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\CartItem;
+use App\Models\Category;
 use App\Models\Page;
 use App\Models\Setting;
 use App\Models\Theme;
@@ -42,24 +44,29 @@ class HandleInertiaRequests extends Middleware
                 'status' => fn() => $request->session()->get('status'),
             ],
             'pages' => Page::all(), /* pagine per la topbar front end */
+            'categories' => Category::whereNull('parent_id')->with('children')->get(),
             'notifications' => Auth::user() ? Auth::user()->unreadNotifications : null,
-            'cart_items' => Auth::user() ? Auth::user()->cartItems : null,
+            'cart_items' => Auth::user() ? CartItem::where('user_id', Auth::user()->id)->with('product')->get() : null,
             'user_auth' => Auth::user() ? Auth::user() : null,
             'ecommerce_status' => Setting::where('key', 'ecommerce_status')->first()->value,
+            'seo_defaults' => [
+                'site_name' => 'Quick CMS - La tua soluzione per la gestione di un e-commerce',
+                'site_description' => 'Quick CMS è la soluzione ideale per gestire un e-commerce. Offre funzionalità complete per la gestione dei prodotti, delle categorie, degli ordini e molto altro ancora. Scopri come Quick CMS può aiutarti a gestire il tuo e-commerce in modo efficiente e semplice.',
+            ],
         ]);
     }
 
     public function rootView(Request $request)
     {
-        $uri = $request->route()->uri;
+        $uri = $request->route() ? $request->route()->uri : null;
         $activeTheme = Theme::where('active', true)->first();
         $themeName = $activeTheme ? $activeTheme->name : 'default';
 
-        if (str_contains($uri, 'admin') || str_contains($uri, 'login') || str_contains($uri, 'register') || str_contains($uri, 'password')) {
-            if (Str::endsWith($uri, 'user-profile/login')) {
-                return 'layouts.' . $themeName . '.app';
-            }
+        if (str_contains($uri, 'admin') || str_contains($uri, 'admin/login') || str_contains($uri, 'admin/register') || str_contains($uri, 'admin/password')) {
             return 'layouts.admin.app';
+        }
+        if (Str::endsWith($uri, 'user/profile/login')) {
+            return 'layouts.' . $themeName . '.app';
         }
         return 'layouts.' . $themeName . '.app';
 

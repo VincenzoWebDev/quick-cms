@@ -21,20 +21,20 @@ const OrderRow = React.memo(({ order, selectedRecords, handleCheckboxChange, han
                 {order.user.name}&nbsp;{order.user.lastname}
             </td>
             <td scope="row" className="col-1">€{order.total}</td>
-            <td scope="row" className="col-2">
+            <td scope="row" className="col-1">
                 {
-                    order.status === 'pending' ? (
+                    order.shipping_status === 'pending' || order.shipping_status === 'UNKNOWN' ? (
                         <span className="badge bg-warning">In attesa di spedizione</span>
-                    ) : order.status === 'shipped' ? (
+                    ) : order.shipping_status === 'shipped' ? (
                         <span className="badge bg-info">Spedito</span>
-                    ) : order.status === 'nothing' ? (
+                    ) : order.shipping_status === 'nothing' ? (
                         <span className="badge bg-danger">Nessuna spedizione</span>
                     ) : (
                         <span className="badge bg-success">Consegnato</span>
                     )
                 }
             </td>
-            <td scope="row" className="col-2">
+            <td scope="row" className="col-1">
                 {
                     order.payment_status === 'pending' ? (
                         <span className="badge bg-warning">In attesa di pagamento</span>
@@ -47,14 +47,15 @@ const OrderRow = React.memo(({ order, selectedRecords, handleCheckboxChange, han
                     )
                 }
             </td>
-            <td scope="row" className="col-2">{order.shipping_method.name}</td>
+            <td scope="row" className="col-2 text-center">{order.tracking_number}</td>
+            <td scope="row" className="col-1">{order.shipping_method.name}</td>
             <td scope="row" className="col-1 text-center">
                 <Link href={route('orders.edit', order.id)} className="btn px-2">
                     <ButtonEdit url={BASE_URL} />
                 </Link>
-                <a href="#" onClick={() => OrderShowDetails(order)} className="btn px-2">
+                <Link preserveScroll preserveState href="#" onClick={() => OrderShowDetails(order)} className="btn px-2">
                     <ButtonShow url={BASE_URL} />
-                </a>
+                </Link>
                 <form onSubmit={handleDelete} className="d-inline" id={order.id}>
                     <ButtonDelete url={BASE_URL} />
                 </form>

@@ -169,7 +169,6 @@ class AlbumController extends \App\Http\Controllers\Controller
 
         return Inertia::render('Admin/Albums/Create', [
             'categories' => $categories,
-            'selectedCategory' => []
         ]);
     }
 

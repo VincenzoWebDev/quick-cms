@@ -4,7 +4,7 @@ const InputErrors = ({ errors }) => {
             {errors && Object.keys(errors).length > 0 &&
                 <div className="alert alert-danger">
                     {Object.values(errors).map((error, index) => (
-                        <p key={index}>{error}</p>
+                        <p key={index} className="m-0">{error}</p>
                     ))}
                 </div>
             }

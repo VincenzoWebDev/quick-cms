@@ -19,6 +19,16 @@ class ProductVariantValueController extends \App\Http\Controllers\Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'product_variant_id' => 'required',
+        ], [
+            'name.required' => 'Il nome valore è obbligatorio',
+            'name.string' => 'Il nome valore deve essere una stringa',
+            'name.max' => 'Il nome valore deve essere lungo massimo :max caratteri',
+            'product_variant_id.required' => 'La variante è obbligatoria',
+        ]);
+
         $variant_value = new ProductVariantValue();
         $variant_value->value = $request->name;
         $variant_value->product_variant_id = $request->product_variant_id;

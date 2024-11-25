@@ -58,7 +58,7 @@ class ProductController extends \App\Http\Controllers\Controller
 
     public function create()
     {
-        $categories = Category::orderBy('name', 'asc')->get();
+        $categories = Category::whereNull('parent_id')->with('children')->get();
         $variants = ProductVariant::orderBy('name', 'asc')->with('values')->get();
 
         return Inertia::render('Admin/Products/Create', [
@@ -83,19 +83,17 @@ class ProductController extends \App\Http\Controllers\Controller
             if ($request->input('variantCombinations') != null) {
                 $this->processVariantCombinations($request->input('variantCombinations'), $product->id);
             }
-        }
-
-        if ($res) {
             if ($request->has('categories') > 0) {
                 $product->categories()->attach($request->categories);
             }
-        }
-        if ($res) {
             if ($request->hasFile('image_path')) {
                 $this->processThumb($request, $product);
             }
             if (is_array($request->file('gallery'))) {
                 $this->processGallery($request, $product);
+            }
+            if ($request->has('seo_metadata') && !empty(array_filter($request->input('seo_metadata')))) {
+                $product->seoMetadata()->create($request->input('seo_metadata'));
             }
         }
 
@@ -154,58 +152,62 @@ class ProductController extends \App\Http\Controllers\Controller
 
     public function edit(Product $product)
     {
-        $categories = Category::orderBy('name', 'asc')->get();
-        $selectedCategories = $product->categories->pluck('id')->toArray();
+        $categories = Category::whereNull('parent_id')->with('children')->get();
+        $selectedFatherCat = $product->categories()->where('parent_id', null)->pluck('category_id')->toArray();
+        $selectedChildCat = $product->categories()->whereNotNull('parent_id')->pluck('category_id')->toArray();
         $variants = ProductVariant::orderBy('name', 'asc')->with('values')->get();
-        $product = $product->with('productImages', 'combinations.variantCombinationValues.productVariantValue')->where('id', $product->id)->first();
+        $product = $product->with('productImages', 'combinations.variantCombinationValues.productVariantValue', 'seoMetadata')->where('id', $product->id)->first();
 
         return Inertia::render('Admin/Products/Edit', [
             'product' => $product,
             'categories' => $categories,
-            'selectedCategories' => $selectedCategories,
+            'selectedFatherCat' => $selectedFatherCat,
+            'selectedChildCat' => $selectedChildCat,
             'variants' => $variants,
         ]);
     }
 
     public function update(EditProductRequest $request, Product $product)
     {
-        $oldProductName = $product->name;
-        $oldDescription = $product->description;
-        $oldPrice = $product->price;
-        $oldStock = $product->stock;
         $oldImage = $product->image_path;
         $oldGallery = $product->productImages->pluck('image_path')->toArray();
-        $oldSlug = $product->slug;
 
         $product->name = $request->input('name');
         $product->description = $request->input('description');
         $product->price = $request->input('price');
         $product->stock = $request->input('stock');
         $product->image_path = $request->input('image_path') == null ? $oldImage : $request->input('image_path');
-        $catProduct = $product->categories()->sync($request->categories);
+        $product->categories()->sync($request->categories);
         $product->slug = $this->createSlug($request->input('name'));
 
-        if (
-            $oldProductName != $product->name || $oldDescription != $product->description || $oldPrice != $product->price || $oldStock != $product->stock ||
-            $oldImage != $product->image_path || $catProduct['attached'] != null || $catProduct['detached'] != null || $request->hasFile('image_path') ||
-            $request->file('gallery') != null || $request->variantCombinations != null || $oldSlug != $product->slug
-        ) {
-            if ($request->hasFile('image_path')) {
-                $this->deleteThumb($oldImage);
-                $this->processThumb($request, $product);
-            }
-            if ($request->file('gallery') != null) {
-                $this->deleteGallery($oldGallery);
-                $product->productImages()->delete();
-                $this->processGallery($request, $product);
-            }
-            if ($request->variantCombinations != null) {
-                $this->processVariantCombinations($request->variantCombinations, $product->id);
-            }
-            $res = $product->save();
-        } else {
-            $res = 0;
+        if ($request->hasFile('image_path')) {
+            $this->deleteThumb($oldImage);
+            $this->processThumb($request, $product);
         }
+        if ($request->file('gallery') != null) {
+            $this->deleteGallery($oldGallery);
+            $product->productImages()->delete();
+            $this->processGallery($request, $product);
+        }
+        if ($request->variantCombinations != null) {
+            $this->processVariantCombinations($request->variantCombinations, $product->id);
+        }
+        if ($request->has('seo_metadata')) {
+            $seoData = $request->input('seo_metadata');
+            $seoMetadata = $product->seoMetadata;
+
+            if ($seoMetadata) {
+                // Se i metadati SEO esistono, aggiorna solo se ci sono cambiamenti
+                $seoMetadata->fill($seoData);
+                if ($seoMetadata->isDirty()) {
+                    $seoMetadata->save();
+                }
+            } else {
+                // Crea nuovi metadati SEO se non esistono
+                $product->seoMetadata()->create($seoData);
+            }
+        }
+        $res = $product->save();
 
         $messaggio = $res ? 'Prodotto ID : ' . $product->id . ' - Aggiornato correttamente' : 'Prodotto ID : ' . $product->id . ' - Non aggiornato';
         $tipoMessaggio = $res ? 'success' : 'danger';
@@ -227,6 +229,9 @@ class ProductController extends \App\Http\Controllers\Controller
                 $combination->variantCombinationValues()->delete();
             });
             $product->combinations()->delete();
+        }
+        if ($product->seoMetadata) {
+            $product->seoMetadata->delete();
         }
         $res = $product->delete();
         if ($res) {
@@ -255,6 +260,9 @@ class ProductController extends \App\Http\Controllers\Controller
                 });
                 $product->combinations()->delete();
             }
+            if ($product->seoMetadata) {
+                $product->seoMetadata->delete();
+            }
             $res = Product::where('id', $recordId)->delete();
             if ($res) {
                 $this->deleteThumb($productThumb);
@@ -275,7 +283,6 @@ class ProductController extends \App\Http\Controllers\Controller
     }
     public function imagesDestroyBatch(Request $request)
     {
-        dd($request->all());
         $recordIds = $request->input('recordIds');
         if ($recordIds == null) {
             return;

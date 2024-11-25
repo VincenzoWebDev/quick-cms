@@ -1,33 +1,48 @@
-import { Link, router, useForm, usePage } from '@inertiajs/react';
+import { Link, useForm } from '@inertiajs/react';
 import Layout from '@/Layouts/Admin/Layout';
 import { BASE_URL } from '@/constants/constants';
 import { ImagesTab, InfoTab, InputErrors, ProductTabs, SeoTab, VariantsTab } from "@/components/Admin/Index";
-import { useEffect, useState } from 'react';
 
-const ProductEdit = ({ product, categories, selectedCategories, productImages, variants, variantCombinationsGroup }) => {
-    const { data, setData } = useForm({
+const ProductEdit = ({ product, categories, selectedFatherCat, selectedChildCat, variants }) => {
+    const combinedCategories = [...new Set([...selectedFatherCat, ...selectedChildCat])]; // Combina array delle categorie padre e figlio
+    const { data, setData, post, processing, errors } = useForm({
+        _method: 'PATCH',
         name: product.name,
         description: product.description,
         price: product.price,
         stock: product.stock,
-        categories: selectedCategories,
+        categories: combinedCategories,
         image_path: null,
         gallery: [],
         variantCombinations: [],
+        seo_metadata: {
+            meta_title: product.seo_metadata ? product.seo_metadata.meta_title : '',
+            meta_description: product.seo_metadata ? product.seo_metadata.meta_description : '',
+            meta_keywords: product.seo_metadata ? product.seo_metadata.meta_keywords : '',
+            canonical_url: product.seo_metadata ? product.seo_metadata.canonical_url : '',
+            og_title: product.seo_metadata ? product.seo_metadata.og_title : '',
+            og_description: product.seo_metadata ? product.seo_metadata.og_description : '',
+            og_image: product.seo_metadata ? product.seo_metadata.og_image : '',
+            twitter_title: product.seo_metadata ? product.seo_metadata.twitter_title : '',
+            twitter_description: product.seo_metadata ? product.seo_metadata.twitter_description : '',
+            twitter_image: product.seo_metadata ? product.seo_metadata.twitter_image : '',
+        }
     });
-    const { errors } = usePage().props;
-    // useEffect(() => {
-    //     if (variantCombinationsGroup != '') {
-    //         // Calcola e aggiorna lo stock globale quando cambiano le combinazioni
-    //         const totalStock = variantCombinationsGroup.reduce((total, combination) => total + combination.quantity, 0);
-    //         setData('stock', totalStock); // Aggiorna lo stato dello stock globale
-    //     }
-    // }, [variantCombinationsGroup]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setData(name, value);
     };
+    const handleSeoChange = (e) => {
+        const { name, value } = e.target;
+        setData({
+            ...data,
+            seo_metadata: {
+                ...data.seo_metadata,
+                [name]: value,
+            },
+        });
+    }
 
     const handleCatsChange = (cats) => {
         setData('categories', cats);
@@ -57,14 +72,7 @@ const ProductEdit = ({ product, categories, selectedCategories, productImages, v
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        router.post(route('products.update', product.id), {
-            ...data,
-            _method: 'patch',
-            forceFormData: true,
-            onSuccess: () => {
-                reset();
-            }
-        });
+        post(route('products.update', product.id));
     };
     return (
         <>
@@ -77,13 +85,13 @@ const ProductEdit = ({ product, categories, selectedCategories, productImages, v
                     <div className="col-md-8">
                         <form onSubmit={handleSubmit} encType="multipart/form-data">
                             <div className="tab-content" id="myTabContent">
-                                <InfoTab data={data} handleChange={handleChange} categories={categories} selectedCategories={selectedCategories} handleCatsChange={handleCatsChange} />
+                                <InfoTab data={data} handleChange={handleChange} categories={categories} selectedFatherCat={selectedFatherCat} selectedChildCat={selectedChildCat} handleCatsChange={handleCatsChange} />
                                 <ImagesTab ThumbChanged={handleThumbChange} GalleryChanged={handleGalleryChange} productImages={product.product_images} />
                                 <VariantsTab variants={variants} setVariantCombinations={setVariantCombinations} combinationValues={product.combinations} />
-                                <SeoTab />
+                                <SeoTab data={data.seo_metadata} handleSeoChange={handleSeoChange} />
                             </div>
                             <div className="mb-3">
-                                <button type="submit" className="btn cb-primary me-3">Modifica</button>
+                                <button type="submit" className="btn cb-primary me-3" disabled={processing}>{processing ? 'In corso...' : 'Modifica'}</button>
                                 <Link href={route('products.index')} className="btn btn-secondary">Torna indietro</Link>
                             </div>
                         </form >

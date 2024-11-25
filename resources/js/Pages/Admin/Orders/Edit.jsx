@@ -3,7 +3,7 @@ import Layout from "@/Layouts/Admin/Layout";
 import { Link, useForm } from "@inertiajs/react";
 
 const OrderEdit = ({ order }) => {
-    const { data, setData, errors, patch } = useForm({ ...order });
+    const { data, setData, errors, patch, processing } = useForm({ ...order });
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -49,8 +49,8 @@ const OrderEdit = ({ order }) => {
                             <input type="text" className="form-control" id="total" name="total" value={data.total} disabled />
                         </div>
                         <div className="mb-3">
-                            <label htmlFor="status" className="form-label fw-bold">Stato spedizione</label>
-                            <select className="form-select" id="status" name="status" value={data.status} onChange={handleInputChange}>
+                            <label htmlFor="shipping_status" className="form-label fw-bold">Stato spedizione</label>
+                            <select className="form-select" id="shipping_status" name="shipping_status" value={data.shipping_status} onChange={handleInputChange}>
                                 <option value="pending">In attesa</option>
                                 <option value="shipped">In consegna</option>
                                 <option value="delivered">Consegnato</option>
@@ -93,7 +93,7 @@ const OrderEdit = ({ order }) => {
                 </div>
                 <div className="row">
                     <div className="mb-3">
-                        <button type="submit" className="btn cb-primary me-3">Modifica</button>
+                        <button type="submit" className="btn cb-primary me-3" disabled={processing}>{processing ? 'In corso...' : 'Modifica'}</button>
                         <Link href={route('orders.index')} className="btn btn-secondary">Torna indietro</Link>
                     </div>
                 </div>

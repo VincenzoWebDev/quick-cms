@@ -1,6 +1,6 @@
 import { CategoryCombo } from "@/components/Admin/Index";
 import { usePage } from "@inertiajs/react";
-const InfoTab = ({ data, handleChange, categories, selectedCategories, handleCatsChange }) => {
+const InfoTab = ({ data, handleChange, categories, selectedFatherCat, selectedChildCat, handleCatsChange }) => {
     const url = usePage().url;
 
     return (
@@ -12,7 +12,7 @@ const InfoTab = ({ data, handleChange, categories, selectedCategories, handleCat
 
             <div className="mb-3">
                 <label htmlFor="description" className="form-label fw-bold">Descrizione</label>
-                <input type="text" name="description" id="description" className="form-control" placeholder="Descrizione" value={data.description || ''} onChange={handleChange} />
+                <textarea name="description" id="description" className="form-control" placeholder="Descrizione" value={data.description || ''} onChange={handleChange} />
             </div>
 
             <div className="mb-3">
@@ -26,7 +26,7 @@ const InfoTab = ({ data, handleChange, categories, selectedCategories, handleCat
                 <input type="number" name="stock" id="stock" className="form-control" placeholder="Stock" autoComplete="current-stock" value={data.stock || ''} onChange={handleChange} />
             </div>
 
-            <CategoryCombo categories={categories} selectedCategories={selectedCategories} handleCatsChange={handleCatsChange} />
+            <CategoryCombo categories={categories} selectedFatherCat={selectedFatherCat} selectedChildCat={selectedChildCat} handleCatsChange={handleCatsChange} />
         </div>
     )
 }

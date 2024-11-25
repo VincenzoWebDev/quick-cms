@@ -2,10 +2,11 @@ import Layout from "@/Layouts/Admin/Layout";
 import InputErrors from "@/components/Admin/InputErrors";
 import { Link, useForm } from "@inertiajs/react";
 
-const EditCategory = ({ category }) => {
-    const { data, setData, patch, errors } = useForm({
+const EditCategory = ({ category, categories }) => {
+    const { data, setData, patch, errors, processing } = useForm({
         name: category.name,
         description: category.description || '',
+        parent_id: category.parent_id || null,
     });
 
     const handleInputChange = (e) => {
@@ -39,7 +40,19 @@ const EditCategory = ({ category }) => {
                         </div>
 
                         <div className="mb-3">
-                            <button className="btn cb-primary me-3">Modifica</button>
+                            <label htmlFor="parent_id">Categoria padre</label>
+                            {/* <input type="number" name="parent_id" id="parent_id" className="form-control"
+                                value={data.parent_id || ''} onChange={handleInputChange} placeholder="Parent ID" /> */}
+                            <select name="parent_id" id="parent_id" className="form-control" value={data.parent_id || ''} onChange={handleInputChange}>
+                                <option value={null}>Nessuna</option>
+                                {categories.map(category => (
+                                    <option key={category.id} value={category.id}>{category.name}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div className="mb-3">
+                            <button className="btn cb-primary me-3" disabled={processing}>{processing ? 'In corso...' : 'Modifica'}</button>
                             <Link href={route('categories.index')} className="btn btn-secondary">Torna indietro</Link>
                         </div>
                     </form>

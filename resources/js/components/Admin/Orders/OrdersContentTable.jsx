@@ -47,6 +47,7 @@ const OrdersContentTable = ({ orders, setMessage, formDelete, selectedRecords, s
                         <th scope="col" onClick={() => handleSort('total')} style={{ cursor: 'pointer' }}>Totale {getSortIcon('total')}</th>
                         <th scope="col">Stato spedizione</th>
                         <th scope="col">Stato pagamento</th>
+                        <th scope="col" className="text-center">Numero di spedizione</th>
                         <th scope="col">Metodo di spedizione</th>
                         <th scope="col" className="text-center">Operazioni</th>
                     </tr>

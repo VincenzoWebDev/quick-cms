@@ -1,11 +1,9 @@
 import Layout from "@/Layouts/Admin/Layout";
-import { Link, router, useForm, usePage } from '@inertiajs/react';
+import { Link, useForm } from '@inertiajs/react';
 import { InputErrors } from "@/components/Admin/Index";
 
 const Edit = ({ shippingMethod }) => {
-    const { errors } = usePage().props;
-
-    const { data, setData } = useForm({
+    const { data, setData, patch, errors, processing } = useForm({
         name: shippingMethod.name,
         description: shippingMethod.description,
         price: shippingMethod.price,
@@ -19,11 +17,7 @@ const Edit = ({ shippingMethod }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        router.post(route('shipping-methods.update', shippingMethod.id), {
-            ...data,
-            _method: 'patch',
-            forceFormData: true,
-        });
+        patch(route('shipping-methods.update', shippingMethod.id));
     }
 
     return (
@@ -56,7 +50,7 @@ const Edit = ({ shippingMethod }) => {
                         </div>
 
                         <div className="mb-3">
-                            <button className="btn cb-primary me-3">Modifica</button>
+                            <button className="btn cb-primary me-3" disabled={processing}>{processing ? 'In corso...' : 'Modifica'}</button>
                             <Link href={route('shipping-methods.index')} className="btn btn-secondary">Torna indietro</Link>
                         </div>
                     </form>

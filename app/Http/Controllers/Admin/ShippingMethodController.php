@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\EditShippingMethodRequest;
 use App\Http\Requests\ShippingMethodRequest;
 use App\Models\ShippingMethod;
 use Illuminate\Http\Request;
@@ -68,7 +69,7 @@ class ShippingMethodController extends \App\Http\Controllers\Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ShippingMethod $shippingMethod)
+    public function update(EditShippingMethodRequest $request, ShippingMethod $shippingMethod)
     {
         $oldName = $shippingMethod->name;
         $oldDescription = $shippingMethod->description;

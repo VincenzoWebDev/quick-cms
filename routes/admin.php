@@ -55,6 +55,9 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('/albums/{id}/photos', [AlbumController::class, 'getPhotos'])->name('albums.photos')->where('id', '[0-9]+');
     Route::delete('/albums/{album}', [AlbumController::class, 'destroy'])->name('albums.destroy')->where('album', '[0-9]+');
     Route::delete('/albums/destroy/batch', [AlbumController::class, 'destroyBatch'])->name('albums.destroy.batch');
+    // Photo albums
+    Route::resource('/photos', PhotoController::class);
+    Route::delete('/photos/destroy/batch', [PhotoController::class, 'destroyBatch'])->name('photos.destroy.batch');
 
     Route::middleware('VerifyIsAdmin')->group(function () {
         Route::get('/themes', [ThemeController::class, 'index'])->name('themes.index');
@@ -79,10 +82,6 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::delete('/pages/destroy/batch', [PageController::class, 'destroyBatch'])->name('pages.destroy.batch');
         Route::post('/pages/images/store', [PageController::class, 'storeImage'])->name('pages.images.store');
     });
-
-    // Photo albums
-    Route::resource('/photos', PhotoController::class);
-    Route::delete('/photos/destroy/batch', [PhotoController::class, 'destroyBatch'])->name('photos.destroy.batch');
 
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::patch('/profile/{userId}', [ProfileController::class, 'update'])->name('profile.update');
@@ -149,7 +148,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
         Route::patch('/settings/layouts/{layout}', [PageLayoutController::class, 'update'])->name('settings.layouts.update');
         Route::delete('/settings/layouts/{layout}', [PageLayoutController::class, 'destroy'])->name('settings.layouts.destroy');
 
-        Route::middleware(['CheckEcommerceStatus'])->group(function () {
+        Route::middleware('CheckEcommerceStatus')->group(function () {
             Route::get('settings/variants', [ProductVariantController::class, 'index'])->name('settings.variants.index');
             Route::get('settings/variants/create', [ProductVariantController::class, 'create'])->name('settings.variants.create');
             Route::post('settings/variants', [ProductVariantController::class, 'store'])->name('settings.variants.store');

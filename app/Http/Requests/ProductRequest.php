@@ -29,6 +29,24 @@ class ProductRequest extends FormRequest
             'image_path' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
             'gallery' => 'nullable',
             'gallery.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'meta_title' => 'nullable|string|max:60',
+            'meta_description' => 'nullable|string|max:160',
+            'meta_keywords' => [
+                'nullable',
+                'string',
+                function ($attribute, $value, $fail) {
+                    if (str_word_count($value) > 10) {
+                        $fail("Massimo 10 parole per i meta keywords");
+                    }
+                },
+            ],
+            'canonical_url' => 'nullable|url',
+            'og_title' => 'nullable|string|max:60',
+            'og_description' => 'nullable|string|max:160',
+            'og_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'twitter_title' => 'nullable|string|max:60',
+            'twitter_description' => 'nullable|string|max:160',
+            'twitter_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
         ];
     }
     public function messages(): array
@@ -51,6 +69,21 @@ class ProductRequest extends FormRequest
             'gallery.*.image' => 'La galleria deve contenere solo immagini',
             'gallery.*.mimes' => 'La galleria deve contenere solo immagini in un formato valido',
             'gallery.*.max' => 'La galleria deve contenere solo immagini di dimensioni minori di 2048 kilobyte',
+            'meta_title.max' => 'Il meta title deve essere inferiore a 60 caratteri',
+            'meta_description.max' => 'Il meta description deve essere inferiore a 160 caratteri',
+            'meta_keywords.string' => 'Il meta keywords deve essere una stringa',
+            'meta_keywords.max' => 'Il meta keywords deve essere inferiore a 10 parole',
+            'canonical_url.url' => 'Il canonical url deve essere un URL valido',
+            'og_title.max' => 'Il og title deve essere inferiore a 60 caratteri',
+            'og_description.max' => 'Il og description deve essere inferiore a 160 caratteri',
+            'og_image.image' => 'Il og image deve essere un\'immagine',
+            'og_image.mimes' => 'Il og image deve essere in un formato valido',
+            'og_image.max' => 'Il og image deve essere inferiore a 2048 kilobyte',
+            'twitter_title.max' => 'Il twitter title deve essere inferiore a 60 caratteri',
+            'twitter_description.max' => 'Il twitter description deve essere inferiore a 160 caratteri',
+            'twitter_image.image' => 'Il twitter image deve essere un\'immagine',
+            'twitter_image.mimes' => 'Il twitter image deve essere in un formato valido',
+            'twitter_image.max' => 'Il twitter image deve essere inferiore a 2048 kilobyte',
         ];
     }
 }

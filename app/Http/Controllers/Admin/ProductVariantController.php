@@ -26,6 +26,14 @@ class ProductVariantController extends \App\Http\Controllers\Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ], [
+            'name.required' => 'Il nome è obbligatorio',
+            'name.string' => 'Il nome deve essere una stringa',
+            'name.max' => 'Il nome deve essere lungo massimo :max caratteri',
+        ]);
+
         $variant = new ProductVariant();
         $variant->name = $request->name;
         $res = $variant->save();
@@ -46,6 +54,14 @@ class ProductVariantController extends \App\Http\Controllers\Controller
 
     public function update(Request $request, ProductVariant $variant)
     {
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ], [
+            'name.required' => 'Il nome è obbligatorio',
+            'name.string' => 'Il nome deve essere una stringa',
+            'name.max' => 'Il nome deve essere lungo massimo :max caratteri',
+        ]);
+
         $oldName = $variant->name;
         $variant->name = $request->input('name');
 

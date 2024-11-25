@@ -6,7 +6,7 @@ import { Editor } from "@tinymce/tinymce-react";
 import { EDITOR_CONFIG, API_KEY_EDITOR } from '@/constants/constants.js';
 
 const PageEdit = ({ page, pageLayout }) => {
-    const { data, setData, patch, errors } = useForm({
+    const { data, setData, patch, errors, processing } = useForm({
         title: page.title,
         content_editor: page.content ?? '',
         layout_id: page.layout_id ?? '',
@@ -74,7 +74,7 @@ const PageEdit = ({ page, pageLayout }) => {
                         </div>
 
                         <div className="mb-3">
-                            <button className="btn cb-primary me-3">Modifica</button>
+                            <button className="btn cb-primary me-3" disabled={processing}>{processing ? 'In corso...' : 'Modifica'}</button>
                             <Link href={route('pages.index')} className="btn btn-secondary">Torna indietro</Link>
                         </div>
                     </form>

@@ -30,7 +30,7 @@ const TableCombinations = React.memo(({ combinationValues }) => {
     const handleSelectAllChange = (e) => {
         const isChecked = e.target.checked;
         setSelectAll(isChecked);
-        const allRecordIds = combinationValues.map(combination => combination.combination_id);
+        const allRecordIds = combinationValues.map(combination => combination.id);
         if (isChecked) {
             setSelectedRecords(allRecordIds);
         } else {
@@ -39,7 +39,6 @@ const TableCombinations = React.memo(({ combinationValues }) => {
     };
 
     const handleDeleteCombination = (combinationId) => {
-        // router.delete(route('products.destroy.combination', id));
         CombinationsDelete({ combinationId });
     }
     const handleDeleteSelected = (e) => {
@@ -47,11 +46,11 @@ const TableCombinations = React.memo(({ combinationValues }) => {
     }
 
     const handleEditClick = (combination) => {
-        setEditingCombination(combination.combination_id);
+        setEditingCombination(combination.id);
         setEditedCombination({ ...combination });
     }
     const handleEditCombination = (combination) => {
-        router.patch(route('products.update.combination', combination.combination_id), combination,
+        router.patch(route('products.update.combination', combination.id), combination,
             {
                 onSuccess: () => {
                     setMessage({ tipo: 'success', testo: "Combinazione aggiornata correttamente" });
@@ -115,7 +114,7 @@ const TableCombinations = React.memo(({ combinationValues }) => {
                                                 disabled
                                             />
                                         </td>
-                                        {editingCombination === combination.combination_id ? (
+                                        {editingCombination === combination.id ? (
                                             <>
                                                 <td className="col-1">
                                                     <input
@@ -167,7 +166,7 @@ const TableCombinations = React.memo(({ combinationValues }) => {
                                             </>
                                         )}
                                         <td className="col-1 text-center">
-                                            {editingCombination === combination.combination_id ? (
+                                            {editingCombination === combination.id ? (
                                                 <>
                                                     <a onClick={() => handleEditCombination(editedCombination)} className="btn px-2">
                                                         <ButtonSave url={BASE_URL} />
@@ -181,7 +180,7 @@ const TableCombinations = React.memo(({ combinationValues }) => {
                                                     <a onClick={() => handleEditClick(combination)} className="btn px-2">
                                                         <ButtonEdit url={BASE_URL} />
                                                     </a>
-                                                    <div className="over-icon btn" onClick={() => handleDeleteCombination(combination.combination_id)}>
+                                                    <div className="over-icon btn" onClick={() => handleDeleteCombination(combination.id)}>
                                                         <img src={`${BASE_URL}/img/icons/delete.png`} alt="delete" className='original' />
                                                         <img src={`${BASE_URL}/img/icons/delete-over.png`} alt="delete" className='overized' />
                                                     </div>

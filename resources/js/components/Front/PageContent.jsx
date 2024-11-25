@@ -19,7 +19,7 @@ const PageComponent = ({ currentPage, pageLayout }) => {
 
     return (
         <>
-            <div className="container my-5">
+            <div className="container">
                 {pageLayout.name == 'una colonna' &&
                     <>
                         <h1 className="mb-5">{currentPage.title}</h1>

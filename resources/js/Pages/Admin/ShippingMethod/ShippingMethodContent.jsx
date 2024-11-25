@@ -70,7 +70,7 @@ const ShippingMethodContent = ({ shippingMethods, flash }) => {
                                                     </div>
                                                 </th>
                                                 <td scope="row" className="col-1">{shipping.id}</td>
-                                                <td scope="row" className="col-2 fw-bold">{shipping.name}</td>
+                                                <td scope="row" className="col-2">{shipping.name}</td>
                                                 <td scope="row" className="col-2">{shipping.price}</td>
                                                 <td scope="row" className="col-2">{shipping.delivery_time} giorni</td>
                                                 <td scope="row" className="col-2">{shipping.description}</td>

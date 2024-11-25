@@ -1,14 +1,14 @@
 import Layout from "@/Layouts/Admin/Layout";
 import { STORAGE_URL } from "@/constants/constants";
 import { useState, useEffect } from "react";
-import { router, useForm, usePage } from "@inertiajs/react";
+import { useForm, usePage } from "@inertiajs/react";
 import AlertErrors from "@/components/Admin/AlertErrors";
 import InputErrors from "@/components/Admin/InputErrors";
 
 const ProfileContent = () => {
     const { user_auth } = usePage().props;
     const [editable, setEditable] = useState(false);
-    const { data, setData, errors, patch } = useForm({ ...user_auth });
+    const { data, setData, errors, post, processing } = useForm({_method: 'PATCH', ...user_auth});
     const [message, setMessage] = useState(null);
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -20,7 +20,7 @@ const ProfileContent = () => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setData({ ...data, [name]: value || '' });
+        setData(name, value);
     }
 
     const handleFileChange = (e) => {
@@ -35,11 +35,7 @@ const ProfileContent = () => {
 
     const handleSaveClick = (e) => {
         e.preventDefault();
-        router.post(route('profile.update', user_auth.id), {
-            ...data,
-            _method: 'patch',
-            forceFormData: true,
-        }, {
+        post(route('profile.update', user_auth.id), {
             onSuccess: (res) => {
                 setEditable(false);
                 setMessage(res.props.flash.message);
@@ -176,7 +172,7 @@ const ProfileContent = () => {
                                         {/* <a className="btn cb-primary" href="">Edit</a> */}
                                         {editable ? (
                                             <>
-                                                <button className="btn btn-success me-2" onClick={handleSaveClick}>Salva</button>
+                                                <button className="btn btn-success me-2" onClick={handleSaveClick} disabled={processing}>{processing ? 'In corso...' : 'Salva'}</button>
                                                 <button className="btn btn-danger" onClick={(e) => setEditable(false)}>Annulla</button>
                                             </>
                                         ) : (
@@ -243,9 +239,6 @@ const ProfileContent = () => {
                                 </div>
                             </div>
                         </div>
-
-
-
                     </div>
                 </div>
             </div>

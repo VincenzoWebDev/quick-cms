@@ -31,4 +31,7 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'shippo' => [
+        'api_key' => env('SHIPPO_API_KEY'),
+    ],
 ];

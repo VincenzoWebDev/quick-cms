@@ -13,25 +13,29 @@ class CategoryController extends \App\Http\Controllers\Controller
 
     public function index()
     {
-        $categories = Category::all();
+        $categories = Category::where('parent_id', null)->get();
+        $categories->load('children');
         return Inertia::render('Admin/Categories/CategoriesContent', ['categories' => $categories]);
     }
 
     public function edit($id)
     {
         $category = Category::find($id);
-        return Inertia::render('Admin/Categories/Edit', ['category' => $category]);
+        $categories = Category::where('parent_id', null)->get();
+        return Inertia::render('Admin/Categories/Edit', compact('category', 'categories'));
     }
 
     public function update(EditCategoryRequest $request, Category $category)
     {
         $oldCategory = $category->name;
         $oldDescription = $category->description;
+        $oldParentId = $category->parent_id;
 
         $category->name = $request->input('name');
         $category->description = $request->input('description');
+        $category->parent_id = $request->input('parent_id');
 
-        if ($oldCategory != $category->name || $oldDescription != $category->description) {
+        if ($oldCategory != $category->name || $oldDescription != $category->description || $oldParentId != $category->parent_id) {
             $res = $category->save();
         } else {
             $res = 0;
@@ -45,7 +49,8 @@ class CategoryController extends \App\Http\Controllers\Controller
 
     public function create()
     {
-        return Inertia::render('Admin/Categories/Create');
+        $categories = Category::where('parent_id', null)->get();
+        return Inertia::render('Admin/Categories/Create', compact('categories'));
     }
 
     public function store(CategoryRequest $request)
@@ -53,6 +58,7 @@ class CategoryController extends \App\Http\Controllers\Controller
         $category = new Category();
         $category->name = $request->input('name');
         $category->description = $request->input('description');
+        $category->parent_id = $request->input('parent_id');
         $res = $category->save();
 
         $messaggio = $res ? 'Categoria ' . $category->id . ' inserita correttamente' : 'Categoria non inserita';

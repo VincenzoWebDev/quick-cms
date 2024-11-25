@@ -16,6 +16,6 @@ class Authenticate extends Middleware
         if ($request->is('admin') || $request->is('admin/*')) {
             return route('login'); // Reindirizza a login per admin
         }
-        return $request->expectsJson() ? null : route('front.user.login'); // Reindirizza a user/login per pubblico
+        return $request->expectsJson() ? null : route('user.profile.login.index'); // Reindirizza a user/login per pubblico
     }
 }

@@ -68,11 +68,11 @@ const Topbar = () => {
         <header data-bs-theme="dark">
             <div className="navbar-container fixed-top">
                 <nav className="navbar navbar-expand-md px-3 py-0 navbar-scroll d-flex justify-content-between align-content-center">
-                    <a className="navbar-brand" href={route('home')}>
+                    <Link className="navbar-brand" href={route('home')}>
                         <div className='logo-container'>
                             <img src={logo} alt="Logo" className='img-fluid' />
                         </div>
-                    </a>
+                    </Link>
                     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
                         aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                         <span className="navbar-toggler-icon"></span>

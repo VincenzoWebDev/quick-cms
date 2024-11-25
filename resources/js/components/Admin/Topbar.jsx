@@ -89,7 +89,7 @@ const Topbar = () => {
                                                 <i className="fa-solid fa-bell"></i>
                                                 <span className="notification">{unreadNotifications.length}</span>
                                             </a>
-                                            <ul className="dropdown-menu dropdown-menu-end dropdown-menu animate__animated animate__fadeInUp">
+                                            <ul className="dropdown-menu dropdown-menu-end animate__animated animate__fadeInUp">
                                                 {unreadNotifications.length === 0 && (
                                                     <li className='text-center'>
                                                         <span className='dropdown-item'>Nessuna Notifica</span>

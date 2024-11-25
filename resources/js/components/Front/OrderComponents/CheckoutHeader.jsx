@@ -4,8 +4,8 @@ const CheckoutHeader = () => {
     const { url } = usePage();
     return (
         <header>
-            <div className="bg-red">
-                <div className="container py-4">
+            <div className="bg-success">
+                <div className="container py-3">
                     <nav className="d-flex">
                         <h6 className="mb-0">
                             {url.endsWith('cart') ?

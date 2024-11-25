@@ -24,7 +24,7 @@ class OrderController extends \App\Http\Controllers\Controller
             ->when($searchQuery, function ($query) use ($searchQuery) {
                 $query->where(function ($query) use ($searchQuery) {
                     $query->where('id', 'like', '%' . $searchQuery . '%')
-                        ->orWhere('status', 'like', '%' . $searchQuery . '%')
+                        ->orWhere('shipping_status', 'like', '%' . $searchQuery . '%')
                         ->orWhere('payment_status', 'like', '%' . $searchQuery . '%')
                         ->orWhere('total', 'like', '%' . $searchQuery . '%')
                         ->orWhere('created_at', 'like', '%' . $searchQuery . '%')
@@ -62,8 +62,9 @@ class OrderController extends \App\Http\Controllers\Controller
     {
         return [
             'id' => $order->id,
-            'status' => $order->status,
+            'shipping_status' => $order->shipping_status,
             'payment_status' => $order->payment_status,
+            'tracking_number' => $order->tracking_number,
             'total' => $order->total,
             'created_at' => $order->created_at,
             'user' => $order->user,
@@ -84,7 +85,7 @@ class OrderController extends \App\Http\Controllers\Controller
     {
         $shippingAddress = $order->shippingAddress;
 
-        $oldStatus = $order->status;
+        $oldShippingStatus = $order->shipping_status;
         $oldPaymentStatus = $order->payment_status;
         $oldAddress = $shippingAddress->address;
         $oldCivic = $shippingAddress->civic;
@@ -93,7 +94,7 @@ class OrderController extends \App\Http\Controllers\Controller
         $oldCity = $shippingAddress->city;
 
         if ($order != null) {
-            $order->status = $request->input('status');
+            $order->shipping_status = $request->input('shipping_status');
             $order->payment_status = $request->input('payment_status');
             $order->save();
         }
@@ -107,7 +108,7 @@ class OrderController extends \App\Http\Controllers\Controller
         }
 
         if (
-            $oldStatus != $order->status || $oldPaymentStatus != $order->payment_status || $oldAddress != $shippingAddress->address ||
+            $oldShippingStatus != $order->shipping_status || $oldPaymentStatus != $order->payment_status || $oldAddress != $shippingAddress->address ||
             $oldCivic != $shippingAddress->civic || $oldProvince != $shippingAddress->province || $oldPostalCode != $shippingAddress->postal_code ||
             $oldCity != $shippingAddress->city
         ) {

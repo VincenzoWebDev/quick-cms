@@ -2,7 +2,7 @@ import Layout from "@/Layouts/Admin/Layout";
 import { Link, useForm } from '@inertiajs/react';
 import { AlbumCategoryCombo, AlbumThumbUpload, AlbumTabs, GalleryUpload, InputErrors } from "@/components/Admin/Index";
 
-const AlbumCreate = ({ categories, selectedCategory }) => {
+const AlbumCreate = ({ categories }) => {
     const { data, setData, post, errors, processing } = useForm({
         album_name: '',
         description: '',
@@ -59,7 +59,7 @@ const AlbumCreate = ({ categories, selectedCategory }) => {
                                     <textarea name="description" id="description" className="form-control" placeholder="Descrizione" value={data.description} onChange={handleChange}></textarea>
                                 </div>
 
-                                <AlbumCategoryCombo categories={categories} selectedCategory={selectedCategory} handleCatsChange={handleCatsChange} />
+                                <AlbumCategoryCombo categories={categories} handleCatsChange={handleCatsChange} />
                             </div>
 
                             <div className="tab-pane fade show" id="img-tab-pane" role="tabpanel" aria-labelledby="img-tab" tabIndex="0">

@@ -1,7 +1,7 @@
 import { CheckoutHeader, InputErrors } from "@/components/Front/Index";
 import { STORAGE_URL } from "@/constants/constants";
 import FrontLayout from "@/Layouts/FrontLayout";
-import { useForm, usePage } from "@inertiajs/react";
+import { Link, useForm, usePage } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 const url = "https://axqvoqvbfjpaamphztgd.functions.supabase.co/province";
 
@@ -64,6 +64,7 @@ const Checkout = ({ cartItems, shippingMethods }) => {
                 <section className="bg-light py-5">
                     <div className="container">
                         <div className="row">
+                            <InputErrors errors={errors} />
                             <div className="col-xl-8 col-lg-8 mb-4">
                                 <div className="card mb-4 border shadow-0">
                                     <div className="p-4 d-flex justify-content-between">
@@ -74,7 +75,6 @@ const Checkout = ({ cartItems, shippingMethods }) => {
                                             </div>)}
                                     </div>
                                 </div>
-                                <InputErrors errors={errors} />
 
                                 {/* Checkout */}
                                 <div className="card shadow-0 border">
@@ -117,7 +117,7 @@ const Checkout = ({ cartItems, shippingMethods }) => {
 
                                         <hr className="my-4" />
 
-                                        <h5 className="card-title mb-3">Metodo di spedizione</h5>
+                                        <h5 className="card-title mb-3">Informazioni spedizione</h5>
 
                                         <div className="row mb-3">
                                             {shippingMethods.map((shipping) => (
@@ -188,7 +188,7 @@ const Checkout = ({ cartItems, shippingMethods }) => {
                                         </div>
 
                                         <div className="float-end">
-                                            <button className="btn btn-light border me-2">Indietro</button>
+                                            <Link href={route('cart.index')} className="btn btn-light border me-2">Indietro</Link>
                                             <button className="btn btn-success shadow-0 border" onClick={handleSubmit}>Continua</button>
                                         </div>
                                     </div>
@@ -234,12 +234,10 @@ const Checkout = ({ cartItems, shippingMethods }) => {
                                                 />
                                             </div>
                                             <div>
-                                                <span className="d-block">
+                                                <a href="#" className="nav-link">
                                                     {product.product.name} <br />
-                                                    {product.variant_combination.variant_combination_values.map(variant => (
-                                                        variant.product_variant_value.value)
-                                                    ).join(', ')}
-                                                </span>
+                                                    {product.color + ',' + product.size}
+                                                </a>
                                                 <div className="price text-muted">Totale: {product.quantity * product.price}</div>
                                             </div>
                                         </div>
