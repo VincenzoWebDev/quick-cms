@@ -3,6 +3,8 @@ import { AlertErrors, ButtonDelete, ButtonEdit, ButtonShow, PageDelete, PageDele
 import { useEffect, useState } from 'react';
 import { Link, useForm, router } from "@inertiajs/react";
 import { BASE_URL } from '@/constants/constants';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const PageContent = ({ pages, flash }) => {
     const [message, setMessage] = useState(flash.message);
@@ -25,10 +27,12 @@ const PageContent = ({ pages, flash }) => {
         // Invia una richiesta al server per aggiornare lo stato del tema
         router.post(route('pages.switch', { pageId }), { active }, {
             onSuccess: () => {
-                setMessage({ tipo: 'success', testo: `Pagina ${active === 0 ? 'disattivata' : 'attivata'} correttamente` });
+                // setMessage({ tipo: 'success', testo: `Pagina ${active === 0 ? 'disattivata' : 'attivata'} correttamente` });
+                toast.success(`Pagina ${active === 0 ? 'disattivata' : 'attivata'} correttamente`);
             },
             onError: () => {
-                setMessage({ tipo: 'danger', testo: `Errore durante l'attivazione/disattivazione della pagina` });
+                // setMessage({ tipo: 'danger', testo: `Errore durante l'attivazione/disattivazione della pagina` });
+                toast.error(`Errore durante l'attivazione/disattivazione della pagina`);
             }
         });
     };
@@ -64,6 +68,21 @@ const PageContent = ({ pages, flash }) => {
         <Layout>
             <h2>Gestione pagine</h2>
             <AlertErrors message={message} />
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+                style={{
+                    marginTop: '65px',
+                }}
+            />
 
             <div className="d-grid gap-2 d-md-flex justify-content-md-start">
                 <Link href={route('pages.create')} className="btn cb-primary mb-3">Inserisci nuova pagina</Link>

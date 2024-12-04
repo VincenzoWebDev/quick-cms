@@ -4,7 +4,7 @@ import { ProductDetailCard } from "@/components/Front/Index";
 import { STORAGE_URL } from "@/constants/constants";
 import { Link } from "@inertiajs/react";
 
-const ProductDetail = ({ product, variantCombinationsGroup, pages }) => {
+const ProductDetail = ({ product, variantNames, pages }) => {
 
     return (
         <FrontLayout pages={pages}>
@@ -48,7 +48,7 @@ const ProductDetail = ({ product, variantCombinationsGroup, pages }) => {
                             </div>
                         </Fancybox>
                     </div>
-                    <ProductDetailCard product={product} variantCombinationsGroup={variantCombinationsGroup} />
+                    <ProductDetailCard product={product} variantNames={variantNames} />
                 </div>
             </div>
         </FrontLayout>

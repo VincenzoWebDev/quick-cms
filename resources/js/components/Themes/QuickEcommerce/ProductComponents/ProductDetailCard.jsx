@@ -1,12 +1,11 @@
 import { InputErrors } from "@/components/Front/Index";
 import { useForm, usePage } from "@inertiajs/react";
 import React, { useState, useEffect } from "react";
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ProductDetailCard = React.memo(({ product, variantNames }) => {
     const { user_auth } = usePage().props;
-    const MySwal = withReactContent(Swal);
     const [selectedVariants, setSelectedVariants] = useState({});
     const [availableQuantity, setAvailableQuantity] = useState(null); // Imposta null per nascondere inizialmente
     const { post, data, setData, errors } = useForm({
@@ -73,40 +72,26 @@ const ProductDetailCard = React.memo(({ product, variantNames }) => {
             post(route('cart.add'), {
                 onSuccess: (res) => {
                     if (res.props.flash.message) {
-                        MySwal.fire({
-                            title: 'Quantità massima raggiunta',
-                            icon: 'error',
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
+                        toast.error(res.props.flash.message.testo);
                     } else {
                         setData({
                             ...data,
                             quantity: 1,
                         });
-                        MySwal.fire({
-                            title: 'Prodotto aggiunto al carrello',
-                            icon: 'success',
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
+                        toast.success('Prodotto aggiunto al carrello');
                         setAvailableQuantity(null); // Resetta la quantità disponibile
                     }
                 },
             });
         } else {
-            MySwal.fire({
-                title: 'Devi essere loggato per aggiungere un prodotto al carrello',
-                icon: 'error',
-                showConfirmButton: false,
-                timer: 1500
-            });
+            toast.warning('Devi essere loggato per aggiungere un prodotto al carrello');
         }
     };
 
     return (
         <div className="col-md-6 p-4 card">
             <InputErrors errors={errors} />
+            <ToastContainer position="top-center" style={{ marginTop: '80px' }} />
             <div className="mb-3">
                 <div className="d-flex align-items-center mb-2">
                     {[...Array(4)].map((_, i) => (
@@ -147,7 +132,7 @@ const ProductDetailCard = React.memo(({ product, variantNames }) => {
             </div>
             <div className="d-grid gap-2 d-md-flex justify-content-md-start">
                 <button className="btn btn-success" type="button" onClick={handleAddCard} disabled={availableQuantity === null || availableQuantity === 0}>Aggiungi al carrello</button>
-                <button className="btn btn-outline-primary" type="button" onClick={handleAddCard} disabled={availableQuantity === null || availableQuantity === 0}>Compra ora</button>
+                {/* <button className="btn btn-outline-primary" type="button" onClick={handleAddCard} disabled={availableQuantity === null || availableQuantity === 0}>Compra ora</button> */}
             </div>
             <div className="mt-3">
                 <label className="form-label fw-bold">Seleziona variante</label>

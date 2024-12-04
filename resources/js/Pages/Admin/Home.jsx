@@ -6,27 +6,21 @@ import { Chart, registerables } from 'chart.js';
 import CardsHome from "@/components/Admin/CardsHome";
 import { STORAGE_URL } from "@/constants/constants";
 Chart.register(...registerables);
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const Home = (props) => {
     const { users, albums, products, orders, dataChart, user_auth, flash } = props;
     const { usersPercentage, albumsPercentage, productsPercentage, ordersPercentage } = props;
     const [message, setMessage] = useState(flash.message);
-    const [status, setStatus] = useState(flash.status);
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setMessage(null);
-        }, 3000);
 
-        return () => clearTimeout(timer);
+    useEffect(() => {
+        if (message && message.tipo === 'success') {
+            toast.error(message.testo);
+        } else if (message && message.tipo === 'danger') {
+            toast.error(message.testo);
+        }
     }, [message]);
-
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setStatus(null);
-        }, 3000);
-
-        return () => clearTimeout(timer);
-    }, [status]);
 
     const options = {
         scales: {
@@ -109,8 +103,8 @@ const Home = (props) => {
 
     return (
         <Layout user_auth={user_auth}>
+            <ToastContainer style={{ marginTop: '50px' }} />
             <div className="row">
-                <AlertErrors message={message} status={status} />
                 <CardsHome users={users} albums={albums} products={products} orders={orders}
                     usersPercentage={usersPercentage} albumsPercentage={albumsPercentage} productsPercentage={productsPercentage} ordersPercentage={ordersPercentage} />
             </div>

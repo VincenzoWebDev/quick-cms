@@ -2,21 +2,14 @@ import Layout from "@/Layouts/Admin/Layout";
 import { STORAGE_URL } from "@/constants/constants";
 import { useState, useEffect } from "react";
 import { useForm, usePage } from "@inertiajs/react";
-import AlertErrors from "@/components/Admin/AlertErrors";
 import InputErrors from "@/components/Admin/InputErrors";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ProfileContent = () => {
     const { user_auth } = usePage().props;
     const [editable, setEditable] = useState(false);
-    const { data, setData, errors, post, processing } = useForm({_method: 'PATCH', ...user_auth});
-    const [message, setMessage] = useState(null);
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setMessage(null);
-        }, 3000);
-
-        return () => clearTimeout(timer);
-    }, [message]);
+    const { data, setData, errors, post, processing } = useForm({ _method: 'PATCH', ...user_auth });
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -36,19 +29,33 @@ const ProfileContent = () => {
     const handleSaveClick = (e) => {
         e.preventDefault();
         post(route('profile.update', user_auth.id), {
-            onSuccess: (res) => {
+            onSuccess: () => {
                 setEditable(false);
-                setMessage(res.props.flash.message);
+                toast.success('Profilo modificato con successo');
             },
             onError: () => {
-                setMessage({ tipo: 'danger', testo: 'Errore durante la modifica del profilo' });
+                toast.error('Errore durante la modifica del profilo');
             }
         });
     }
 
     return (
         <Layout>
-            <AlertErrors message={message} />
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+                style={{
+                    marginTop: '65px',
+                }}
+            />
             <div className="main-body">
                 <div className="row gutters-sm">
                     <div className="col-md-4 mb-3">
@@ -113,7 +120,7 @@ const ProfileContent = () => {
                                 </div>
                                 <hr />
                                 <div className="row">
-                                    <div className="col-sm-3">
+                                    <div className="col-sm-3 d-flex align-items-center">
                                         <h6 className="mb-0">Nome</h6>
                                     </div>
                                     {editable ? (
@@ -126,7 +133,7 @@ const ProfileContent = () => {
                                 </div>
                                 <hr />
                                 <div className="row">
-                                    <div className="col-sm-3">
+                                    <div className="col-sm-3 d-flex align-items-center">
                                         <h6 className="mb-0">Cognome</h6>
                                     </div>
                                     {editable ? (
@@ -139,7 +146,7 @@ const ProfileContent = () => {
                                 </div>
                                 <hr />
                                 <div className="row">
-                                    <div className="col-sm-3">
+                                    <div className="col-sm-3 d-flex align-items-center">
                                         <h6 className="mb-0">Email</h6>
                                     </div>
                                     {editable ? (
@@ -152,7 +159,7 @@ const ProfileContent = () => {
                                 </div>
                                 <hr />
                                 <div className="row">
-                                    <div className="col-sm-3">
+                                    <div className="col-sm-3 d-flex align-items-center">
                                         <h6 className="mb-0">Ruolo</h6>
                                     </div>
                                     {user_auth.role === 'admin' &&

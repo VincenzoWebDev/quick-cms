@@ -5,7 +5,7 @@ import { Heart } from 'lucide-react';
 const ProductCard = ({ product }) => {
     return (
         <>
-            <div className="col mb-3">
+            <div className="col-md-3 mb-3">
                 <div className="card h-100 bg">
                     <img className="img-fluid img-responsive rounded product-image" src={`${STORAGE_URL}${product.image_path}`} alt={product.name} loading="lazy" />
                     <div className="card-body">

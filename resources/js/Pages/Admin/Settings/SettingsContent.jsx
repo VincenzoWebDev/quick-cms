@@ -5,6 +5,8 @@ import { Link, useForm, router } from "@inertiajs/react";
 import { BASE_URL } from '@/constants/constants';
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const SettingsContent = ({ settings, flash }) => {
     const MySwal = withReactContent(Swal);
@@ -25,10 +27,10 @@ const SettingsContent = ({ settings, flash }) => {
         const value = e.target.checked ? '1' : '0';
         router.post(route('settings.switch', { settingId }), { value }, {
             onSuccess: () => {
-                setMessage({ tipo: 'success', testo: `Impostazione ${value === 0 ? 'disattivata' : 'attivata'} correttamente` });
+                toast.success(`Impostazione ${value === '0' ? 'disattivata' : 'attivata'} correttamente`);
             },
             onError: () => {
-                setMessage({ tipo: 'danger', testo: `Errore durante l'attivazione/disattivazione dell'impostazione` });
+                toast.error(`Errore durante l'attivazione/disattivazione dell'impostazione`);
             }
         });
     };
@@ -65,6 +67,21 @@ const SettingsContent = ({ settings, flash }) => {
         <Layout>
             <h2>Gestione Impostazioni</h2>
             <AlertErrors message={message} />
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+                style={{
+                    marginTop: '65px',
+                }}
+            />
 
             <div className="d-grid gap-2 d-md-flex">
                 <Link href={route('settings.create')} className="btn cb-primary mb-3">Inserisci nuova impostazione</Link>

@@ -1,9 +1,9 @@
 import Layout from "@/Layouts/Admin/Layout";
-import { Link, useForm, router } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import AlertErrors from '@/components/Admin/AlertErrors';
-import { BASE_URL } from "@/constants/constants";
-import { ButtonDelete } from "@/components/Admin/Index";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ThemesContent = ({ themes, flash }) => {
     const [message, setMessage] = useState(flash.message);
@@ -24,9 +24,9 @@ const ThemesContent = ({ themes, flash }) => {
         router.post(route('themes.switch', themeId), { active }, {
             onSuccess: () => {
                 if (active) {
-                    setMessage({ tipo: 'success', testo: `Tema ${themeId} attivato correttamente` });
+                    toast.success(`Tema ${themeId} attivato correttamente`);
                 } else {
-                    setMessage({ tipo: 'success', testo: `Tema ${themeId} disattivato correttamente` });
+                    toast.success(`Tema ${themeId} disattivato correttamente`);
                 }
             },
             onError: (error) => {
@@ -39,6 +39,21 @@ const ThemesContent = ({ themes, flash }) => {
         <Layout>
             <h2>Gestione temi</h2>
             <AlertErrors message={message} />
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+                style={{
+                    marginTop: '65px',
+                }}
+            />
 
             <div className="d-grid gap-2 d-md-flex justify-content-md-start">
                 <Link href={route('themes.create')} className="btn cb-primary mb-3">Inserisci nuovo tema</Link>

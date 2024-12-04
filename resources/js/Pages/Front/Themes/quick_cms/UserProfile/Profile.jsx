@@ -1,7 +1,7 @@
 import FrontLayout from "@/Layouts/FrontLayout"
 import { usePage } from "@inertiajs/react"
 
-const UserProfileContent = ({ pages }) => {
+const Profile = ({ pages }) => {
     const { user_auth } = usePage().props
 
     return (
@@ -75,4 +75,4 @@ const UserProfileContent = ({ pages }) => {
     )
 }
 
-export default UserProfileContent
+export default Profile

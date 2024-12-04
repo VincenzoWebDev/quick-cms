@@ -101,15 +101,18 @@ const UsersContent = ({ users, sortBy, sortDirection, perPage, sortSearch, flash
                             </thead>
                             <tbody>
                                 {
-                                    users.data.map((user) => (
-                                        <UserRow
-                                            key={user.id}
-                                            user={user}
-                                            selectedRecords={selectedRecords}
-                                            handleCheckboxChange={handleCheckboxChange}
-                                            handleDelete={handleDelete}
-                                        />
-                                    ))
+                                    users.data.length > 0 ?
+                                        users.data.map((user) => (
+                                            <UserRow
+                                                key={user.id}
+                                                user={user}
+                                                selectedRecords={selectedRecords}
+                                                handleCheckboxChange={handleCheckboxChange}
+                                                handleDelete={handleDelete}
+                                            />
+                                        ))
+                                        :
+                                        <tr><td colSpan="9" className="text-center">Nessun utente trovato</td></tr>
                                 }
                             </tbody>
                         </table>

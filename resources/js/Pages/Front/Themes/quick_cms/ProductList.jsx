@@ -17,8 +17,8 @@ const ProductList = ({ products, flash }) => {
             <div className="container my-5">
                 <div className="d-flex justify-content-center row">
                     <AlertErrors message={message} />
-                    <div className="col-md-10 products">
-                        {products.map((product) => (
+                    <div className="row products">
+                        {products.data.map((product) => (
                             <ProductCard key={product.id} product={product} />
                         ))}
                     </div>

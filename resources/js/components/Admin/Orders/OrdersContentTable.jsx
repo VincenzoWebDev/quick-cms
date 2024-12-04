@@ -66,7 +66,7 @@ const OrdersContentTable = ({ orders, setMessage, formDelete, selectedRecords, s
                             ))
                         ) : (
                             <tr>
-                                <td colSpan='8' className='text-center'>Non ci sono ordini</td>
+                                <td colSpan='9' className='text-center'>Non ci sono ordini</td>
                             </tr>
                         )}
                 </tbody>

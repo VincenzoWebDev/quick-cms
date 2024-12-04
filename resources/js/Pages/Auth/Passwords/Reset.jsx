@@ -39,18 +39,18 @@ const Reset = () => {
 
                                     <div className="mb-3">
                                         <input id="email" type="email" className="form-control"
-                                            name="email" value={data.email} onChange={handleChange} required autoComplete="email" autoFocus
+                                            name="email" value={data.email || ''} onChange={handleChange} required autoComplete="email" autoFocus
                                             placeholder="Email" />
                                     </div>
 
                                     <div className="mb-3">
                                         <input id="password" type="password" className="form-control"
-                                            name="password" required autoComplete="new-password" placeholder="Nuova password" value={data.password} onChange={handleChange} />
+                                            name="password" required autoComplete="new-password" placeholder="Nuova password" value={data.password || ''} onChange={handleChange} />
                                     </div>
 
                                     <div className="mb-3">
                                         <input id="password-confirm" type="password" className="form-control" name="password_confirmation"
-                                            required autoComplete="new-password" placeholder="Conferma password" value={data.password_confirmation} onChange={handleChange} />
+                                            required autoComplete="new-password" placeholder="Conferma password" value={data.password_confirmation || ''} onChange={handleChange} />
                                     </div>
 
                                     <div className="form-group">

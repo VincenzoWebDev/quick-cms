@@ -72,7 +72,7 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'role' => 'user',
-            'profile_img' => 'images/profile_img/default.jpg',
+            'profile_img' => 'images/profile_img/default.png',
         ]);
         $admin = User::where('role', 'admin')->first();
         $admin->notify(new NewUserNotification($user));
