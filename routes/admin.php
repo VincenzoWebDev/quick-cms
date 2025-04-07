@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\ProductVariantController;
 use App\Http\Controllers\Admin\ProductVariantValueController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\ShippingMethodController;
+use App\Http\Controllers\Admin\ChatController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -33,6 +34,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::prefix('admin')->middleware('auth')->group(function () {
+
     Route::get('/', [AdminController::class, 'index'])->name('admin');
     Route::put('/notifications/{notificationId}', [AdminController::class, 'markAsRead'])->name('notifications.markAsRead');
 
@@ -121,6 +123,11 @@ Route::prefix('admin')->middleware('auth')->group(function () {
 
         Route::resource('/shipping-methods', ShippingMethodController::class);
     });
+
+    Route::get('/chats/{chat?}', [ChatController::class, 'index'])->name('chats.index');
+    Route::post('/chats', [ChatController::class, 'store'])->name('chats.store');
+    Route::post('/chats/{chat}/close', [ChatController::class, 'closeChat'])->name('chats.close');
+    Route::post('/chats/{chat}/messages', [ChatController::class, 'sendMessage'])->name('chats.messages.store');
 
     Route::middleware('VerifyIsAdmin')->group(function () {
         Route::get('/files', [FileController::class, 'index'])->name('files');

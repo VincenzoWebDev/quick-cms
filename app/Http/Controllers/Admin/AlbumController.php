@@ -198,7 +198,7 @@ class AlbumController extends \App\Http\Controllers\Controller
         $tipoMessaggio = $res ? 'success' : 'danger';
         session()->flash('message', ['tipo' => $tipoMessaggio, 'testo' => $messaggio]);
 
-        return redirect()->route('albums');
+        return redirect()->route('maps.index');
     }
 
 

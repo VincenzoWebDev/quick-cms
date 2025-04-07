@@ -1,14 +1,14 @@
-@import url('bootstrap.min.css');
-@import url('font-awesome.min.css');
-@import url('variables.css');
-@import url('dark_theme.css');
-@import url('auth.css');
+@import url("bootstrap.min.css");
+@import url("font-awesome.min.css");
+@import url("variables.css");
+@import url("dark_theme.css");
+@import url("auth.css");
 
 body,
 html {
     line-height: 22px;
     font-size: 15px;
-    font-family: 'Roboto', sans-serif;
+    font-family: "Roboto", sans-serif;
     color: #555e58;
     text-rendering: optimizeLegibility !important;
     -webkit-font-smoothing: antialiased !important;
@@ -16,7 +16,6 @@ html {
     margin: 0px;
     padding: 0px;
 }
-
 
 h1,
 h2,
@@ -32,14 +31,11 @@ h6,
     line-height: 1.5em;
 }
 
-
 p {
     /* font-size: 15px; */
     margin: 0 0;
     line-height: 24px;
 }
-
-
 
 a {
     color: #333;
@@ -67,15 +63,12 @@ ol {
     list-style: none;
 }
 
-
-
 a,
 a:hover,
 a:focus {
     text-decoration: none;
     transition: all 0.3s;
 }
-
 
 .wrapper {
     position: relative;
@@ -168,7 +161,6 @@ a:focus {
     FORM INPUT CONTROL STYLE end
 ----------------------------------------------------- */
 
-
 #sidebar {
     background-color: #fff;
     position: fixed;
@@ -180,10 +172,10 @@ a:focus {
     width: 260px;
     overflow: auto;
     transition: all 0.3s;
-    box-shadow: 0 10px 30px -12px rgb(0 0 0 / 42%), 0 4px 25px 0px rgb(0 0 0 / 12%), 0 8px 10px -5px rgb(0 0 0 / 20%);
+    box-shadow: 0 10px 30px -12px rgb(0 0 0 / 42%),
+        0 4px 25px 0px rgb(0 0 0 / 12%), 0 8px 10px -5px rgb(0 0 0 / 20%);
     border-right: 2px solid var(--bs-primary);
 }
-
 
 #sidebar::-webkit-scrollbar {
     width: 5px;
@@ -280,13 +272,17 @@ a:focus {
     margin-left: 4px;
 }
 
-#sidebar ul li.active>a {
+#sidebar ul li.active > a {
     color: #fff;
-    background: linear-gradient(72.47deg, #458ef5 22.16%, rgba(69, 198, 245, 0.8) 76.47%);
+    background: linear-gradient(
+        72.47deg,
+        #458ef5 22.16%,
+        rgba(69, 198, 245, 0.8) 76.47%
+    );
     box-shadow: 0px 2px 6px 0px rgba(69, 142, 245, 0.5);
 }
 
-#sidebar ul li.active>a i {
+#sidebar ul li.active > a i {
     color: #fff;
 }
 
@@ -296,7 +292,7 @@ a:focus {
 }
 
 #sidebar ul li.active a:hover,
-#sidebar ul li.active>a:hover i {
+#sidebar ul li.active > a:hover i {
     color: #fff;
 }
 
@@ -308,7 +304,6 @@ a:focus {
    sidebar end
 ----------------------------------------------------- */
 
-
 /*=======================================================
    main-content navbar-design start
    ===============================================*/
@@ -316,7 +311,7 @@ a:focus {
 #content {
     position: relative;
     transition: all 0.3s;
-    background-color: #EEEEEE;
+    background-color: #eeeeee;
 }
 
 .top-navbar {
@@ -350,7 +345,7 @@ a:focus {
 }
 
 .navbar-brand {
-    color: #FFFFFF;
+    color: #ffffff;
 }
 
 .navbar button {
@@ -435,13 +430,12 @@ a:focus {
         transform-origin: center center;
         transform: rotate(90deg);
     }
-
 }
 
 /* fine sidebarCollapse arrow*/
 
-.navbar-nav>li.active {
-    color: #FFFFFF;
+.navbar-nav > li.active {
+    color: #ffffff;
     border-radius: 4px;
     background-color: rgba(0, 0, 0, 0.08);
 }
@@ -492,8 +486,7 @@ a.nav-link.show {
     color: #fff;
 }
 
-
-.navbar-nav>li.show .dropdown-menu {
+.navbar-nav > li.show .dropdown-menu {
     transform: translate3d(0, 0, 0);
     opacity: 1;
     visibility: visible;
@@ -516,8 +509,8 @@ a.nav-link.show {
     background-color: transparent;
 }
 
-.navbar-nav>.active>a:focus {
-    color: #FFFFFF;
+.navbar-nav > .active > a:focus {
+    color: #ffffff;
     background-color: rgba(0, 0, 0, 0.08);
 }
 
@@ -532,24 +525,23 @@ a.nav-link.show {
    main-content navbar-design end
    ===============================================*/
 
-
-
 /*=======================================================
    main-content navbar-design start
    ===============================================*/
 
-
 /*=======================================================
    main-content inner design like card start
    ===============================================*/
-
 
 .card {
     border-radius: 5px;
     border: none;
     position: relative;
     margin-bottom: 30px;
-    box-shadow: 0 0.46875rem 2.1875rem rgba(90, 97, 105, 0.1), 0 0.9375rem 1.40625rem rgba(90, 97, 105, 0.1), 0 0.25rem 0.53125rem rgba(90, 97, 105, 0.12), 0 0.125rem 0.1875rem rgba(90, 97, 105, 0.1);
+    box-shadow: 0 0.46875rem 2.1875rem rgba(90, 97, 105, 0.1),
+        0 0.9375rem 1.40625rem rgba(90, 97, 105, 0.1),
+        0 0.25rem 0.53125rem rgba(90, 97, 105, 0.12),
+        0 0.125rem 0.1875rem rgba(90, 97, 105, 0.1);
 }
 
 .l-bg-cherry {
@@ -644,7 +636,6 @@ a.nav-link.show {
    main-content inner design like card end
    ===============================================*/
 
-
 /*=======================================================
    main-content inner design like table start
    ===============================================*/
@@ -669,7 +660,6 @@ table tbody td a:hover {
 /*=======================================================
    inizio galleria immagini albums
    ===============================================*/
-
 
 .card-body .thumb {
     margin: 15px 0px;
@@ -707,7 +697,6 @@ table tbody td a:hover {
    fine galleria immagini albums
    ===============================================*/
 
-
 /* profile img */
 .outer {
     width: 100% !important;
@@ -744,7 +733,7 @@ table tbody td a:hover {
     height: 40px;
 }
 
-.profile_img+label {
+.profile_img + label {
     font-size: 1.25rem;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -757,7 +746,7 @@ table tbody td a:hover {
     text-align: center;
 }
 
-.profile_img+label svg {
+.profile_img + label svg {
     fill: #fff;
 }
 
@@ -773,7 +762,6 @@ table tbody td a:hover {
 }
 
 /* file manager end */
-
 
 /*=============================================
   footer design start
@@ -807,7 +795,6 @@ footer ul li a {
     display: block;
 }
 
-
 footer .copyright {
     padding: 15px;
     font-size: 14px;
@@ -822,7 +809,6 @@ footer .copyright a:hover,
 footer ul li a:hover {
     color: #333;
 }
-
 
 /*=============================================
   footer design end
@@ -858,12 +844,12 @@ footer ul li a:hover {
     MEDIAQUERIES
 ----------------------------------------------------- */
 
-@media only screen and (min-width:992px) {
+@media only screen and (min-width: 992px) {
     #sidebar.active {
         width: 80px;
         height: 100% !important;
         position: fixed !important;
-        overflow: visible !important;
+        overflow: auto !important;
         top: 0 !important;
         z-index: 666;
         float: left !important;
@@ -894,7 +880,7 @@ footer ul li a:hover {
         position: relative;
         float: right;
         transition: all 0.3s;
-        background-color: #EEEEEE;
+        background-color: #eeeeee;
     }
 
     #content.active {
@@ -913,12 +899,11 @@ footer ul li a:hover {
         z-index: 4;
     }
 
-    #sidebar.active .components div>span {
+    #sidebar.active .components div > span {
         display: none !important;
         transition: all 0.5s ease;
     }
 }
-
 
 /*@media only screen and (min-width:992px) {
     .dropdown-menu {
@@ -936,10 +921,9 @@ footer ul li a:hover {
 
 }*/
 
-
 /*===============small-screen overlay sidebar design media queries==============*/
 
-@media only screen and (max-width:992px) {
+@media only screen and (max-width: 992px) {
     .navbar {
         padding: 5px 0px !important;
     }
@@ -980,11 +964,9 @@ footer ul li a:hover {
 
 /*===============small-screen overlay sidebar design media queries==============*/
 
-
 /* ---------------------------------------------------
     MEDIAQUERIES
 ----------------------------------------------------- */
-
 
 /* ---------------------------------------------------
 EFFECTS REACT
@@ -1034,4 +1016,27 @@ Skeleton
     background-color: #e0e0e0;
     margin-bottom: 20px;
     border-radius: 8px;
+}
+
+/* ---------------------------------------------------
+ Spport chat css
+----------------------------------------------------- */
+.message-bubble {
+    border-radius: 15px;
+    padding: 10px;
+    max-width: 70%;
+}
+
+.admin-message .message-bubble {
+    background-color: #007bff;
+    color: white;
+}
+
+.user-message .message-bubble {
+    background-color: #f1f1f1;
+    color: black;
+}
+
+.chat-container {
+    position: relative;
 }

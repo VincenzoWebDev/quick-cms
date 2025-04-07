@@ -3,6 +3,7 @@ import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import store from './redux/store';
 import { Provider } from 'react-redux';
+import './bootstrap';
 
 createInertiaApp({
     title: (title) => `${title}`,

@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Page;
 use App\Models\Setting;
 use App\Models\Theme;
+use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
@@ -71,5 +72,15 @@ class HandleInertiaRequests extends Middleware
         return 'layouts.' . $themeName . '.app';
 
         return parent::rootView($request);
+    }
+
+    public function handle($request, Closure $next)
+    {
+        // Se la rotta richiede esplicitamente JSON (es. per chiamate API)
+        if ($request->is('admin/chats*') && $request->wantsJson()) {
+            return $next($request);
+        }
+
+        return parent::handle($request, $next);
     }
 }

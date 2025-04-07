@@ -23,11 +23,14 @@ class UserController extends \App\Http\Controllers\Controller
         $perPage = $request->input('perPage', 10);
         $searchQuery = $request->input('q', '');
 
-        $users = User::orderBy($sortBy, $sortDirection)
+        $users = User::select(['id', 'name', 'email', 'role', 'profile_img', 'created_at', 'updated_at'])
+            ->orderBy($sortBy, $sortDirection)
             ->when($searchQuery, function ($query) use ($searchQuery) {
                 $query->where(function ($query) use ($searchQuery) {
-                    $query->where('id', 'like', '%' . $searchQuery . '%')
-                        ->orWhere('name', 'like', '%' . $searchQuery . '%')
+                    if (is_numeric($searchQuery)) {
+                        $query->orWhere('id', $searchQuery);
+                    }
+                    $query->orWhere('name', 'like', '%' . $searchQuery . '%')
                         ->orWhere('email', 'like', '%' . $searchQuery . '%')
                         ->orWhere('role', 'like', '%' . $searchQuery . '%');
                 });

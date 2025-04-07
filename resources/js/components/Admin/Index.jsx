@@ -41,7 +41,9 @@ import UserRow from "./Users/UserRow";
 import ProductRow from "./Products/ProductRow";
 import OrderRow from "./Orders/OrderRow";
 import Skeleton from "./Skeleton";
-
+import AdminSidebar from "./Chats/AdminSidebar";
+import ChatBox from "./Chats/ChatBox";
+import Messages from "./Chats/Messages";
 
 
 
@@ -56,5 +58,5 @@ export {
     PageDelete, PageDeleteSelected, ProductDelete, ProductDeleteSelected, ProductTabs, ImagesTab, VariantsTab, SeoTab,
     InfoTab, GalleryUpload, ProductGallery, HeaderTitle, OrderDelete, OrderDeleteSelected, OrderShowDetails, AlbumTabs,
     AlbumGallery, OrdersContentTable, SearchAndPerPageSelector, UserPagination, UserRow, ProductRow, OrderRow,
-    Skeleton,
+    Skeleton, AdminSidebar, ChatBox, Messages
 }

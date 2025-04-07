@@ -160,6 +160,14 @@ const Sidebar = () => {
                     }
 
                     <div>
+                        <span className='mb-2 d-block ps-3 fw-bold text-uppercase border-bottom pb-2'>Supporto</span>
+                        <li className={includeLink("/chats") ? 'active' : ''}>
+                            <Link href={route('chats.index')} className="chats"><i
+                                className="material-icons">chat</i><span>Chat</span></Link>
+                        </li>
+                    </div>
+
+                    <div>
                         <span className='mb-2 d-block ps-3 fw-bold text-uppercase border-bottom pb-2'>Gestione file</span>
                         <li className={includeLink("/files") ? 'active' : ''}>
                             <Link href={route('files')} className="files"><i

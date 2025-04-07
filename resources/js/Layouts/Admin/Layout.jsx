@@ -57,7 +57,7 @@ const Layout = ({ children }) => {
             mainContent.style.setProperty('--animate-duration', '0.5s');
         }
     }, []);
-
+    
     return (
         <>
             <HeaderTitle />
@@ -77,7 +77,6 @@ const Layout = ({ children }) => {
                             {children}
                         </div>
                     )}
-
                     <Copyright />
                 </div>
             </div>

@@ -9,7 +9,9 @@ use App\Http\Controllers\ProductListController;
 use App\Http\Controllers\Front\UserProfileController;
 use App\Mail\testEmail;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
@@ -31,7 +33,6 @@ Route::prefix('admin')->group(function () {
 require __DIR__ . '/admin.php';
 
 /* Rotte pagine front-end */
-
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::middleware('CheckEcommerceStatus')->group(function () {
