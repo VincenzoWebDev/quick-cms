@@ -30,9 +30,9 @@ class UserController extends \App\Http\Controllers\Controller
                     if (is_numeric($searchQuery)) {
                         $query->orWhere('id', $searchQuery);
                     }
-                    $query->orWhere('name', 'like', '%' . $searchQuery . '%')
-                        ->orWhere('email', 'like', '%' . $searchQuery . '%')
-                        ->orWhere('role', 'like', '%' . $searchQuery . '%');
+                    $query->orWhere('name', 'like', $searchQuery . '%')
+                        ->orWhere('email', 'like', $searchQuery . '%')
+                        ->orWhere('role', 'like', $searchQuery . '%');
                 });
             })->paginate($perPage)->through(fn($user) => [
                 'id' => $user->id,
