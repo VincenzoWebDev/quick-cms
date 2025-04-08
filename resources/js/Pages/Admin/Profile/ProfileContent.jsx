@@ -164,11 +164,13 @@ const ProfileContent = () => {
                                     </div>
                                     {user_auth.role === 'admin' &&
                                         editable ? (
-                                        <input type="text" name="role" value={data.role} onChange={handleInputChange} className="form-control w-50" />
+                                        <select name="role" value={data.role} onChange={handleInputChange} className="form-control w-50">
+                                            <option value="admin">Admin</option>
+                                            <option value="user">User</option>
+                                        </select>
                                     ) : (
                                         <div className="col-sm-9 text-secondary">
-                                            {user_auth.role
-                                            }
+                                            {user_auth.role}
                                         </div>
                                     )}
 
