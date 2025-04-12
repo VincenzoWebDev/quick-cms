@@ -33,7 +33,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-Route::prefix('admin')->middleware('auth')->group(function () {
+Route::prefix('admin')->middleware('auth', 'CheckDemoMode')->group(function () {
 
     Route::get('/', [AdminController::class, 'index'])->name('admin');
     Route::put('/notifications/{notificationId}', [AdminController::class, 'markAsRead'])->name('notifications.markAsRead');

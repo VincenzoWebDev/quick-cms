@@ -10,4 +10,5 @@ class Setting extends Model
     use HasFactory;
 
     protected $fillable = ['key', 'value'];
+    public $timestamps = true;
 }

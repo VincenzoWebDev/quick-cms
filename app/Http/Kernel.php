@@ -69,5 +69,6 @@ class Kernel extends HttpKernel
         // 'theme' => \App\Http\Middleware\ThemeMiddleware::class,
         'VerifyIsAdmin' => \App\Http\Middleware\VerifyIsAdmin::class,
         'CheckEcommerceStatus' => \App\Http\Middleware\CheckEcommerceStatus::class,
+        'CheckDemoMode' => \App\Http\Middleware\CheckDemoMode::class,
     ];
 }

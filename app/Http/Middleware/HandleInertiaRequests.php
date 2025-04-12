@@ -50,6 +50,7 @@ class HandleInertiaRequests extends Middleware
             'cart_items' => Auth::user() ? CartItem::where('user_id', Auth::user()->id)->with('product')->get() : null,
             'user_auth' => Auth::user() ? Auth::user() : null,
             'ecommerce_status' => Setting::where('key', 'ecommerce_status')->first()->value,
+            'demo_mode' => Setting::where('key', 'demo_mode')->first()->value,
             'seo_defaults' => [
                 'site_name' => 'Quick CMS - La tua soluzione per la gestione di un e-commerce',
                 'site_description' => 'Quick CMS è la soluzione ideale per gestire un e-commerce. Offre funzionalità complete per la gestione dei prodotti, delle categorie, degli ordini e molto altro ancora. Scopri come Quick CMS può aiutarti a gestire il tuo e-commerce in modo efficiente e semplice.',
