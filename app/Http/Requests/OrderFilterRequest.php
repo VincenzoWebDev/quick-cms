@@ -35,8 +35,8 @@ class OrderFilterRequest extends FormRequest
             'perPage.integer' => 'Ricerca per record deve essere un numero intero',
             'perPage.min' => 'Ricerca per record deve essere almeno 10',
             'perPage.max' => 'Ricerca per record deve essere al massimo 50',
-            'q.max' => 'Il campo ricerca deve avere al massimo 255 caratteri',
-            'q.regex' => 'Il campo ricerca deve contenere solo lettere, numeri, spazi, virgole e punti',
+            'q.max' => 'Il campo ricerca può avere al massimo 255 caratteri',
+            'q.regex' => 'Il campo ricerca può contenere solo lettere, numeri, spazi, virgole e punti',
             'page.integer' => 'Pagina deve essere un numero intero',
             'page.min' => 'Pagina deve parire da 1',
         ];

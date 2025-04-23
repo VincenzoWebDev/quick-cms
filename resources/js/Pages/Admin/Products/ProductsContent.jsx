@@ -6,7 +6,6 @@ import {
   ProductDelete,
   ProductDeleteSelected,
   SearchAndPerPageSelector,
-  InputErrors,
   ProductRow,
   Pagination,
 } from '@/components/Admin/Index';
@@ -25,6 +24,12 @@ const ProductsContent = ({ products, flash, sortBy, sortDirection, perPage, sort
 
   const { delete: formDelete } = useForm();
   const { errors } = usePage().props;
+
+  useEffect(() => {
+    if (errors && Object.keys(errors).length > 0) {
+      toast.error(errors.q || errors.perPage || errors.sortBy || errors.sortDirection || errors.page);
+    }
+  }, [errors]);
 
   const [selectedRecords, setSelectedRecords] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
@@ -47,9 +52,7 @@ const ProductsContent = ({ products, flash, sortBy, sortDirection, perPage, sort
     if (e.target.checked) {
       setSelectedRecords((prevSelectedRecords) => [...prevSelectedRecords, productId]);
     } else {
-      setSelectedRecords((prevSelectedRecords) =>
-        prevSelectedRecords.filter((id) => id !== productId)
-      );
+      setSelectedRecords((prevSelectedRecords) => prevSelectedRecords.filter((id) => id !== productId));
     }
   }, []);
 
@@ -85,7 +88,6 @@ const ProductsContent = ({ products, flash, sortBy, sortDirection, perPage, sort
   return (
     <Layout>
       <h2>Gestione prodotti</h2>
-      <InputErrors errors={errors} />
 
       <div className="d-grid gap-2 d-md-flex justify-content-md-start">
         <Link href={route('products.create')} className="btn cb-primary mb-3">

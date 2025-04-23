@@ -82,15 +82,16 @@ class SettingController extends \App\Http\Controllers\Controller
     public function destroy(Setting $setting)
     {
         if ($setting->key === 'ecommerce_status') {
-            $messaggio = 'Non è possibile eliminare l\'impostazione "ecommerce_status".';
-            $tipoMessaggio = 'danger';
-            session()->flash('message', ['tipo' => $tipoMessaggio, 'testo' => $messaggio]);
-            return;
+            return redirect()->back()->with('message', [
+                'tipo' => 'danger',
+                'testo' => 'Non è possibile eliminare l\'impostazione "ecommerce_status".'
+            ]);
         }
+
         $setting->delete();
-        $messaggio = 'Impostazione eliminata con successo';
-        $tipoMessaggio = 'success';
-        session()->flash('message', ['tipo' => $tipoMessaggio, 'testo' => $messaggio]);
-        return;
+        return redirect()->back()->with('message', [
+            'tipo' => 'success',
+            'testo' => 'Impostazione eliminata con successo'
+        ]);
     }
 }

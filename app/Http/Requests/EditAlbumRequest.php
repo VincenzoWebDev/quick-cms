@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\Album;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 
@@ -13,10 +14,6 @@ class EditAlbumRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        $album = Album::find($this->album->id);
-        if (Gate::denies('update', $album)) {
-            return false;
-        }
         return true;
     }
 

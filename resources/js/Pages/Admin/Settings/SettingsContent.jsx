@@ -56,9 +56,6 @@ const SettingsContent = ({ settings, flash }) => {
       }).then((result) => {
         if (result.isConfirmed) {
           destroy(route('settings.destroy', settingId), {
-            onSuccess: (res) => {
-              toast.success(res.props.flash.message.testo);
-            },
             onError: () => {
               toast.error("Errore durante l'eliminazione dell'impostazione");
             },

@@ -30,6 +30,12 @@ class AlbumController extends \App\Http\Controllers\Controller
 
     public function destroy(Album $album)
     {
+        $response = Gate::inspect('delete', $album);
+        if ($response->denied()) {
+            session()->flash('message', ['tipo' => 'danger', 'testo' => 'Non hai i permessi per eliminare questo album']);
+            return redirect()->route('albums');
+        }
+
         $thumbNail = $album->album_thumb;
         if ($album->photos->count() > 0) {
             $this->deleteImages($album);
@@ -50,6 +56,8 @@ class AlbumController extends \App\Http\Controllers\Controller
                     Storage::disk(env('IMG_DISK'))->deleteDirectory($folderPathThumb);
                 }
             }
+            session()->flash('message', ['tipo' => 'success', 'testo' => 'Album ID: ' . $album->id . ' - Eliminato correttamente']);
+            return redirect()->route('albums');
         }
     }
 
@@ -61,6 +69,11 @@ class AlbumController extends \App\Http\Controllers\Controller
         }
         foreach ($recordIds as $recordId) {
             $album = Album::findOrFail($recordId);
+            $response = Gate::inspect('delete', $album);
+            if ($response->denied()) {
+                session()->flash('message', ['tipo' => 'danger', 'testo' => 'Non hai i permessi per eliminare questi albums']);
+                return redirect()->route('albums');
+            }
             if ($album->photos->count() > 0) {
                 $this->deleteImages($album);
             }
@@ -82,6 +95,10 @@ class AlbumController extends \App\Http\Controllers\Controller
                 }
             }
         }
+        return redirect()->route('albums')->with('message', [
+            'tipo' => 'success',
+            'testo' => 'Albums eliminati correttamente'
+        ]);
     }
 
     public function deleteImages($album)
@@ -111,7 +128,7 @@ class AlbumController extends \App\Http\Controllers\Controller
 
     public function edit(Album $album)
     {
-        $this->authorize('update', $album);
+        // $response = Gate::inspect('update', $album);
 
         $categories = AlbumCategories::orderBy('category_name', 'asc')->where('user_id', Auth::id())->get();
         $selectedCategory = $album->categories->pluck('id')->toArray();
@@ -125,7 +142,11 @@ class AlbumController extends \App\Http\Controllers\Controller
 
     public function update(EditAlbumRequest $request, Album $album)
     {
-        $this->authorize('update', $album);
+        $response = Gate::inspect('update', $album);
+        if ($response->denied()) {
+            session()->flash('message', ['tipo' => 'danger', 'testo' => 'Non hai i permessi per modificare questo album']);
+            return redirect()->route('albums');
+        }
 
         $oldAlbumName = $album->album_name;
         $oldDescription = $album->description;
@@ -194,7 +215,7 @@ class AlbumController extends \App\Http\Controllers\Controller
             $res = $album->save();
         }
 
-        $messaggio = $res ? 'Album ' . $album->id . ' inserito correttamente' : 'Album ' . $album->id . ' non inserito';
+        $messaggio = $res ? 'Album ID: ' . $album->id . ' inserito correttamente' : 'Album non inserito';
         $tipoMessaggio = $res ? 'success' : 'danger';
         session()->flash('message', ['tipo' => $tipoMessaggio, 'testo' => $messaggio]);
 
