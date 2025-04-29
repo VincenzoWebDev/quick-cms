@@ -9,7 +9,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class testEmail extends Mailable
+class testEmail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
@@ -39,7 +39,7 @@ class testEmail extends Mailable
         return new Content(
             view: 'mails.testEmail',
             with: [
-                'username' => 'Vincenzo',   
+                'username' => 'Vincenzo',
             ]
         );
     }

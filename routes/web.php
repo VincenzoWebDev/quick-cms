@@ -30,7 +30,7 @@ Route::prefix('admin')->group(function () {
     Auth::routes();
 });
 
-require __DIR__ . '/admin.php';
+// require __DIR__ . '/admin.php';
 
 /* Rotte pagine front-end */
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -67,6 +67,6 @@ Route::get('/{slug}', [PageViewController::class, 'show'])->name('page.show')->w
 // require __DIR__ . '/theme.php';
 
 // Route::get('testEmail', function () {
-//     Mail::to('sports.eco12@gmail.com')->send(new testEmail());
+//     Mail::to('sports.eco12@gmail.com')->queue(new testEmail());
 // });
 // Route::view('testEmail', 'mails.testEmail', ['username' => 'Vincenzo']);

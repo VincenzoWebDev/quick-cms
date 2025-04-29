@@ -6,7 +6,6 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
 
 trait RegistersUsers
 {
@@ -19,8 +18,7 @@ trait RegistersUsers
      */
     public function showRegistrationForm()
     {
-        // return view('auth.register');
-        return Inertia::render('Auth/Register');
+        return view('auth.register');
     }
 
     /**

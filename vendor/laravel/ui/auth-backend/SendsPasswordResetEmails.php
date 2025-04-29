@@ -6,7 +6,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
-use Inertia\Inertia;
 
 trait SendsPasswordResetEmails
 {
@@ -17,8 +16,7 @@ trait SendsPasswordResetEmails
      */
     public function showLinkRequestForm()
     {
-        // return view('auth.passwords.email');
-        return Inertia::render('Auth/Passwords/Email');
+        return view('auth.passwords.email');
     }
 
     /**
@@ -39,8 +37,8 @@ trait SendsPasswordResetEmails
         );
 
         return $response == Password::RESET_LINK_SENT
-            ? $this->sendResetLinkResponse($request, $response)
-            : $this->sendResetLinkFailedResponse($request, $response);
+                    ? $this->sendResetLinkResponse($request, $response)
+                    : $this->sendResetLinkFailedResponse($request, $response);
     }
 
     /**
@@ -75,8 +73,8 @@ trait SendsPasswordResetEmails
     protected function sendResetLinkResponse(Request $request, $response)
     {
         return $request->wantsJson()
-            ? new JsonResponse(['message' => trans($response)], 200)
-            : back()->with('status', trans($response));
+                    ? new JsonResponse(['message' => trans($response)], 200)
+                    : back()->with('status', trans($response));
     }
 
     /**
@@ -97,8 +95,8 @@ trait SendsPasswordResetEmails
         }
 
         return back()
-            ->withInput($request->only('email'))
-            ->withErrors(['email' => trans($response)]);
+                ->withInput($request->only('email'))
+                ->withErrors(['email' => trans($response)]);
     }
 
     /**
