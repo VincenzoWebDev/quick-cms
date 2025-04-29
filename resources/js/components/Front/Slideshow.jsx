@@ -11,68 +11,60 @@ import 'react-awesome-slider/dist/styles.css';
 import 'react-awesome-slider/src/styled/open-animation/open-animation.scss';
 import { usePage } from '@inertiajs/react';
 
-
 const Slideshow = () => {
-    const { url } = usePage();
+  const { url } = usePage();
 
-    useEffect(() => {
-        const setSliderHeight = () => {
-            const slider = document.querySelector('.slider');
-            const awssld = document.querySelector('.awssld__container');
-            if (url === '/quick-cms/public/') {
-                if (slider) {
-                    const windowHeight = window.innerHeight;
-                    slider.style.height = `${windowHeight}px`;
-                    awssld.style.paddingBottom = '50%';
-                }
-            } else {
-                if (slider) {
-                    const windowHeight = 150;
-                    slider.style.height = `${windowHeight}px`;
-                    awssld.style.paddingBottom = '15%';
-                }
-            }
-        };
+  useEffect(() => {
+    const setSliderHeight = () => {
+      const slider = document.querySelector('.slider');
+      const awssld = document.querySelector('.awssld__container');
+      if (url === '/') {
+        if (slider) {
+          const windowHeight = window.innerHeight;
+          slider.style.height = `${windowHeight}px`;
+          awssld.style.paddingBottom = '50%';
+        }
+      } else {
+        if (slider) {
+          const windowHeight = 150;
+          slider.style.height = `${windowHeight}px`;
+          awssld.style.paddingBottom = '15%';
+        }
+      }
+    };
 
-        setSliderHeight();
-        window.addEventListener('resize', setSliderHeight);
+    setSliderHeight();
+    window.addEventListener('resize', setSliderHeight);
 
-        return () => {
-            window.removeEventListener('resize', setSliderHeight);
-        };
-    }, []);
+    return () => {
+      window.removeEventListener('resize', setSliderHeight);
+    };
+  }, []);
 
-    return (
-        <>
-            {url === '/quick-cms/public/' ? (
-                <AwesomeSlider
-                    className='slider'
-                    bullets={false}
-                    animation='openAnimation'>
-                    <div data-src={img2} className='slider-title'>
-                        <SlideshowCaption title="Quick CMS" testo="Scopri il mio progetto" />
-                    </div>
-                    <div data-src={img3} className='slider-title'>
-                        <SlideshowCaption title="Quick CMS" testo="Scopri il mio progetto" />
-                    </div>
-                    <div data-src={img4} className='slider-title d-flex'>
-                        <SlideshowCaption title="Quick CMS" testo="Scopri il mio progetto" />
-                        <img src={sliderDev} className='img-fluid slider-dev ms-5' width={400} alt="slider-dev" />
-                    </div>
-                </AwesomeSlider>
-            ) : (
-                <AwesomeSlider
-                    className='slider'
-                    bullets={false}
-                    buttons={false}
-                    animation='openAnimation'>
-                    <div data-src={sostSlide} className='slider-title'>
-                        <></>
-                    </div>
-                </AwesomeSlider>
-            )}
-        </>
-    )
-}
+  return (
+    <>
+      {url === '/' ? (
+        <AwesomeSlider className="slider" bullets={false} animation="openAnimation">
+          <div data-src={img2} className="slider-title">
+            <SlideshowCaption title="Quick CMS" testo="Scopri il mio progetto" />
+          </div>
+          <div data-src={img3} className="slider-title">
+            <SlideshowCaption title="Quick CMS" testo="Scopri il mio progetto" />
+          </div>
+          <div data-src={img4} className="slider-title d-flex">
+            <SlideshowCaption title="Quick CMS" testo="Scopri il mio progetto" />
+            <img src={sliderDev} className="img-fluid slider-dev ms-5" width={400} alt="slider-dev" />
+          </div>
+        </AwesomeSlider>
+      ) : (
+        <AwesomeSlider className="slider" bullets={false} buttons={false} animation="openAnimation">
+          <div data-src={sostSlide} className="slider-title">
+            <></>
+          </div>
+        </AwesomeSlider>
+      )}
+    </>
+  );
+};
 
 export default Slideshow;
