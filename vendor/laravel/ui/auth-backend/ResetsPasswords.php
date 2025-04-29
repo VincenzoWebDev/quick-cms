@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
 
 trait ResetsPasswords
 {
@@ -28,9 +29,10 @@ trait ResetsPasswords
     {
         $token = $request->route()->parameter('token');
 
-        return view('auth.passwords.reset')->with(
-            ['token' => $token, 'email' => $request->email]
-        );
+        // return view('auth.passwords.reset')->with(
+        //     ['token' => $token, 'email' => $request->email]
+        // );
+        return Inertia::render('Auth/Passwords/Reset', ['token' => $token, 'email' => $request->email]);
     }
 
     /**

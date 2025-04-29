@@ -75,7 +75,9 @@ class RegisterController extends Controller
             'profile_img' => 'images/profile_img/default.png',
         ]);
         $admin = User::where('role', 'admin')->first();
-        $admin->notify(new NewUserNotification($user));
+        if ($admin) {
+            $user->notify(new NewUserNotification($user));
+        }
         return $user;
     }
 }
