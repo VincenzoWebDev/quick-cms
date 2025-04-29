@@ -93,7 +93,7 @@ const Topbar = () => {
                                     <a className="text-white px-1" role="button" data-bs-toggle="dropdown" aria-current="page" ><i className="fa-solid fa-user"></i></a>
                                     <ul className="dropdown-menu dropdown-menu-end bg-white">
                                         <li>
-                                            <Link className="dropdown-item text-dark" href={route('front.user.profile')}>Profilo</Link>
+                                            <Link className="dropdown-item text-dark" href={route('user.profile.index')}>Profilo</Link>
                                         </li>
                                         <li>
                                             <a className="dropdown-item text-dark" href="#" onClick={handleLogout}>Logout</a>

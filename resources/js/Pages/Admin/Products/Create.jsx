@@ -1,29 +1,48 @@
-import { Link, useForm } from '@inertiajs/react';
-import Layout from '@/Layouts/Admin/Layout';
-import { ImagesTab, InputErrors, ProductTabs, VariantsTab, SeoTab, InfoTab } from "@/components/Admin/Index";
+import { Link, useForm } from "@inertiajs/react";
+import Layout from "@/Layouts/Admin/Layout";
+import {
+    ImagesTab,
+    InputErrors,
+    ProductTabs,
+    VariantsTab,
+    SeoTab,
+    InfoTab,
+} from "@/components/Admin/Index";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
 
-const ProductCreate = ({ categories, variants }) => {
+const ProductCreate = ({ categories, variants, flash }) => {
+    useEffect(() => {
+        if (flash?.message) {
+            if (flash.message.tipo === "success") {
+                toast.success(flash.message.testo);
+            } else if (flash.message.tipo === "danger") {
+                toast.error(flash.message.testo);
+            }
+        }
+    }, [flash]);
+
     const { data, setData, post, processing, errors, reset } = useForm({
-        name: '',
-        description: '',
-        price: '',
-        stock: '' || 0,
+        name: "",
+        description: "",
+        price: "",
+        stock: "" || 0,
         categories: [],
         image_path: null,
         gallery: [],
         variantCombinations: [],
         seo_metadata: {
-            meta_title: '',
-            meta_description: '',
-            meta_keywords: '',
-            canonical_url: '',
-            og_title: '',
-            og_description: '',
-            og_image: '',
-            twitter_title: '',
-            twitter_description: '',
-            twitter_image: '',
-        }
+            meta_title: "",
+            meta_description: "",
+            meta_keywords: "",
+            canonical_url: "",
+            og_title: "",
+            og_description: "",
+            og_image: "",
+            twitter_title: "",
+            twitter_description: "",
+            twitter_image: "",
+        },
     });
 
     const handleChange = (e) => {
@@ -40,37 +59,37 @@ const ProductCreate = ({ categories, variants }) => {
                 [name]: value,
             },
         });
-    }
+    };
 
     const handleCatsChange = (cats) => {
-        setData('categories', cats);
-    }
+        setData("categories", cats);
+    };
 
     const handleThumbChange = (file) => {
         if (file) {
-            setData('image_path', file);
+            setData("image_path", file);
         } else {
-            setData('image_path', null);
+            setData("image_path", null);
         }
-    }
+    };
 
     const handleGalleryChange = (files) => {
         if (Array.from(files).length === 1) {
-            setData('gallery', files);
+            setData("gallery", files);
         } else if (Array.from(files).length > 1) {
-            setData('gallery', files);
+            setData("gallery", files);
         } else {
-            setData('gallery', []);
+            setData("gallery", []);
         }
-    }
+    };
 
     const setVariantCombinations = (combinations) => {
-        setData('variantCombinations', combinations);
-    }
+        setData("variantCombinations", combinations);
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        post(route('products.store'), {
+        post(route("products.store"), {
             onSuccess: () => {
                 reset();
             },
@@ -87,22 +106,46 @@ const ProductCreate = ({ categories, variants }) => {
                 <div className="col-md-8">
                     <form onSubmit={handleSubmit} encType="multipart/form-data">
                         <div className="tab-content" id="myTabContent">
-                            <InfoTab data={data} handleChange={handleChange} categories={categories} handleCatsChange={handleCatsChange} />
-                            <ImagesTab ThumbChanged={handleThumbChange} GalleryChanged={handleGalleryChange} />
-                            <VariantsTab variants={variants} setVariantCombinations={setVariantCombinations} />
-                            <SeoTab data={data.seo_metadata} handleSeoChange={handleSeoChange} />
+                            <InfoTab
+                                data={data}
+                                handleChange={handleChange}
+                                categories={categories}
+                                handleCatsChange={handleCatsChange}
+                            />
+                            <ImagesTab
+                                ThumbChanged={handleThumbChange}
+                                GalleryChanged={handleGalleryChange}
+                            />
+                            <VariantsTab
+                                variants={variants}
+                                setVariantCombinations={setVariantCombinations}
+                            />
+                            <SeoTab
+                                data={data.seo_metadata}
+                                handleSeoChange={handleSeoChange}
+                            />
                         </div>
 
                         <div className="mb-3">
-                            <button className="btn cb-primary me-3" disabled={processing}>{processing ? "In corso..." : "Inserisci"}</button>
-                            <Link href={route('products.index')} className="btn btn-secondary">Torna indietro</Link>
+                            <button
+                                className="btn cb-primary me-3"
+                                disabled={processing}
+                            >
+                                {processing ? "In corso..." : "Inserisci"}
+                            </button>
+                            <Link
+                                href={route("products.index")}
+                                className="btn btn-secondary"
+                            >
+                                Torna indietro
+                            </Link>
                         </div>
                     </form>
                 </div>
                 <div className="col-md-4"></div>
             </div>
         </Layout>
-    )
-}
+    );
+};
 
-export default ProductCreate
+export default ProductCreate;

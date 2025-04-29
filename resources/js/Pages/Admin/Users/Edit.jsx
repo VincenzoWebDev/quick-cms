@@ -1,11 +1,23 @@
-import { useForm, Link } from '@inertiajs/react';
-import InputErrors from '@/components/Admin/InputErrors';
-import Layout from '@/Layouts/Admin/Layout';
-import { STORAGE_URL } from '@/constants/constants';
+import { useForm, Link } from "@inertiajs/react";
+import InputErrors from "@/components/Admin/InputErrors";
+import Layout from "@/Layouts/Admin/Layout";
+import { STORAGE_URL } from "@/constants/constants";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
 
-const UserEdit = ({ user }) => {
+const UserEdit = ({ user, flash }) => {
+    useEffect(() => {
+        if (flash?.message) {
+            if (flash.message.tipo === "success") {
+                toast.success(flash.message.testo);
+            } else if (flash.message.tipo === "danger") {
+                toast.error(flash.message.testo);
+            }
+        }
+    }, [flash]);
+
     const { data, setData, post, errors, processing } = useForm({
-        _method: 'PATCH',
+        _method: "PATCH",
         name: user.name,
         lastname: user.lastname,
         email: user.email,
@@ -20,13 +32,13 @@ const UserEdit = ({ user }) => {
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
-        setData('profile_img', file);
-    }
+        setData("profile_img", file);
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        post(route('users.update', user.id));
-    }
+        post(route("users.update", user.id));
+    };
 
     return (
         <>
@@ -34,31 +46,61 @@ const UserEdit = ({ user }) => {
                 <h2>Modifica user</h2>
                 <InputErrors errors={errors} />
 
-                <div className='row'>
+                <div className="row">
                     <div className="col-md-8">
-                        <form onSubmit={handleSubmit} encType="multipart/form-data">
+                        <form
+                            onSubmit={handleSubmit}
+                            encType="multipart/form-data"
+                        >
                             <div className="mb-3">
                                 <label htmlFor="name">Nome</label>
-                                <input type="text" name="name" id="name" className="form-control w-100" value={data.name}
-                                    placeholder="Nome utente" onChange={handleChange} />
+                                <input
+                                    type="text"
+                                    name="name"
+                                    id="name"
+                                    className="form-control w-100"
+                                    value={data.name}
+                                    placeholder="Nome utente"
+                                    onChange={handleChange}
+                                />
                             </div>
 
                             <div className="mb-3">
                                 <label htmlFor="lastname">Cognome</label>
-                                <input type="text" name="lastname" id="lastname" className="form-control w-100" value={data.lastname}
-                                    placeholder="Cognome" onChange={handleChange} />
+                                <input
+                                    type="text"
+                                    name="lastname"
+                                    id="lastname"
+                                    className="form-control w-100"
+                                    value={data.lastname}
+                                    placeholder="Cognome"
+                                    onChange={handleChange}
+                                />
                             </div>
 
                             <div className="mb-3">
                                 <label htmlFor="email">Email</label>
-                                <input type="email" name="email" id="email" className="form-control w-100" value={data.email}
-                                    placeholder="Email" onChange={handleChange} />
+                                <input
+                                    type="email"
+                                    name="email"
+                                    id="email"
+                                    className="form-control w-100"
+                                    value={data.email}
+                                    placeholder="Email"
+                                    onChange={handleChange}
+                                />
                             </div>
 
                             <div className="mb-3">
                                 <label htmlFor="role">Ruolo</label>
-                                <select className="form-select w-100" aria-label="Default select example" name="role" id="role"
-                                    value={data.role} onChange={handleChange} >
+                                <select
+                                    className="form-select w-100"
+                                    aria-label="Default select example"
+                                    name="role"
+                                    id="role"
+                                    value={data.role}
+                                    onChange={handleChange}
+                                >
                                     <option value="">Seleziona ruolo</option>
                                     <option value="user">user</option>
                                     <option value="admin">admin</option>
@@ -66,25 +108,49 @@ const UserEdit = ({ user }) => {
                             </div>
 
                             <div className="mb-3">
-                                <label htmlFor="profile_img">Immagine di profilo</label>
-                                <input type="file" name="profile_img" id="profile_img" className="form-control w-100" onChange={handleFileChange} />
+                                <label htmlFor="profile_img">
+                                    Immagine di profilo
+                                </label>
+                                <input
+                                    type="file"
+                                    name="profile_img"
+                                    id="profile_img"
+                                    className="form-control w-100"
+                                    onChange={handleFileChange}
+                                />
                             </div>
 
                             <div className="mb-3">
-                                <button type="submit" className="btn cb-primary me-3" disabled={processing}>{processing ? 'In corso...' : 'Modifica'}</button>
-                                <Link href={route('users.index')} className="btn btn-secondary">Torna indietro</Link>
+                                <button
+                                    type="submit"
+                                    className="btn cb-primary me-3"
+                                    disabled={processing}
+                                >
+                                    {processing ? "In corso..." : "Modifica"}
+                                </button>
+                                <Link
+                                    href={route("users.index")}
+                                    className="btn btn-secondary"
+                                >
+                                    Torna indietro
+                                </Link>
                             </div>
-                        </form >
+                        </form>
                     </div>
                     <div className="col-md-4 text-center">
                         <p className="mb-3">Foto profilo</p>
-                        <img src={STORAGE_URL + user.profile_img} title={user.name} alt={user.name}
-                            width="300" className='img-fluid' />
+                        <img
+                            src={STORAGE_URL + user.profile_img}
+                            title={user.name}
+                            alt={user.name}
+                            width="300"
+                            className="img-fluid"
+                        />
                     </div>
                 </div>
             </Layout>
         </>
-    )
-}
+    );
+};
 
-export default UserEdit
+export default UserEdit;

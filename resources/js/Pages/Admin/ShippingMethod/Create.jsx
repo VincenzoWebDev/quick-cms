@@ -1,24 +1,36 @@
 import Layout from "@/Layouts/Admin/Layout";
-import { Link, useForm } from '@inertiajs/react';
+import { Link, useForm } from "@inertiajs/react";
 import { InputErrors } from "@/components/Admin/Index";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
 
-const Create = () => {
+const Create = ({ flash }) => {
+    useEffect(() => {
+        if (flash?.message) {
+            if (flash.message.tipo === "success") {
+                toast.success(flash.message.testo);
+            } else if (flash.message.tipo === "danger") {
+                toast.error(flash.message.testo);
+            }
+        }
+    }, [flash]);
+
     const { data, setData, post, errors, processing } = useForm({
-        name: '',
-        price: '',
-        delivery_time: '',
-        description: '',
+        name: "",
+        price: "",
+        delivery_time: "",
+        description: "",
     });
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setData(name, value);
-    }
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        post(route('shipping-methods.store'));
-    }
+        post(route("shipping-methods.store"));
+    };
 
     return (
         <Layout>
@@ -30,34 +42,79 @@ const Create = () => {
                     <form onSubmit={handleSubmit} encType="multipart/form-data">
                         <div className="mb-3">
                             <label htmlFor="name">Nome</label>
-                            <input type="text" name="name" id="name" className="form-control" placeholder="Nome spedizione" value={data.name} onChange={handleChange} />
+                            <input
+                                type="text"
+                                name="name"
+                                id="name"
+                                className="form-control"
+                                placeholder="Nome spedizione"
+                                value={data.name}
+                                onChange={handleChange}
+                            />
                         </div>
 
                         <div className="mb-3">
                             <label htmlFor="description">Descrizione</label>
-                            <textarea name="description" id="description" className="form-control" placeholder="Descrizione" value={data.description} onChange={handleChange}></textarea>
+                            <textarea
+                                name="description"
+                                id="description"
+                                className="form-control"
+                                placeholder="Descrizione"
+                                value={data.description}
+                                onChange={handleChange}
+                            ></textarea>
                         </div>
 
                         <div className="mb-3">
                             <label htmlFor="price">Prezzo</label>
-                            <input type="number" name="price" id="price" className="form-control" placeholder="Prezzo" value={data.price} onChange={handleChange} />
+                            <input
+                                type="number"
+                                name="price"
+                                id="price"
+                                className="form-control"
+                                placeholder="Prezzo"
+                                value={data.price}
+                                onChange={handleChange}
+                            />
                         </div>
 
                         <div className="mb-3">
-                            <label htmlFor="delivery_time">Tempo spedizione</label>
-                            <input type="number" name="delivery_time" id="delivery_time" className="form-control" placeholder="Tempo spedizione" value={data.delivery_time} onChange={handleChange} />
-                            <small className="ms-1"><em>In giorni</em></small>
+                            <label htmlFor="delivery_time">
+                                Tempo spedizione
+                            </label>
+                            <input
+                                type="number"
+                                name="delivery_time"
+                                id="delivery_time"
+                                className="form-control"
+                                placeholder="Tempo spedizione"
+                                value={data.delivery_time}
+                                onChange={handleChange}
+                            />
+                            <small className="ms-1">
+                                <em>In giorni</em>
+                            </small>
                         </div>
 
                         <div className="mb-3">
-                            <button className="btn cb-primary me-3" disabled={processing}>{processing ? 'In corso...' : 'Inserisci'}</button>
-                            <Link href={route('shipping-methods.index')} className="btn btn-secondary">Torna indietro</Link>
+                            <button
+                                className="btn cb-primary me-3"
+                                disabled={processing}
+                            >
+                                {processing ? "In corso..." : "Inserisci"}
+                            </button>
+                            <Link
+                                href={route("shipping-methods.index")}
+                                className="btn btn-secondary"
+                            >
+                                Torna indietro
+                            </Link>
                         </div>
                     </form>
                 </div>
                 <div className="col-md-4"></div>
             </div>
         </Layout>
-    )
-}
-export default Create
+    );
+};
+export default Create;

@@ -75,6 +75,23 @@ class User extends Authenticatable
         return $this->role === 'admin';
     }
 
+    public function conversations()
+    {
+        return $this->hasMany(Conversation::class, 'user_id');
+    }
+
+    // Relazione con le conversazioni assegnate all'admin
+    public function assignedConversations()
+    {
+        return $this->hasMany(Conversation::class, 'admin_id');
+    }
+
+    // Relazione con i messaggi inviati dall'utente o admin
+    public function messages()
+    {
+        return $this->hasMany(Message::class, 'sender_id');
+    }
+
     public function getUsersPercentage()
     {
         // Data di inizio e fine del mese corrente

@@ -1,10 +1,9 @@
-import Swal from 'sweetalert2'
-import withReactContent from 'sweetalert2-react-content'
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
-const ProductDelete = ({ e, formDelete, setMessage }) => {
+const ProductDelete = ({ productId, formDelete }) => {
     const MySwal = withReactContent(Swal);
-    e.preventDefault();
-    const productId = e.target.id;
     if (productId) {
         MySwal.fire({
             title: "Sei sicuro di voler eliminare questo prodotto?",
@@ -17,24 +16,32 @@ const ProductDelete = ({ e, formDelete, setMessage }) => {
             cancelButtonText: "Annulla",
         }).then((result) => {
             if (result.isConfirmed) {
-                formDelete(route('products.destroy', productId), {
+                formDelete(route("products.destroy", productId), {
                     onSuccess: () => {
-                        setMessage({ tipo: 'success', testo: `Prodotto ${productId} cancellato correttamente` });
+                        toast.success(
+                            `Prodotto ${productId} cancellato correttamente`
+                        );
                     },
                     onError: () => {
-                        setMessage({ tipo: 'danger', testo: `Errore durante la cancellazione del prodotto ${productId}` });
-                    }
+                        toast.error(
+                            `Errore durante la cancellazione del prodotto ${productId}`
+                        );
+                    },
                 });
             }
         });
     }
-}
+};
 
-const ProductDeleteSelected = ({ e, formDelete, setMessage, selectedRecords, setSelectedRecords, setSelectAll }) => {
+const ProductDeleteSelected = ({
+    formDelete,
+    selectedRecords,
+    setSelectedRecords,
+    setSelectAll,
+}) => {
     const MySwal = withReactContent(Swal);
-    e.preventDefault();
     if (selectedRecords.length === 0) {
-        setMessage({ tipo: 'danger', testo: 'Nessun prodotto selezionato' });
+        toast.error("Nessun prodotto selezionato");
         return;
     }
     if (selectedRecords.length > 0) {
@@ -49,23 +56,34 @@ const ProductDeleteSelected = ({ e, formDelete, setMessage, selectedRecords, set
             cancelButtonText: "Annulla",
         }).then((result) => {
             if (result.isConfirmed) {
-                formDelete(route('products.destroy.batch', { recordIds: selectedRecords }), {
-                    onSuccess: () => {
-                        setSelectedRecords([]);
-                        setSelectAll(false);
-                        if (selectedRecords.length === 1) {
-                            setMessage({ tipo: 'success', testo: `Prodotto selezionato cancellato correttamente` });
-                        } else {
-                            setMessage({ tipo: 'success', testo: `Prodotti selezionati cancellati correttamente` });
-                        }
-                    },
-                    onError: () => {
-                        setMessage({ tipo: 'danger', testo: `Errore durante la cancellazione dei prodotti` });
+                formDelete(
+                    route("products.destroy.batch", {
+                        recordIds: selectedRecords,
+                    }),
+                    {
+                        onSuccess: () => {
+                            setSelectedRecords([]);
+                            setSelectAll(false);
+                            if (selectedRecords.length === 1) {
+                                toast.success(
+                                    `Prodotto selezionato cancellato correttamente`
+                                );
+                            } else {
+                                toast.success(
+                                    `Prodotti selezionati cancellati correttamente`
+                                );
+                            }
+                        },
+                        onError: () => {
+                            toast.error(
+                                `Errore durante la cancellazione dei prodotti`
+                            );
+                        },
                     }
-                });
+                );
             }
-        })
+        });
     }
-}
+};
 
-export { ProductDelete, ProductDeleteSelected }
+export { ProductDelete, ProductDeleteSelected };

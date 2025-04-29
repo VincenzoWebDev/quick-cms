@@ -23,20 +23,22 @@ class UserController extends \App\Http\Controllers\Controller
         $perPage = $request->input('perPage', 10);
         $searchQuery = $request->input('q', '');
 
-        $users = User::orderBy($sortBy, $sortDirection)
+        $users = User::select(['id', 'name', 'email', 'role', 'profile_img', 'created_at', 'updated_at'])
+            ->orderBy($sortBy, $sortDirection)
             ->when($searchQuery, function ($query) use ($searchQuery) {
                 $query->where(function ($query) use ($searchQuery) {
-                    $query->where('id', 'like', '%' . $searchQuery . '%')
-                        ->orWhere('name', 'like', '%' . $searchQuery . '%')
-                        ->orWhere('email', 'like', '%' . $searchQuery . '%')
-                        ->orWhere('role', 'like', '%' . $searchQuery . '%');
+                    if (is_numeric($searchQuery)) {
+                        $query->orWhere('id', $searchQuery);
+                    }
+                    $query->orWhere('name', 'like', $searchQuery . '%')
+                        ->orWhere('email', 'like', $searchQuery . '%');
                 });
             })->paginate($perPage)->through(fn($user) => [
                 'id' => $user->id,
-                'profile_img' => $user->profile_img,
                 'name' => $user->name,
                 'email' => $user->email,
                 'role' => $user->role,
+                'profile_img' => $user->profile_img,
                 'created_at' => $user->created_at,
                 'updated_at' => $user->updated_at
             ]);
@@ -63,6 +65,10 @@ class UserController extends \App\Http\Controllers\Controller
             if (file_exists($ProfilePath) && $profileImg != null) {
                 unlink($ProfilePath); // Elimina l'immagine dal filesystem
             }
+            return redirect()->route('users.index')->with('message', [
+                'tipo' => 'success',
+                'testo' => 'Utente ID : ' . $id . ' - Eliminato correttamente'
+            ]);
         }
     }
 
@@ -86,6 +92,10 @@ class UserController extends \App\Http\Controllers\Controller
                 }
             }
         }
+        return redirect()->route('users.index')->with('message', [
+            'tipo' => 'success',
+            'testo' => 'Utenti eliminati correttamente'
+        ]);
     }
 
     public function edit(int $id)

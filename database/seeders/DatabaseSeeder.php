@@ -4,13 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
-use App\Models\Album;
-use App\Models\AlbumCategories;
-use App\Models\Photo;
-use App\Models\Product;
-use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -19,13 +13,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        //\App\Models\User::factory(30)->create();
-
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
-
         /* ELIMINAZIONE RECORD TABELLE SENZA RESET DI INDIZI E CON LA FOREIGN KEY DISATTIVATA
         DB::statement('SET FOREIGN_KEY_CHECKS=0');
 
@@ -34,5 +21,13 @@ class DatabaseSeeder extends Seeder
         Photo::truncate();
         AlbumCategories::truncate();
         */
+
+        /* Questi seeder servono per il corretto funzionamento nel cms */
+        $this->call([
+            SettingsSeed::class,
+            ThemesSeed::class,
+            UserDemoSeed::class,
+        ]);
+        /* IMPORTANTE: ESEGUIRE php artisan db:seed dopo aver fatto la configurazione del DB*/
     }
 }

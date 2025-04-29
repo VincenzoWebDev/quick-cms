@@ -37,10 +37,6 @@ class ProfileController extends \App\Http\Controllers\Controller
     public function update(EditProfileRequest $request, $userId)
     {
         $user = User::find($userId);
-        $oldName = $user->name;
-        $oldLastName = $user->lastname;
-        $oldEmail = $user->email;
-        $oldRole = $user->role;
         $oldProfile = $user->profile_img;
 
         $user->name = $request->input('name');
@@ -49,27 +45,18 @@ class ProfileController extends \App\Http\Controllers\Controller
         $user->role = $request->input('role');
         $user->profile_img = $request->input('profile_img') == null ? $oldProfile : $request->input('profile_img');
 
-        if ($oldName != $user->name || $oldLastName != $user->lastname || $oldEmail != $user->email || $oldRole != $user->role || $request->hasFile('profile_img')) {
-            if ($request->file('profile_img') != null) {
-                if ($oldProfile == null) {
-                    $this->processFile($user->id, $user);
-                }
-                if ($oldProfile != null) {
-                    Storage::delete($oldProfile);
-                }
+        if ($request->file('profile_img') != null) {
+            if ($oldProfile == null) {
                 $this->processFile($user->id, $user);
-            } else {
-                $user->profile_img = $oldProfile;
             }
-            $res = $user->save();
+            if ($oldProfile != null) {
+                Storage::delete($oldProfile);
+            }
+            $this->processFile($user->id, $user);
         } else {
-            $res = 0;
+            $user->profile_img = $oldProfile;
         }
-
-        $messaggio = $res ? 'Informazioni profilo aggiornate correttamente' : 'Informazioni profilo non aggiornate';
-        $tipoMessaggio = $res ? 'success' : 'danger';
-        session()->flash('message', ['tipo' => $tipoMessaggio, 'testo' => $messaggio]);
-
+        $user->save();
         return redirect()->route('profile');
     }
 

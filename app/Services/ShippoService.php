@@ -15,13 +15,14 @@ class ShippoService
     }
     public function createShipment($fromAddress, $toAddress, $parcel)
     {
+        // dd($fromAddress, $toAddress, $parcel);
         $shipment = Shippo_Shipment::create([
             'address_from' => $fromAddress,
             'address_to' => $toAddress,
             'parcels' => [$parcel],
+            // 'carrier_accounts' => ['c25a34cdb64f46a38b9164b0b515514d'],
             'async' => false,
         ]);
-
         return $shipment;
     }
 

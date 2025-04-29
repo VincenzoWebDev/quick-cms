@@ -9,7 +9,9 @@ use App\Http\Controllers\ProductListController;
 use App\Http\Controllers\Front\UserProfileController;
 use App\Mail\testEmail;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
@@ -28,10 +30,9 @@ Route::prefix('admin')->group(function () {
     Auth::routes();
 });
 
-require __DIR__ . '/admin.php';
+// require __DIR__ . '/admin.php';
 
 /* Rotte pagine front-end */
-
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::middleware('CheckEcommerceStatus')->group(function () {
@@ -66,6 +67,6 @@ Route::get('/{slug}', [PageViewController::class, 'show'])->name('page.show')->w
 // require __DIR__ . '/theme.php';
 
 // Route::get('testEmail', function () {
-//     Mail::to('sports.eco12@gmail.com')->send(new testEmail());
+//     Mail::to('sports.eco12@gmail.com')->queue(new testEmail());
 // });
 // Route::view('testEmail', 'mails.testEmail', ['username' => 'Vincenzo']);

@@ -25,6 +25,13 @@ class PageLayoutController extends \App\Http\Controllers\Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ], [
+            'name.required' => 'Il nome del layout è obbligatorio.',
+            'name.string' => 'Il nome del layout deve essere una stringa.',
+            'name.max' => 'Il nome del layout non può superare i 255 caratteri.',
+        ]);
         $layout = new PageLayout();
         $layout->name = $request->name;
         $res = $layout->save();
@@ -52,7 +59,6 @@ class PageLayoutController extends \App\Http\Controllers\Controller
         } else {
             $res = 0;
         }
-
 
         $messaggio = $res ? 'Layout: ' . $layout->name . ' - Modificato correttamente' : 'Layout: ' . $layout->name . ' - Non Modificato';
         $tipoMessaggio = $res ? 'success' : 'danger';

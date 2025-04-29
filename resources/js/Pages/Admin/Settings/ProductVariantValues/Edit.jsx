@@ -1,8 +1,19 @@
 import Layout from "@/Layouts/Admin/Layout";
-import { Link, router, useForm, usePage } from '@inertiajs/react';
+import { Link, router, useForm, usePage } from "@inertiajs/react";
 import { InputErrors } from "@/components/Admin/Index";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
 
-const Edit = ({ variant }) => {
+const Edit = ({ variant, flash }) => {
+    useEffect(() => {
+        if (flash?.message) {
+            if (flash.message.tipo === "success") {
+                toast.success(flash.message.testo);
+            } else if (flash.message.tipo === "danger") {
+                toast.error(flash.message.testo);
+            }
+        }
+    }, [flash]);
     const { errors } = usePage().props;
 
     const { data, setData } = useForm({
@@ -16,12 +27,12 @@ const Edit = ({ variant }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        router.post(route('settings.variants.update', variant.id), {
+        router.post(route("settings.variants.update", variant.id), {
             ...data,
-            _method: 'patch',
+            _method: "patch",
             forceFormData: true,
         });
-    }
+    };
 
     return (
         <Layout>
@@ -33,18 +44,33 @@ const Edit = ({ variant }) => {
                     <form onSubmit={handleSubmit} encType="multipart/form-data">
                         <div className="mb-3">
                             <label htmlFor="name">Nome</label>
-                            <input type="text" name="name" id="name" className="form-control" placeholder="Nome variante" value={data.name} onChange={handleChange} />
+                            <input
+                                type="text"
+                                name="name"
+                                id="name"
+                                className="form-control"
+                                placeholder="Nome variante"
+                                value={data.name}
+                                onChange={handleChange}
+                            />
                         </div>
 
                         <div className="mb-3">
-                            <button className="btn cb-primary me-3">Modifica</button>
-                            <Link href={route('settings.variants.index')} className="btn btn-secondary">Torna indietro</Link>
+                            <button className="btn cb-primary me-3">
+                                Modifica
+                            </button>
+                            <Link
+                                href={route("settings.variants.index")}
+                                className="btn btn-secondary"
+                            >
+                                Torna indietro
+                            </Link>
                         </div>
                     </form>
                 </div>
                 <div className="col-md-4"></div>
             </div>
         </Layout>
-    )
-}
-export default Edit
+    );
+};
+export default Edit;

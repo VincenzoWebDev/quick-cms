@@ -18,7 +18,7 @@ trait ConfirmsPasswords
     public function showConfirmForm()
     {
         // return view('auth.passwords.confirm');
-        return Inertia::render('Auth/Passwords/Confirm');
+        return Inertia::render('Auth/ConfirmPassword');
     }
 
     /**

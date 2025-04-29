@@ -22,7 +22,9 @@
         "chart.js": "^4.4.1",
         "cors": "^2.8.5",
         "jquery": "^3.7.1",
+        "laravel-echo": "^1.17.1",
         "lucide-react": "^0.454.0",
+        "pusher-js": "^8.4.0-rc2",
         "react": "^18.2.0",
         "react-awesome-slider": "^4.1.0",
         "react-chartjs-2": "^5.2.0",
@@ -33,12 +35,13 @@
         "react-router-dom": "^6.22.0",
         "react-scroll-parallax": "^3.4.5",
         "react-slick": "^0.30.2",
+        "react-toastify": "^10.0.6",
         "scrollreveal": "^4.0.9",
         "slick-carousel": "^1.8.1",
         "sweetalert2": "^11.6.13",
         "sweetalert2-react-content": "^5.0.7",
         "swiper": "^11.1.14",
-        "vite": "^5.4.9"
+        "vite": "^6.3.3"
     },
     "devDependencies": {
         "@headlessui/react": "^1.4.2",
@@ -51,7 +54,7 @@
         "postcss": "^8.4.31",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
-        "sass": "^1.79.5",
+        "sass": "^1.87.0",
         "tailwindcss": "^3.2.1"
     }
 }

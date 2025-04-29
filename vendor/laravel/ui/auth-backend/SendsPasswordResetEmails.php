@@ -76,8 +76,7 @@ trait SendsPasswordResetEmails
     {
         return $request->wantsJson()
             ? new JsonResponse(['message' => trans($response)], 200)
-            // : back()->with('status', trans($response));
-            : session()->flash('status', trans($response));
+            : back()->with('status', trans($response));
     }
 
     /**
