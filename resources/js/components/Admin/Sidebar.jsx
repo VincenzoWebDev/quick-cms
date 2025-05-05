@@ -100,7 +100,7 @@ const Sidebar = () => {
                   </>
                 ) : (
                   <>
-                    <Link className="dropdown-item border-bottom rounded-0" href={route('profile')}>
+                    <Link className="dropdown-item border-bottom rounded-0" href={route('admin.profile')}>
                       Profilo
                     </Link>
                     <>

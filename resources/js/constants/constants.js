@@ -1,4 +1,4 @@
-const { VITE_APP_ENV, VITE_BASE_URL, VITE_STORAGE_URL } = import.meta.env;
+const { VITE_APP_URL, VITE_APP_ENV, VITE_BASE_URL, VITE_STORAGE_URL } = import.meta.env;
 
 let baseUrl;
 let storageUrl;
@@ -6,8 +6,8 @@ if (VITE_APP_ENV === 'production') {
     baseUrl = VITE_BASE_URL;
     storageUrl = VITE_STORAGE_URL;
 } else if (VITE_APP_ENV === 'local') {
-    baseUrl = 'http://localhost/quick-cms/public/';
-    storageUrl = 'http://localhost/quick-cms/public/storage/';
+    baseUrl = VITE_APP_URL;
+    storageUrl = VITE_APP_URL + 'storage/';
 } else {
     // Gestisci altri ambienti se necessario
     baseUrl = ''; // Default per altri ambienti

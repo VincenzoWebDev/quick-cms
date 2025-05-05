@@ -55,6 +55,9 @@ class HandleInertiaRequests extends Middleware
                 'site_name' => 'Quick CMS - La tua soluzione per la gestione di un e-commerce',
                 'site_description' => 'Quick CMS è la soluzione ideale per gestire un e-commerce. Offre funzionalità complete per la gestione dei prodotti, delle categorie, degli ordini e molto altro ancora. Scopri come Quick CMS può aiutarti a gestire il tuo e-commerce in modo efficiente e semplice.',
             ],
+            'auth' => [
+                'user' => $request->user(),
+            ],
         ]);
     }
 

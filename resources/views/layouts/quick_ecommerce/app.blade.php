@@ -12,7 +12,7 @@
     <meta name="generator" content="">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     {{-- <title>Tema ecommerce</title> --}}
-    @routes
+    @routes()
     @viteReactRefresh
     @vite(['resources/sass/app.scss', 'resources/css/quick_ecommerce/app.css', 'resources/js/app.jsx'])
     @inertiaHead

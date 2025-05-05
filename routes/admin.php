@@ -85,8 +85,8 @@ Route::middleware('VerifyIsAdmin')->group(function () {
     Route::post('/pages/images/store', [PageController::class, 'storeImage'])->name('pages.images.store');
 });
 
-Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
-Route::patch('/profile/{userId}', [ProfileController::class, 'update'])->name('profile.update');
+Route::get('/profile', [ProfileController::class, 'index'])->name('admin.profile');
+Route::patch('/profile/{userId}', [ProfileController::class, 'update'])->name('admin.profile.update');
 
 // Route::resource('/categories', AlbumCategoryController::class);
 Route::get('/album_categories', [AlbumCategoryController::class, 'index'])->name('album.categories.index');

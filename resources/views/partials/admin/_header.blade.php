@@ -34,7 +34,7 @@
         gtag('config', 'G-NBGHM6Y2DL');
     </script>
 
-    @routes
+    @routes()
     @viteReactRefresh
     @vite(['resources/css/admin/app.css', 'resources/js/app.jsx', "resources/js/Pages/{$page['component']}.jsx"])
     @inertiaHead

@@ -57,7 +57,7 @@ class ProfileController extends \App\Http\Controllers\Controller
             $user->profile_img = $oldProfile;
         }
         $user->save();
-        return redirect()->route('profile');
+        return redirect()->route('admin.profile');
     }
 
     public function processFile($id, &$user)

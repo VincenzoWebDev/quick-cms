@@ -4,7 +4,7 @@ import { Link, useForm, usePage } from '@inertiajs/react';
 
 const Login = () => {
   const { demo_mode } = usePage().props;
-  const { data, setData, post, errors } = useForm({
+  const { data, setData, post, errors, processing } = useForm({
     email: demo_mode == 1 ? 'demo@quickcms.test' : '',
     password: demo_mode == 1 ? 'demo1234' : '',
   });
@@ -89,7 +89,9 @@ const Login = () => {
                     </div>
                   </div>
                   <div className="form-group">
-                    <button className="btn btn-primary rounded submit p-3 px-5">Login</button>
+                    <button className="btn btn-primary rounded submit p-3 px-5" disabled={processing}>
+                      Login
+                    </button>
                   </div>
                 </form>
               </div>

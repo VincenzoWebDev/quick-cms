@@ -197,7 +197,7 @@ const Topbar = () => {
                           className="dropdown-menu dropdown-menu-end animate__animated animate__fadeInUp"
                           aria-labelledby="navbarDropdown"
                         >
-                          <Link className="dropdown-item border-bottom" href={route('profile')}>
+                          <Link className="dropdown-item border-bottom" href={route('admin.profile')}>
                             Profilo
                           </Link>
                           <Link className="dropdown-item" href="#" onClick={handleLogout}>

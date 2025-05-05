@@ -1,19 +1,16 @@
 <?php
 
-use App\Http\Controllers\Front\CheckoutController;
 use App\Http\Controllers\Front\CartController;
+use App\Http\Controllers\Front\CheckoutController;
+use App\Http\Controllers\Front\UserProfileController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PageViewController;
 use App\Http\Controllers\ProductDetailController;
 use App\Http\Controllers\ProductListController;
-use App\Http\Controllers\Front\UserProfileController;
-use App\Mail\testEmail;
-use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Broadcast;
-use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\ProfileController;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,13 +23,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::prefix('admin')->group(function () {
-    Auth::routes();
-});
+// Route::prefix('admin')->group(function () {
+//     Auth::routes();
+// });
 
 // require __DIR__ . '/admin.php';
 
 /* Rotte pagine front-end */
+
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::middleware('CheckEcommerceStatus')->group(function () {
@@ -70,3 +68,15 @@ Route::get('/{slug}', [PageViewController::class, 'show'])->name('page.show')->w
 //     Mail::to('sports.eco12@gmail.com')->queue(new testEmail());
 // });
 // Route::view('testEmail', 'mails.testEmail', ['username' => 'Vincenzo']);
+
+Route::get('/dashboard', function () {
+    return Inertia::render('Dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __DIR__ . '/auth.php';
