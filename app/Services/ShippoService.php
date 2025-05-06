@@ -11,7 +11,7 @@ class ShippoService
 {
     public function __construct()
     {
-        Shippo::setApiKey(env('SHIPPO_API_KEY'));
+        Shippo::setApiKey(config('services.shippo.api_key'));
     }
     public function createShipment($fromAddress, $toAddress, $parcel)
     {

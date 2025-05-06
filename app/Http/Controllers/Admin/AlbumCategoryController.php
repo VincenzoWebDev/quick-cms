@@ -14,7 +14,7 @@ class AlbumCategoryController extends \App\Http\Controllers\Controller
 {
     public function index()
     {
-        $albumCategories = AlbumCategories::orderBy('category_name', 'asc')->withCount('albums')->where('user_id', Auth::id())->paginate(env('RECORD_PER_PAGE'));
+        $albumCategories = AlbumCategories::orderBy('category_name', 'asc')->withCount('albums')->where('user_id', Auth::id())->paginate(config('app.record_per_page'));
         return Inertia::render('Admin/AlbumCategories/AlbumCategoriesContent', ['albumCategories' => $albumCategories]);
     }
 

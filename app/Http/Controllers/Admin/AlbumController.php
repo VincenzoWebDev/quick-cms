@@ -24,7 +24,7 @@ class AlbumController extends \App\Http\Controllers\Controller
             ->withCount('photos')
             ->where('user_id', Auth::id())
             ->with(['categories', 'user']) // Carica anche la relazione dell'utente
-            ->paginate(env('IMG_PER_PAGE'));
+            ->paginate(config('image.img_per_page'));
         return Inertia::render('Admin/Albums/AlbumsContent', ['albums' => $albums]);
     }
 
@@ -52,8 +52,8 @@ class AlbumController extends \App\Http\Controllers\Controller
             // Verifica se l'immagine esiste prima di eliminarla
             if (file_exists($thumbPath)) {
                 unlink($thumbPath); // Elimina l'immagine dal filesystem
-                if (empty(Storage::disk(env('IMG_DISK'))->files($folderPathThumb))) {
-                    Storage::disk(env('IMG_DISK'))->deleteDirectory($folderPathThumb);
+                if (empty(Storage::disk(config('app.disk'))->files($folderPathThumb))) {
+                    Storage::disk(config('app.disk'))->deleteDirectory($folderPathThumb);
                 }
             }
             session()->flash('message', ['tipo' => 'success', 'testo' => 'Album ID: ' . $album->id . ' - Eliminato correttamente']);
@@ -89,8 +89,8 @@ class AlbumController extends \App\Http\Controllers\Controller
                 // Verifica se l'immagine esiste prima di eliminarla
                 if (file_exists($thumbPath) && $thumbNail != null) {
                     unlink($thumbPath); // Elimina l'immagine dal filesystem
-                    if (empty(Storage::disk(env('IMG_DISK'))->files($folderPathThumb))) {
-                        Storage::disk(env('IMG_DISK'))->deleteDirectory($folderPathThumb);
+                    if (empty(Storage::disk(config('app.disk'))->files($folderPathThumb))) {
+                        Storage::disk(config('app.disk'))->deleteDirectory($folderPathThumb);
                     }
                 }
             }
@@ -104,7 +104,7 @@ class AlbumController extends \App\Http\Controllers\Controller
     public function deleteImages($album)
     {
         $photos = Photo::where('album_id', $album->id)->get();
-        $disk = env('IMG_DISK');
+        $disk = config('app.disk');
         foreach ($photos as $photo) {
             if ($photo->img_path && Storage::disk($disk)->exists($photo->img_path) && $photo->thumb_path && Storage::disk($disk)->exists($photo->thumb_path)) {
 
@@ -235,10 +235,10 @@ class AlbumController extends \App\Http\Controllers\Controller
         $albumName = str_replace(' ', '_', $album->album_name);
         $fileName = $albumName . '_' . $album->id . '.' . $file->extension();
         $dirAlbumId = 'album_' . $album->id;
-        $file->storeAs(env('ALBUM_THUMB_DIR') . $dirAlbumId, $fileName, 'public');
-        $filePath = public_path('storage/' . env('ALBUM_THUMB_DIR') . $dirAlbumId . '/' . $fileName);
+        $file->storeAs(config('image.album_thumb_dir') . $dirAlbumId, $fileName, 'public');
+        $filePath = public_path('storage/' . config('image.album_thumb_dir') . $dirAlbumId . '/' . $fileName);
         $this->createThumbnail($filePath);
-        $album->album_thumb = env('ALBUM_THUMB_DIR') . $dirAlbumId . '/' . $fileName;
+        $album->album_thumb = config('image.album_thumb_dir') . $dirAlbumId . '/' . $fileName;
     }
 
     public function processGallery($request, $album)
@@ -263,17 +263,17 @@ class AlbumController extends \App\Http\Controllers\Controller
                     $fileNameThumb = 'thumb_' . $imgName . '_' . $count . '_' . $time . '.' . $extension;
 
                     // Crea thumbnail
-                    $img->storeAs(env('IMG_PHOTO_ALBUMS') . $dirAlbumId, $fileNameStore, 'public');
-                    $img->storeAs(env('IMG_PHOTO_ALBUM_THUMBS') . $dirAlbumId, $fileNameThumb, 'public');
-                    $fileNameThumbPath = public_path('storage/' . env('IMG_PHOTO_ALBUM_THUMBS') . $dirAlbumId . '/' . $fileNameThumb);
+                    $img->storeAs(config('image.photo_albums') . $dirAlbumId, $fileNameStore, 'public');
+                    $img->storeAs(config('image.photo_album_thumbs') . $dirAlbumId, $fileNameThumb, 'public');
+                    $fileNameThumbPath = public_path('storage/' . config('image.photo_album_thumbs') . $dirAlbumId . '/' . $fileNameThumb);
                     $this->createThumbnail($fileNameThumbPath);
 
                     // Crea un nuovo modello Photo per ogni immagine
                     $photo = new Photo();
                     $photo->name = $name;
                     $photo->album_id = $album_id;
-                    $photo->thumb_path = env('IMG_PHOTO_ALBUM_THUMBS') . $dirAlbumId . '/' . $fileNameThumb;
-                    $photo->img_path = env('IMG_PHOTO_ALBUMS') . $dirAlbumId . '/' . $fileNameStore;
+                    $photo->thumb_path = config('image.photo_album_thumbs') . $dirAlbumId . '/' . $fileNameThumb;
+                    $photo->img_path = config('image.photo_albums') . $dirAlbumId . '/' . $fileNameStore;
                     $res = $photo->save();
                     $count++;
                 }

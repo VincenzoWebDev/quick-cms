@@ -56,9 +56,15 @@ class UserController extends \App\Http\Controllers\Controller
     {
         $user = User::find($id);
         $profileImg = $user->profile_img;
-        AlbumCategories::where('user_id', $id)->delete();
+        // AlbumCategories::where('user_id', $id)->delete();
         $res = $user->forceDelete(); //DB::delete();
         if ($res) {
+            if ($profileImg === 'images/profile_img/default.png') {
+                return redirect()->route('users.index')->with('message', [
+                    'tipo' => 'success',
+                    'testo' => 'Utente ID : ' . $id . ' - Eliminato correttamente'
+                ]);
+            }
             // Costruisci il percorso completo del file utilizzando il nome del file
             $ProfilePath = public_path('storage/' . $profileImg);
             // Verifica se l'immagine esiste prima di eliminarla
@@ -185,10 +191,10 @@ class UserController extends \App\Http\Controllers\Controller
             return false;
         }
         $fileName = $user->name . '_' . $id . '.' . $file->extension();
-        $file = $file->storeAs(env('PROFILE_IMG_DIR'), $fileName, 'public');
-        $filePath = public_path('storage/' . env('PROFILE_IMG_DIR') . '/' . $fileName);
+        $file = $file->storeAs(config('image.profile_img_dir'), $fileName, 'public');
+        $filePath = public_path('storage/' . config('image.profile_img_dir') . '/' . $fileName);
         $this->createThumbnail($filePath);
-        $user->profile_img = env('PROFILE_IMG_DIR') . $fileName;
+        $user->profile_img = config('image.profile_img_dir') . $fileName;
     }
 
     public function createThumbnail($filePath)

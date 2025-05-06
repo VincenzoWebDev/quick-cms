@@ -28,7 +28,7 @@ class PageController extends \App\Http\Controllers\Controller
 
     public function index()
     {
-        $pages = Page::orderBy('id', 'desc')->with('layout')->paginate(env('IMG_PER_PAGE'));
+        $pages = Page::orderBy('id', 'desc')->with('layout')->paginate(config('image.img_per_page'));
         return Inertia::render('Admin/Pages/PagesContent', ['pages' => $pages]);
     }
 
@@ -56,7 +56,7 @@ class PageController extends \App\Http\Controllers\Controller
         $fileName = str_replace(' ', '_', $fileName);
         $fileName = $fileName . '_' . time() . '.' . $fileExtension;
 
-        $imgFile = $file->storeAs(env('UPLOADS_DIR'), $fileName, 'public');
+        $imgFile = $file->storeAs(config('app.uploads_dir'), $fileName, 'public');
 
         $manager = new ImageManager(new Driver());
         $image = $manager->read($file);
@@ -64,7 +64,7 @@ class PageController extends \App\Http\Controllers\Controller
         $height = $image->height();
 
         // Costruire l'URL pubblico per l'immagine
-        $filePath = asset('storage/' . env('UPLOADS_DIR') . $fileName);
+        $filePath = asset('storage/' . config('app.uploads_dir') . $fileName);
         // dd($filePath);
 
         return response()->json(['location' => $filePath, 'name' => $fileName, 'width' => $width, 'height' => $height]);

@@ -11,7 +11,7 @@ class FileController extends \App\Http\Controllers\Controller
 {
     public function index()
     {
-        $publicPath = public_path('storage/' . env('UPLOADS_DIR'));
+        $publicPath = public_path('storage/' . config('app.uploads_dir'));
         if (File::isDirectory($publicPath)) {
             $files = File::files($publicPath);
             $files = collect($files)->map(function ($file) {
@@ -32,7 +32,7 @@ class FileController extends \App\Http\Controllers\Controller
     public function destroy(Request $request)
     {
         $fileName = $request->get('fileName');
-        $filePath = public_path('storage/' . env('UPLOADS_DIR') . $fileName);
+        $filePath = public_path('storage/' . config('app.uploads_dir') . $fileName);
         if (file_exists($filePath)) {
             unlink($filePath);
         }
@@ -42,7 +42,7 @@ class FileController extends \App\Http\Controllers\Controller
     {
         $res = $request->get('res');
         $fileName = $request->get('fileName');
-        $filePath = public_path('storage/' . env('UPLOADS_DIR') . $fileName);
+        $filePath = public_path('storage/' . config('app.uploads_dir') . $fileName);
         if (!file_exists($filePath)) {
             return response()->json(['message' => 'File non trovato'], 404);
         }
@@ -63,23 +63,23 @@ class FileController extends \App\Http\Controllers\Controller
         if ($fileExtension == 'jpg' || $fileExtension == 'png' || $fileExtension == 'jpeg' || $fileExtension == 'gif' || $fileExtension == 'webp' || $fileExtension == 'svg') {
             $fileName = str_replace(' ', '_', $fileName);
             $fileName = $fileName . '_' . time() . '.' . $fileExtension;
-            $file->storeAs(env('UPLOADS_DIR'), $fileName, 'public');
+            $file->storeAs(config('app.uploads_dir'), $fileName, 'public');
         }
         if ($fileExtension == 'pdf' || $fileExtension == 'doc' || $fileExtension == 'docx' || $fileExtension == 'odt') {
             $fileName = str_replace(' ', '_', $fileName);
             $fileName = $fileName . '_' . time() . '.' . $fileExtension;
-            $file->storeAs(env('UPLOADS_DIR'), $fileName, 'public');
+            $file->storeAs(config('app.uploads_dir'), $fileName, 'public');
         }
         if ($fileExtension == 'mp4' || $fileExtension == 'webm' || $fileExtension == 'ogv' || $fileExtension == 'mkv') {
             $fileName = str_replace(' ', '_', $fileName);
             $fileName = $fileName . '_' . time() . '.' . $fileExtension;
-            $file->storeAs(env('UPLOADS_DIR'), $fileName, 'public');
+            $file->storeAs(config('app.uploads_dir'), $fileName, 'public');
         }
     }
 
     public function images()
     {
-        $publicPath = public_path('storage/' . env('UPLOADS_DIR'));
+        $publicPath = public_path('storage/' . config('app.uploads_dir'));
         if (File::isDirectory($publicPath)) {
             $files = File::files($publicPath);
             $filteredFiles = collect($files)->filter(function ($file) {
@@ -102,7 +102,7 @@ class FileController extends \App\Http\Controllers\Controller
 
     public function documents()
     {
-        $publicPath = public_path('storage/' . env('UPLOADS_DIR'));
+        $publicPath = public_path('storage/' . config('app.uploads_dir'));
         if (File::isDirectory($publicPath)) {
             $files = File::files($publicPath);
             $filteredFiles = collect($files)->filter(function ($file) {
@@ -125,7 +125,7 @@ class FileController extends \App\Http\Controllers\Controller
 
     public function video()
     {
-        $publicPath = public_path('storage/' . env('UPLOADS_DIR'));
+        $publicPath = public_path('storage/' . config('app.uploads_dir'));
         if (File::isDirectory($publicPath)) {
             $files = File::files($publicPath);
             $filteredFiles = collect($files)->filter(function ($file) {

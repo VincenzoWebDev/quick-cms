@@ -25,7 +25,7 @@ class CheckoutController extends \App\Http\Controllers\Controller
     public function __construct(ShippoService $shippoService)
     {
         $this->themeName = $this->getActiveTheme();
-        Shippo::setApiKey(env('SHIPPO_API_KEY'));
+        Shippo::setApiKey(config('services.shippo.api_key'));
         $this->shippoService = $shippoService;
     }
 

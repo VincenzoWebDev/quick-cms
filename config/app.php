@@ -31,6 +31,10 @@ return [
 
     'env' => env('APP_ENV', 'production'),
 
+    'uploads_dir' => env('UPLOADS_DIR', 'uploads/'),
+    'record_per_page' => env('RECORD_PER_PAGE', 15),
+    'disk' => env('IMG_DISK', 'public'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Debug Mode

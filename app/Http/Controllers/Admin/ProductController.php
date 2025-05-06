@@ -304,8 +304,8 @@ class ProductController extends \App\Http\Controllers\Controller
             if (file_exists($thumbPath)) {
                 unlink($thumbPath);
             }
-            if (empty(Storage::disk(env('IMG_DISK'))->files($folderPathThumb))) {
-                Storage::disk(env('IMG_DISK'))->deleteDirectory($folderPathThumb);
+            if (empty(Storage::disk(config('app.disk'))->files($folderPathThumb))) {
+                Storage::disk(config('app.disk'))->deleteDirectory($folderPathThumb);
             }
         }
     }
@@ -318,8 +318,8 @@ class ProductController extends \App\Http\Controllers\Controller
                 if (file_exists($imagePath)) {
                     unlink($imagePath);
                 }
-                if (empty(Storage::disk(env('IMG_DISK'))->files($folderPathImage))) {
-                    Storage::disk(env('IMG_DISK'))->deleteDirectory($folderPathImage);
+                if (empty(Storage::disk(config('app.disk'))->files($folderPathImage))) {
+                    Storage::disk(config('app.disk'))->deleteDirectory($folderPathImage);
                 }
             }
         }
@@ -337,10 +337,10 @@ class ProductController extends \App\Http\Controllers\Controller
         $productName = str_replace(' ', '_', $product->name);
         $fileName = $productName . '_' . $product->id . '.' . $file->extension();
         $dirProductId = 'product_' . $product->id;
-        $file->storeAs(env('IMG_PRODUCT_THUMB_DIR') . $dirProductId, $fileName, 'public');
-        $filePath = public_path('storage/' . env('IMG_PRODUCT_THUMB_DIR') . $dirProductId . '/' . $fileName);
+        $file->storeAs(config('image.product_thumb_dir') . $dirProductId, $fileName, 'public');
+        $filePath = public_path('storage/' . config('image.product_thumb_dir') . $dirProductId . '/' . $fileName);
         $this->createThumbnail($filePath);
-        $product->image_path = env('IMG_PRODUCT_THUMB_DIR') . $dirProductId . '/' . $fileName;
+        $product->image_path = config('image.product_thumb_dir') . $dirProductId . '/' . $fileName;
         $res = $product->save();
         return $res;
     }
@@ -361,13 +361,13 @@ class ProductController extends \App\Http\Controllers\Controller
                     $productName = str_replace(' ', '_', $product->name);
                     $fileName = $productName . '_' . $product->id . '_' . $count . '_' . time() . '.' . $file->extension();
                     $dirProductId = 'product_' . $product->id;
-                    $file->storeAs(env('IMG_PRODUCT_GALLERY_DIR') . $dirProductId, $fileName, 'public');
-                    $filePath = public_path('storage/' . env('IMG_PRODUCT_GALLERY_DIR') . $dirProductId . '/' . $fileName);
+                    $file->storeAs(config('image.product_gallery_dir') . $dirProductId, $fileName, 'public');
+                    $filePath = public_path('storage/' . config('image.product_gallery_dir') . $dirProductId . '/' . $fileName);
                     $this->createThumbnail($filePath);
 
                     $product_images = new ProductImage();
                     $product_images->product_id = $product->id;
-                    $product_images->image_path = env('IMG_PRODUCT_GALLERY_DIR') . $dirProductId . '/' . $fileName;
+                    $product_images->image_path = config('image.product_gallery_dir') . $dirProductId . '/' . $fileName;
                     $res = $product_images->save();
                     $count++;
                 }
@@ -378,7 +378,7 @@ class ProductController extends \App\Http\Controllers\Controller
 
     public function deleteImage($productImage)
     {
-        $disk = env('IMG_DISK');
+        $disk = config('app.disk');
         if ($productImage->image_path && Storage::disk($disk)->exists($productImage->image_path)) {
             $fileDeleted = Storage::disk($disk)->delete($productImage->image_path);
 

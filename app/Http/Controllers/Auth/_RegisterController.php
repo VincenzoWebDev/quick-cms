@@ -76,7 +76,7 @@ class RegisterController extends Controller
         ]);
         $admin = User::where('role', 'admin')->first();
         if ($admin) {
-            $user->notify(new NewUserNotification($user));
+            $admin->notify(new NewUserNotification($user));
         }
         return $user;
     }

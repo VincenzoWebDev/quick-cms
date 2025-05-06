@@ -19,7 +19,7 @@ class PhotoController extends \App\Http\Controllers\Controller
 
     public function index()
     {
-        $photos = Photo::orderBy('id', 'desc')->paginate(env('IMG_PER_PAGE'));
+        $photos = Photo::orderBy('id', 'desc')->paginate(config('image.img_per_page'));
         return view('admin.images.photos', ["photos" => $photos]);
     }
 
@@ -51,7 +51,7 @@ class PhotoController extends \App\Http\Controllers\Controller
 
     public function deleteFile($photo)
     {
-        $disk = env('IMG_DISK');
+        $disk = config('app.disk');
         if ($photo->img_path && Storage::disk($disk)->exists($photo->img_path) && $photo->thumb_path && Storage::disk($disk)->exists($photo->thumb_path)) {
             $fileDeleted = Storage::disk($disk)->delete($photo->img_path) && Storage::disk($disk)->delete($photo->thumb_path);
 
