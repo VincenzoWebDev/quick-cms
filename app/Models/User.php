@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -50,6 +51,25 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    protected function name(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => ucfirst($value),
+        );
+    }
+    protected function lastname(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => ucfirst($value),
+        );
+    }
+    protected function fullName(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => "{$this->name} {$this->lastname}",
+        );
+    }
+
     public function albums()
     {
         return $this->hasMany(Album::class);
@@ -75,16 +95,16 @@ class User extends Authenticatable
         return $this->role === 'admin';
     }
 
-    public function conversations()
-    {
-        return $this->hasMany(Conversation::class, 'user_id');
-    }
+    // public function conversations()
+    // {
+    //     return $this->hasMany(Conversation::class, 'user_id');
+    // }
 
     // Relazione con le conversazioni assegnate all'admin
-    public function assignedConversations()
-    {
-        return $this->hasMany(Conversation::class, 'admin_id');
-    }
+    // public function assignedConversations()
+    // {
+    //     return $this->hasMany(Conversation::class, 'admin_id');
+    // }
 
     // Relazione con i messaggi inviati dall'utente o admin
     public function messages()

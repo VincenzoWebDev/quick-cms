@@ -24,9 +24,10 @@ class DatabaseSeeder extends Seeder
 
         /* Questi seeder servono per il corretto funzionamento nel cms */
         $this->call([
-            SettingsSeed::class,
-            ThemesSeed::class,
-            UserDemoSeed::class,
+            // SettingsSeed::class,
+            // ThemesSeed::class,
+            // UserDemoSeed::class,
+            // ProductSeeder::class,
         ]);
         /* IMPORTANTE: ESEGUIRE php artisan db:seed dopo aver fatto la configurazione del DB*/
     }

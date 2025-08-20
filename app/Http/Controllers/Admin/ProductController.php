@@ -11,6 +11,7 @@ use App\Models\ProductImage;
 use App\Models\ProductVariant;
 use App\Models\VariantCombination;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -96,6 +97,8 @@ class ProductController extends \App\Http\Controllers\Controller
                 $product->seoMetadata()->create($request->input('seo_metadata'));
             }
         }
+
+        $res ? Cache::tags(['products'])->flush() : null;
 
         $messaggio = $res ? 'Prodotto ID : ' . $product->id . ' - Inserito correttamente' : 'Prodotto ID : ' . $product->id . ' - Non Inserito';
         $tipoMessaggio = $res ? 'success' : 'danger';
@@ -209,6 +212,8 @@ class ProductController extends \App\Http\Controllers\Controller
         }
         $res = $product->save();
 
+        $res ? Cache::tags(['products'])->flush() : null;
+
         $messaggio = $res ? 'Prodotto ID : ' . $product->id . ' - Aggiornato correttamente' : 'Prodotto ID : ' . $product->id . ' - Non aggiornato';
         $tipoMessaggio = $res ? 'success' : 'danger';
         session()->flash('message', ['tipo' => $tipoMessaggio, 'testo' => $messaggio]);
@@ -237,6 +242,7 @@ class ProductController extends \App\Http\Controllers\Controller
         if ($res) {
             $this->deleteThumb($productThumb);
             $this->deleteGallery($productGallery);
+            Cache::tags(['products'])->flush();
         }
     }
 
@@ -267,6 +273,7 @@ class ProductController extends \App\Http\Controllers\Controller
             if ($res) {
                 $this->deleteThumb($productThumb);
                 $this->deleteGallery($productGallery);
+                Cache::tags(['products'])->flush();
             }
         }
     }
