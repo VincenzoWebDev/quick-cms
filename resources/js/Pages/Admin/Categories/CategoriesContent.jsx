@@ -1,17 +1,29 @@
-import { ButtonDelete, ButtonEdit, AlertErrors, CategoryDelete, CategoryDeleteSelected } from "@/components/Admin/Index";
+import { ButtonDelete, ButtonEdit, AlertErrors, CategoryDelete, CategoryDeleteSelected, SectionHeader } from "@/components/Admin/Index";
 import Layout from "@/Layouts/Admin/Layout"
 import { useState, useEffect } from "react"
 import { Link, useForm } from "@inertiajs/react";
-import { BASE_URL } from '@/constants/constants'
 
 const CategoriesContent = ({ categories, flash }) => {
 
     const { delete: formDelete } = useForm();
     const [message, setMessage] = useState(flash.message);
     const [selectedRecords, setSelectedRecords] = useState([]);
-    const [selectAll, setSelectAll] = useState(false);
+    const [, setSelectAll] = useState(false);
     const [selectedParent, setSelectedParent] = useState('');
-    const filteredChildren = categories.find(category => category.id === parseInt(selectedParent))?.children || [];
+    const [parentQuery, setParentQuery] = useState('');
+    const [childQuery, setChildQuery] = useState('');
+    const selectedParentCategory = categories.find(category => category.id === parseInt(selectedParent, 10));
+    const parentCategoryIds = categories.map(category => category.id);
+    const selectedParentChildren = selectedParentCategory?.children || [];
+    const selectedParentChildIds = selectedParentChildren.map(child => child.id);
+    const filteredParentCategories = categories.filter(category =>
+        category.name.toLowerCase().includes(parentQuery.toLowerCase())
+    );
+    const filteredChildren = selectedParentChildren.filter(child =>
+        child.name.toLowerCase().includes(childQuery.toLowerCase())
+    );
+    const isAllParentsChecked = parentCategoryIds.length > 0 && parentCategoryIds.every(id => selectedRecords.includes(id));
+    const isAllChildrenChecked = selectedParentChildIds.length > 0 && selectedParentChildIds.every(id => selectedRecords.includes(id));
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -23,7 +35,7 @@ const CategoriesContent = ({ categories, flash }) => {
 
     const handleCheckboxChange = (e, categoryId) => {
         if (e.target.checked) {
-            setSelectedRecords(prevSelectedRecords => [...prevSelectedRecords, categoryId]);
+            setSelectedRecords(prevSelectedRecords => [...new Set([...prevSelectedRecords, categoryId])]);
         } else {
             setSelectedRecords(prevSelectedRecords => prevSelectedRecords.filter(id => id !== categoryId));
         }
@@ -32,25 +44,23 @@ const CategoriesContent = ({ categories, flash }) => {
     const handleSelectAllCatChange = (e) => {
         const isChecked = e.target.checked;
         setSelectAll(isChecked);
-        const allRecordIds = categories.map(category => category.id);
-        if (isChecked) {
-            setSelectedRecords(allRecordIds);
-        } else {
-            setSelectedRecords([]);
-        }
+        setSelectedRecords(prevSelectedRecords => {
+            if (isChecked) {
+                return [...new Set([...prevSelectedRecords, ...parentCategoryIds])];
+            }
+            return prevSelectedRecords.filter(id => !parentCategoryIds.includes(id));
+        });
     };
 
     const handleSelectAllChildChange = (e) => {
         const isChecked = e.target.checked;
         setSelectAll(isChecked);
-        const allRecordIds = categories.flatMap(category =>
-            category.children.map(child => child.id)
-        );
-        if (isChecked) {
-            setSelectedRecords(allRecordIds);
-        } else {
-            setSelectedRecords([]);
-        }
+        setSelectedRecords(prevSelectedRecords => {
+            if (isChecked) {
+                return [...new Set([...prevSelectedRecords, ...selectedParentChildIds])];
+            }
+            return prevSelectedRecords.filter(id => !selectedParentChildIds.includes(id));
+        });
     };
 
     // funzione per eliminare una categoria
@@ -65,94 +75,178 @@ const CategoriesContent = ({ categories, flash }) => {
 
     return (
         <Layout>
-            <h2>Categorie</h2>
+            <SectionHeader
+                title="Categorie"
+                subtitle="Gestisci categorie principali e sotto-categorie dello shop."
+                primaryAction={
+                    <Link href={route('categories.create')} className="btn cb-primary">
+                        Inserisci una nuova categoria
+                    </Link>
+                }
+                showBulkAction={selectedRecords.length > 0}
+                bulkCount={selectedRecords.length}
+                onBulkAction={handleDeleteSelected}
+            />
             <AlertErrors message={message} />
 
-            <div className="d-grid gap-2 d-md-flex justify-content-md-start">
-                <Link href={route('categories.create')} className="btn cb-primary mb-3">Inserisci una nuova categoria</Link>
-                {selectedRecords && selectedRecords.length > 0 &&
-                    <button className='btn btn-danger mb-3' onClick={handleDeleteSelected}>Elimina selezionati</button>
-                }
-            </div>
-
-            <div className="row">
-                <div className="col-md-6">
-                    <div className="card shadow-2-strong" style={{ backgroundColor: '#f5f7fa', height: '600px', overflow: 'scroll' }}>
+            <div className="row g-4 categories-page">
+                <div className="col-xl-5 col-lg-6">
+                    <div className="card shadow-2-strong categories-scroll-card categories-panel-card">
                         <div className="card-body">
-                            <div className="table-responsive">
-                                <table className="table table-hover mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">
-                                                <div className="form-check d-flex justify-content-center align-items-center">
-                                                    <input className="form-check-input" type="checkbox" value={selectAll}
-                                                        onChange={handleSelectAllCatChange}
-                                                        checked={selectAll} />
-                                                </div>
-                                            </th>
-                                            <th scope="col">Id</th>
-                                            <th scope="col">Categoria padre</th>
-                                            <th scope="col" className="text-center">Operazioni</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            categories.length > 0 ? (
-                                                categories.map(category => (
-                                                    <tr key={category.id} className="align-middle">
-                                                        <th scope="row" className='col-md-2 py-1'>
-                                                            <div className="form-check d-flex justify-content-center align-items-center">
-                                                                <input className="form-check-input" type="checkbox" value={category.id}
-                                                                    onChange={(e) => handleCheckboxChange(e, category.id)}
-                                                                    checked={selectedRecords.includes(category.id)} />
-                                                            </div>
-                                                        </th>
-                                                        <th scope="row" className='col-md-2 py-1'>{category.id}</th>
-                                                        <td scope="row" className='col-md-4 py-1'>{category.name}</td>
-                                                        <td scope="row" className="text-center col-md-4 py-1">
-                                                            <Link href={route('categories.edit', category.id)} className="btn px-2">
-                                                                <ButtonEdit url={BASE_URL} height={25} width={25} />
-                                                            </Link>
-                                                            <form onSubmit={handleDelete} className="d-inline" id={category.id}>
-                                                                <ButtonDelete url={BASE_URL} height={25} width={25} />
-                                                            </form>
-                                                        </td>
-                                                    </tr>
-                                                ))
-                                            ) : (
-                                                <tr>
-                                                    <td colSpan='4' className='text-center'>Non ci sono categorie</td>
-                                                </tr>
-                                            )}
-                                    </tbody>
-                                </table>
+                            <div className="categories-panel-head">
+                                <div>
+                                    <h5>Categorie principali</h5>
+                                    <small>Seleziona una categoria per gestire i figli</small>
+                                </div>
+                                <span className="categories-count-pill">{categories.length}</span>
                             </div>
+
+                            <div className="categories-parent-toolbar">
+                                <div className="form-check">
+                                    <input
+                                        className="form-check-input"
+                                        type="checkbox"
+                                        onChange={handleSelectAllCatChange}
+                                        checked={isAllParentsChecked}
+                                    />
+                                    <label className="form-check-label">Seleziona tutte</label>
+                                </div>
+
+                                <div className="categories-search-box">
+                                    <i className="fa-solid fa-magnifying-glass"></i>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="Cerca categoria padre..."
+                                        value={parentQuery}
+                                        onChange={(e) => setParentQuery(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+
+                            {filteredParentCategories.length > 0 ? (
+                                <div className="categories-parent-list">
+                                    {filteredParentCategories.map(category => (
+                                        <div
+                                            key={category.id}
+                                            className={`categories-parent-item ${selectedParentCategory?.id === category.id ? 'is-active' : ''}`}
+                                        >
+                                            <div className="categories-parent-main">
+                                                <div className="form-check">
+                                                    <input
+                                                        className="form-check-input"
+                                                        type="checkbox"
+                                                        value={category.id}
+                                                        onChange={(e) => handleCheckboxChange(e, category.id)}
+                                                        checked={selectedRecords.includes(category.id)}
+                                                    />
+                                                </div>
+
+                                                <button
+                                                    type="button"
+                                                    className="categories-parent-open"
+                                                    onClick={() => setSelectedParent(String(category.id))}
+                                                >
+                                                    <div className="categories-parent-meta">
+                                                        <strong>{category.name}</strong>
+                                                        <small>ID #{category.id}</small>
+                                                    </div>
+                                                    <span className="categories-child-count">
+                                                        {category.children.length} figli
+                                                    </span>
+                                                </button>
+                                            </div>
+
+                                            <div className="action-buttons">
+                                                <Link href={route('categories.edit', category.id)} className="action-icon-link">
+                                                    <ButtonEdit />
+                                                </Link>
+                                                <form onSubmit={handleDelete} className="d-inline" id={category.id}>
+                                                    <ButtonDelete />
+                                                </form>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className='categories-empty-state categories-empty-state-compact'>
+                                    <i className="fa-regular fa-folder-open"></i>
+                                    <span>Nessuna categoria trovata</span>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
 
-                <div className="col-md-6">
-                    <div className="card shadow-2-strong" style={{ backgroundColor: '#f5f7fa', height: '600px', overflow: 'scroll' }}>
+                <div className="col-xl-7 col-lg-6">
+                    <div className="card shadow-2-strong categories-scroll-card categories-panel-card">
                         <div className="card-body">
-                            <select name="cat" id="cat" className="form-select mb-3" value={selectedParent}
-                                onChange={(e) => {
-                                    setSelectedParent(e.target.value);
-                                }}>
-                                <option value=''>Seleziona una categoria</option>
-                                {categories.map(category => (
-                                    <option key={category.id} value={category.id}>{category.name}</option>
-                                ))}
-                            </select>
-                            {filteredChildren.length > 0 ? (
-                                <div className="table-responsive">
-                                    <table className="table table-hover mb-0">
+                            <div className="categories-panel-head">
+                                <div>
+                                    <h5>Sotto-categorie</h5>
+                                    <small>Gestione dettagliata delle categorie figlie</small>
+                                </div>
+                                <span className="categories-count-pill">{filteredChildren.length}</span>
+                            </div>
+
+                            <div className="categories-filter-wrap">
+                                <label htmlFor="cat" className="form-label mb-1">Categoria padre</label>
+                                <select name="cat" id="cat" className="form-select" value={selectedParent}
+                                    onChange={(e) => {
+                                        setSelectedParent(e.target.value);
+                                    }}>
+                                    <option value=''>Seleziona una categoria</option>
+                                    {categories.map(category => (
+                                        <option key={category.id} value={category.id}>{category.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {selectedParentCategory && (
+                                <div className="categories-selected-parent">
+                                    <span>Categoria selezionata:</span>
+                                    <strong>{selectedParentCategory.name}</strong>
+                                </div>
+                            )}
+
+                            {selectedParentCategory && (
+                                <div className="categories-child-toolbar">
+                                    <div className="form-check">
+                                        <input
+                                            className="form-check-input"
+                                            type="checkbox"
+                                            onChange={handleSelectAllChildChange}
+                                            checked={isAllChildrenChecked}
+                                        />
+                                        <label className="form-check-label">Seleziona tutti i figli</label>
+                                    </div>
+
+                                    <div className="categories-search-box">
+                                        <i className="fa-solid fa-magnifying-glass"></i>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            placeholder="Cerca sotto-categoria..."
+                                            value={childQuery}
+                                            onChange={(e) => setChildQuery(e.target.value)}
+                                        />
+                                    </div>
+                                </div>
+                            )}
+
+                            {selectedParentCategory && filteredChildren.length > 0 ? (
+                                <div className="table-responsive admin-table-shell">
+                                    <table className="table table-hover mb-0 admin-table">
                                         <thead>
                                             <tr>
                                                 <th scope="col">
                                                     <div className="form-check d-flex justify-content-center align-items-center">
-                                                        <input className="form-check-input" type="checkbox" value={selectAll}
+                                                        <input
+                                                            className="form-check-input"
+                                                            type="checkbox"
                                                             onChange={handleSelectAllChildChange}
-                                                            checked={selectAll} />
+                                                            checked={isAllChildrenChecked}
+                                                        />
                                                     </div>
                                                 </th>
                                                 <th scope="col">Id</th>
@@ -173,12 +267,14 @@ const CategoriesContent = ({ categories, flash }) => {
                                                     <th scope="row" className='col-md-2 py-1'>{child.id}</th>
                                                     <td scope="row" className='col-md-4 py-1'>{child.name}</td>
                                                     <td scope="row" className="text-center col-md-4 py-1">
-                                                        <Link href={route('categories.edit', child.id)} className="btn px-2">
-                                                            <ButtonEdit url={BASE_URL} height={25} width={25} />
-                                                        </Link>
-                                                        <form onSubmit={handleDelete} className="d-inline" id={child.id}>
-                                                            <ButtonDelete url={BASE_URL} height={25} width={25} />
-                                                        </form>
+                                                        <div className="action-buttons justify-content-center">
+                                                            <Link href={route('categories.edit', child.id)} className="action-icon-link">
+                                                                <ButtonEdit />
+                                                            </Link>
+                                                            <form onSubmit={handleDelete} className="d-inline" id={child.id}>
+                                                                <ButtonDelete />
+                                                            </form>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             ))}
@@ -186,8 +282,11 @@ const CategoriesContent = ({ categories, flash }) => {
                                     </table>
                                 </div>
                             ) : (
-                                <div className='d-flex justify-content-center align-items-center' style={{ height: '50vh' }}>
-                                    <span className='text-center'>Nessuna categoria figlio</span>
+                                <div className='categories-empty-state'>
+                                    <i className="fa-regular fa-folder-open"></i>
+                                    {!selectedParentCategory && <span>Seleziona una categoria padre</span>}
+                                    {selectedParentCategory && <span>Nessuna sotto-categoria disponibile</span>}
+                                    {!selectedParentCategory && <small>Scegli una categoria dalla colonna sinistra per iniziare</small>}
                                 </div>
                             )}
                         </div>

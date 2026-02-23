@@ -8,6 +8,7 @@ import {
   SearchAndPerPageSelector,
   ProductRow,
   Pagination,
+  SectionHeader,
 } from '@/components/Admin/Index';
 import { useFilterHandlers } from '@/hooks/admin/useFilterHandlers';
 import showSeoToast from '@/components/Admin/Products/showSeoToast';
@@ -94,20 +95,20 @@ const ProductsContent = ({ products, flash, sortBy, sortDirection, perPage, sort
 
   return (
     <Layout>
-      <h2>Gestione prodotti</h2>
+      <SectionHeader
+        title="Gestione prodotti"
+        subtitle="Controlla catalogo, prezzo, stock e categorie dei prodotti."
+        primaryAction={
+          <Link href={route('products.create')} className="btn cb-primary">
+            Inserisci un nuovo prodotto
+          </Link>
+        }
+        showBulkAction={selectedRecords.length > 0}
+        bulkCount={selectedRecords.length}
+        onBulkAction={handleDeleteSelected}
+      />
 
-      <div className="d-grid gap-2 d-md-flex justify-content-md-start">
-        <Link href={route('products.create')} className="btn cb-primary mb-3">
-          Inserisci un nuovo prodotto
-        </Link>
-        {selectedRecords && selectedRecords.length > 0 && (
-          <button className="btn btn-danger mb-3" onClick={handleDeleteSelected}>
-            Elimina selezionati
-          </button>
-        )}
-      </div>
-
-      <div className="card shadow-2-strong" style={{ backgroundColor: '#f5f7fa' }}>
+      <div className="card shadow-2-strong">
         <div className="card-body">
           <SearchAndPerPageSelector
             currentPerPage={currentPerPage}
@@ -116,8 +117,8 @@ const ProductsContent = ({ products, flash, sortBy, sortDirection, perPage, sort
             searchQuery={searchQuery}
             handleSearchChange={handleSearchChange}
           />
-          <div className="table-responsive">
-            <table className="table table-hover mb-0">
+          <div className="table-responsive admin-table-shell">
+            <table className="table table-hover mb-0 admin-table">
               <thead>
                 <tr>
                   <th scope="col">

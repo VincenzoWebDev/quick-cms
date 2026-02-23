@@ -1,5 +1,6 @@
 import { Link, useForm } from "@inertiajs/react";
 import InputErrors from "@/components/Admin/InputErrors";
+import ImageFileField from "@/components/Admin/Inputs/ImageFileField";
 import Layout from "@/Layouts/Admin/Layout";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
@@ -117,18 +118,12 @@ const UserCreate = ({ flash }) => {
                             </select>
                         </div>
 
-                        <div className="mb-3">
-                            <label htmlFor="profile_img">
-                                Immagine di profilo
-                            </label>
-                            <input
-                                type="file"
-                                name="profile_img"
-                                id="profile_img"
-                                className="form-control"
-                                onChange={handleFileChange}
-                            />
-                        </div>
+                        <ImageFileField
+                            id="profile_img"
+                            name="profile_img"
+                            label="Immagine di profilo"
+                            onChange={handleFileChange}
+                        />
 
                         <div className="mb-3">
                             <button

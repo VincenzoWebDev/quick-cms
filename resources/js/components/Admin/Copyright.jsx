@@ -1,56 +1,42 @@
-import { useState } from 'react';
+import { Link } from '@inertiajs/react';
 
 const getDate = () => {
-    const today = new Date();
-    const year = today.getFullYear();
-    return `${year}`;
-}
+  const today = new Date();
+  return `${today.getFullYear()}`;
+};
 
 const Copyright = () => {
-    const [currentDate, setCurrentDate] = useState(getDate());
+  const currentDate = getDate();
 
+  return (
+    <footer className="footer">
+      <div className="container-fluid">
+        <div className="row align-items-center">
+          <div className="col-md-6">
+            <nav>
+              <ul className="m-0 p-0">
+                <li>
+                  <Link href={route('admin')}>Dashboard</Link>
+                </li>
+                <li>
+                  <Link href={route('settings.index')}>Impostazioni</Link>
+                </li>
+                <li>
+                  <Link href={route('admin.profile')}>Profilo</Link>
+                </li>
+              </ul>
+            </nav>
+          </div>
 
-    return (
-        <footer className="footer">
-            <div className="container-fluid">
-                <div className="row align-items-center">
-                    <div className="col-md-6">
-                        <nav className="d-flex">
-                            <ul className="m-0 p-0">
-                                <li>
-                                    <a href="#">
-                                        Home
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        Company
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        Portfolio
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        Blog
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
+          <div className="col-md-6">
+            <p className="copyright d-flex justify-content-md-end justify-content-start mb-0">
+              &copy; {currentDate} Quick CMS Admin
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+};
 
-                    </div>
-                    <div className="col-md-6">
-                        <p className="copyright d-flex justify-content-end"> &copy; {currentDate} Design & Develop by
-                            <a href="https://www.instagram.com/vincenzo.web.dev/" target='_blank'>&nbsp;Vincenzo Web Dev&nbsp;</a>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </footer>
-
-    )
-}
-
-export default Copyright
+export default Copyright;

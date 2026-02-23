@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "@inertiajs/react";
-import { BASE_URL, STORAGE_URL } from "@/constants/constants";
+import { STORAGE_URL } from "@/constants/constants";
 import { ButtonDelete, ButtonEdit } from "@/components/Admin/Index";
 
 const UserRow = React.memo(({ user, selectedRecords, handleCheckboxChange, handleDelete }) => {
@@ -16,7 +16,7 @@ const UserRow = React.memo(({ user, selectedRecords, handleCheckboxChange, handl
             <th scope="row" className='col-md-1'>{user.id}</th>
             <td className='col-md-1'>
                 <img src={STORAGE_URL + user.profile_img} alt={user.name} title={user.name} className="img-fluid rounded-circle object-fit-cover"
-                    style={{ width: '40px', height: '40px', border: '1px solid #ff0000' }} loading="lazy" />
+                    style={{ width: '40px', height: '40px' }} loading="lazy" />
             </td>
             <td className='col-md-2'>{user.name}</td>
             <td className='col-md-2'>{user.email}</td>
@@ -24,12 +24,14 @@ const UserRow = React.memo(({ user, selectedRecords, handleCheckboxChange, handl
             <td className='col-md-1'>{new Date(user.created_at).toLocaleDateString()}</td>
             <td className='col-md-1'>{new Date(user.updated_at).toLocaleDateString()}</td>
             <td className='col-md-2 text-center'>
-                <Link href={route('users.edit', user.id)} className="btn">
-                    <ButtonEdit url={BASE_URL} />
+                <div className="action-buttons">
+                <Link href={route('users.edit', user.id)} className="action-icon-link">
+                    <ButtonEdit />
                 </Link>
                 <form onSubmit={handleDelete} className='d-inline' id={user.id}>
-                    <ButtonDelete url={BASE_URL} />
+                    <ButtonDelete />
                 </form>
+                </div>
             </td>
         </tr>
     );

@@ -1,4 +1,6 @@
 
+import ImageFileField from '@/components/Admin/Inputs/ImageFileField';
+
 const PhotoFileUpload = ({ handleFileChange }) => {
     const handleChange = (e) => {
         if (e.target.files.length == 1) {
@@ -13,12 +15,14 @@ const PhotoFileUpload = ({ handleFileChange }) => {
     }
 
     return (
-        <>
-            <div className="mb-3">
-                <label htmlFor="img_path">Immagine</label>
-                <input type="file" name="img_path" id="img_path" className="form-control w-50" onChange={handleChange} multiple />
-            </div>
-        </>
+        <ImageFileField
+            id="img_path"
+            name="img_path"
+            label="Immagini"
+            onChange={handleChange}
+            multiple
+            hint="Puoi selezionare uno o più file"
+        />
     )
 }
 

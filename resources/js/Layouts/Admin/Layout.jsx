@@ -16,35 +16,34 @@ const Layout = ({ children }) => {
   const respCollapsed = useSelector((state) => state.respCollapsed.respCollapsed);
   const collapsed = useSelector((state) => state.collapsed.collapsed);
   const darkTheme = useSelector((state) => state.darkTheme.darkTheme);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const [isLoading, setIsLoading] = useState(false); // Stato per il caricamento
-
-  // Gestione del caricamento con Inertia
   useEffect(() => {
     const start = (event) => {
-      // Mostra lo skeleton solo per una navigazione completa, non per le richieste parziali (ad es. ricerche AJAX)
       if (!event.detail.visit.preserveState) {
         setIsLoading(true);
       }
     };
+
     const finish = () => setIsLoading(false);
 
-    Inertia.on('start', start);
-    Inertia.on('finish', finish);
+    const removeStart = Inertia.on('start', start);
+    const removeFinish = Inertia.on('finish', finish);
 
-    // Cleanup event listeners su unmount
     return () => {
-      Inertia.on('start', start);
-      Inertia.on('finish', finish);
+      if (typeof removeStart === 'function') {
+        removeStart();
+      }
+      if (typeof removeFinish === 'function') {
+        removeFinish();
+      }
     };
   }, []);
 
-  // Memorizzazione di 'collapsed' in localStorage
   useEffect(() => {
     localStorage.setItem('collapsed', collapsed);
   }, [collapsed]);
 
-  // Gestione del tema dark
   useEffect(() => {
     if (darkTheme) {
       document.documentElement.setAttribute('data-theme', 'dark');
@@ -55,38 +54,37 @@ const Layout = ({ children }) => {
     }
   }, [darkTheme]);
 
-  // Animazione personalizzata
-  useEffect(() => {
-    const mainContent = document.querySelector('.main-content');
-    if (mainContent) {
-      mainContent.style.setProperty('--animate-duration', '0.5s');
-    }
-  }, []);
-
   return (
     <>
       <HeaderTitle />
-      <div className="wrapper">
+      <div className="wrapper admin-shell">
         {demo_mode == 1 && <DemoModeBanner />}
+
         <div
           className={`body-overlay ${respCollapsed ? 'show-nav' : ''}`}
           onClick={() => dispatch(setRespCollapsed(!respCollapsed))}
         ></div>
+
         <Sidebar />
+
         <div id="content" className={collapsed ? 'active' : ''}>
           <Topbar />
 
-          {/* Mostra lo Skeleton durante il caricamento */}
           {isLoading ? (
             <div className="main-content">
               <Skeleton />
             </div>
           ) : (
             <div className="main-content animate__animated animate__fadeIn">
-              <ToastContainer style={{ marginTop: `${demo_mode == 1 ? '90px' : '60px'}` }} />
+              <ToastContainer
+                position="top-right"
+                className="admin-toast-container"
+                style={{ top: `${demo_mode == 1 ? '90px' : '64px'}`, right: '14px' }}
+              />
               {children}
             </div>
           )}
+
           <Copyright />
         </div>
       </div>

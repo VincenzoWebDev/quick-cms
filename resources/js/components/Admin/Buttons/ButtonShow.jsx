@@ -1,9 +1,8 @@
-const ButtonShow = ({ url }) => {
+const ButtonShow = () => {
   return (
-    <div className="over-icon">
-      <img src={`${url}img/icons/view.png`} alt="view" className="original" />
-      <img src={`${url}img/icons/view-over.png`} alt="view" className="overized" />
-    </div>
+    <span className="action-icon action-show" aria-label="Visualizza">
+      <i className="fa-regular fa-eye"></i>
+    </span>
   );
 };
 

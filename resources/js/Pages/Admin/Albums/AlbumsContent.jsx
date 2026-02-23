@@ -1,8 +1,15 @@
 import { useState, useEffect } from 'react';
 import { Link, useForm } from '@inertiajs/react';
 import Layout from '@/Layouts/Admin/Layout';
-import { ButtonDelete, ButtonEdit, Pagination, AlbumDelete, AlbumDeleteSelected } from '@/components/Admin/Index';
-import { STORAGE_URL, BASE_URL } from '@/constants/constants';
+import {
+  ButtonDelete,
+  ButtonEdit,
+  Pagination,
+  AlbumDelete,
+  AlbumDeleteSelected,
+  SectionHeader,
+} from '@/components/Admin/Index';
+import { STORAGE_URL } from '@/constants/constants';
 import { toast } from 'react-toastify';
 
 const AlbumsContent = ({ albums, flash }) => {
@@ -49,23 +56,23 @@ const AlbumsContent = ({ albums, flash }) => {
 
   return (
     <Layout>
-      <h2>Lista albums</h2>
+      <SectionHeader
+        title="Gestione album"
+        subtitle="Organizza raccolte, categorie e copertine della tua galleria."
+        primaryAction={
+          <Link href={route('albums.create')} className="btn cb-primary">
+            Inserisci nuovo album
+          </Link>
+        }
+        showBulkAction={selectedRecords.length > 0}
+        bulkCount={selectedRecords.length}
+        onBulkAction={handleDeleteSelected}
+      />
 
-      <div className="d-grid gap-2 d-md-flex justify-content-md-start">
-        <Link href={route('albums.create')} className="btn cb-primary mb-3">
-          Inserisci nuovo album
-        </Link>
-        {selectedRecords && selectedRecords.length > 0 && (
-          <button className="btn btn-danger mb-3" onClick={handleDeleteSelected}>
-            Elimina selezionati
-          </button>
-        )}
-      </div>
-
-      <div className="card shadow-2-strong" style={{ backgroundColor: '#f5f7fa' }}>
+      <div className="card shadow-2-strong">
         <div className="card-body">
-          <div className="table-responsive">
-            <table className="table table-hover mb-0">
+          <div className="table-responsive admin-table-shell">
+            <table className="table table-hover mb-0 admin-table">
               <thead>
                 <tr>
                   <th scope="col">
@@ -124,12 +131,14 @@ const AlbumsContent = ({ albums, flash }) => {
                         <img src={STORAGE_URL + album.album_thumb} width="120" alt={album.album_name} loading="lazy" />
                       </td>
                       <td scope="row" className="text-center col-md-2">
-                        <Link href={route('albums.edit', album.id)} className="btn px-2">
-                          <ButtonEdit url={BASE_URL} />
-                        </Link>
-                        <form onSubmit={handleDelete} className="d-inline" id={album.id}>
-                          <ButtonDelete url={BASE_URL} />
-                        </form>
+                        <div className="action-buttons justify-content-center">
+                          <Link href={route('albums.edit', album.id)} className="action-icon-link">
+                            <ButtonEdit />
+                          </Link>
+                          <form onSubmit={handleDelete} className="d-inline" id={album.id}>
+                            <ButtonDelete />
+                          </form>
+                        </div>
                       </td>
                     </tr>
                   ))

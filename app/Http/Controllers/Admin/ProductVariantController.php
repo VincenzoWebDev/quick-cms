@@ -19,11 +19,6 @@ class ProductVariantController extends \App\Http\Controllers\Controller
         ]);
     }
 
-    public function create()
-    {
-        return Inertia::render('Admin/Settings/ProductVariants/Create');
-    }
-
     public function store(Request $request)
     {
         $request->validate([
@@ -43,13 +38,6 @@ class ProductVariantController extends \App\Http\Controllers\Controller
         session()->flash('message', ['tipo' => $tipoMessaggio, 'testo' => $messaggio]);
 
         return redirect()->route('settings.variants.index');
-    }
-
-    public function edit(ProductVariant $variant)
-    {
-        return Inertia::render('Admin/Settings/ProductVariants/Edit', [
-            'variant' => $variant,
-        ]);
     }
 
     public function update(Request $request, ProductVariant $variant)

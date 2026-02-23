@@ -1,10 +1,7 @@
 import { useEffect } from 'react';
-import GuestLayout from '@/Layouts/GuestLayout';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
 import { Head, useForm } from '@inertiajs/react';
+import AuthLayout from '@/Layouts/AuthLayout';
+import InputErrors from '@/components/Admin/InputErrors';
 
 export default function ConfirmPassword() {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -24,36 +21,36 @@ export default function ConfirmPassword() {
     };
 
     return (
-        <GuestLayout>
+        <AuthLayout
+            title="Conferma identita"
+            subtitle="Per accedere a quest'area protetta devi confermare la tua password."
+            icon="fa-lock"
+        >
             <Head title="Confirm Password" />
 
-            <div className="mb-4 text-sm text-gray-600">
-                This is a secure area of the application. Please confirm your password before continuing.
-            </div>
+            <InputErrors errors={errors} />
 
-            <form onSubmit={submit}>
-                <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
-
-                    <TextInput
+            <form onSubmit={submit} className="auth-form-grid">
+                <div>
+                    <label htmlFor="password" className="form-label">Password</label>
+                    <input
                         id="password"
                         type="password"
                         name="password"
                         value={data.password}
-                        className="mt-1 block w-full"
-                        isFocused={true}
+                        className="form-control"
                         onChange={(e) => setData('password', e.target.value)}
+                        required
+                        autoFocus
+                        autoComplete="current-password"
+                        placeholder="Inserisci password"
                     />
-
-                    <InputError message={errors.password} className="mt-2" />
                 </div>
 
-                <div className="flex items-center justify-end mt-4">
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Confirm
-                    </PrimaryButton>
-                </div>
+                <button className="btn cb-primary auth-submit-btn" disabled={processing}>
+                    Conferma password
+                </button>
             </form>
-        </GuestLayout>
+        </AuthLayout>
     );
 }

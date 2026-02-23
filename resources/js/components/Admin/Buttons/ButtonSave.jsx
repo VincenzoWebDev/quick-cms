@@ -1,9 +1,8 @@
-const ButtonSave = ({ url }) => {
+const ButtonSave = () => {
   return (
-    <div className="over-icon">
-      <img src={`${url}img/icons/download.png`} alt="save" className="original" />
-      <img src={`${url}img/icons/download-over.png`} alt="save" className="overized" />
-    </div>
+    <span className="action-icon action-save" aria-label="Salva">
+      <i className="fa-solid fa-check"></i>
+    </span>
   );
 };
 

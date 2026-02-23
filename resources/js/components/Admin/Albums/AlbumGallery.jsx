@@ -93,7 +93,7 @@ const AlbumGallery = ({ photos }) => {
                                     </a>
                                     <div className="card-body p-2 d-flex justify-content-between align-items-center">
                                         <div className="form-check d-flex justify-content-center align-items-center">
-                                            <input className="form-check-input" type="checkbox" value={photo.id} style={{ borderColor: '#aaa' }}
+                                            <input className="form-check-input" type="checkbox" value={photo.id}
                                                 onChange={(e) => handleCheckboxChange(e, photo.id)}
                                                 checked={selectedRecords.includes(photo.id)} />
                                         </div>

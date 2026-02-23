@@ -1,8 +1,7 @@
 import Layout from '@/Layouts/Admin/Layout';
-import { ButtonDelete, ButtonEdit } from '@/components/Admin/Index';
+import { ButtonDelete, ButtonEdit, SectionHeader } from '@/components/Admin/Index';
 import { useEffect } from 'react';
 import { Link, useForm, router } from '@inertiajs/react';
-import { BASE_URL } from '@/constants/constants';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { toast } from 'react-toastify';
@@ -67,18 +66,20 @@ const SettingsContent = ({ settings, flash }) => {
 
   return (
     <Layout>
-      <h2>Gestione Impostazioni</h2>
+      <SectionHeader
+        title="Gestione impostazioni"
+        subtitle="Controlla opzioni globali e flag di configurazione del pannello."
+        primaryAction={
+          <Link href={route('settings.create')} className="btn cb-primary">
+            Inserisci nuova impostazione
+          </Link>
+        }
+      />
 
-      <div className="d-grid gap-2 d-md-flex">
-        <Link href={route('settings.create')} className="btn cb-primary mb-3">
-          Inserisci nuova impostazione
-        </Link>
-      </div>
-
-      <div className="card shadow-2-strong" style={{ backgroundColor: '#f5f7fa' }}>
+      <div className="card shadow-2-strong">
         <div className="card-body">
-          <div className="table-responsive">
-            <table className="table table-hover mb-0">
+          <div className="table-responsive admin-table-shell">
+            <table className="table table-hover mb-0 admin-table">
               <thead>
                 <tr>
                   <th scope="col" className="text-center">
@@ -109,10 +110,6 @@ const SettingsContent = ({ settings, flash }) => {
                               type="checkbox"
                               role="switch"
                               id={`flexSwitchCheckDefault${setting.id}`}
-                              style={{
-                                width: '40px',
-                                height: '20px',
-                              }}
                               data-setting-id={setting.id}
                               checked={setting.value === '0' ? false : true}
                               onChange={handleSwitchChange}
@@ -125,12 +122,14 @@ const SettingsContent = ({ settings, flash }) => {
                         </td>
                       )}
                       <td scope="row" className="text-center col-md-3">
-                        <Link href={route('settings.edit', setting.id)} className="btn px-2">
-                          <ButtonEdit url={BASE_URL} />
-                        </Link>
-                        <form onSubmit={handleDelete} className="d-inline" id={setting.id}>
-                          <ButtonDelete url={BASE_URL} />
-                        </form>
+                        <div className="action-buttons justify-content-center">
+                          <Link href={route('settings.edit', setting.id)} className="action-icon-link">
+                            <ButtonEdit />
+                          </Link>
+                          <form onSubmit={handleDelete} className="d-inline" id={setting.id}>
+                            <ButtonDelete />
+                          </form>
+                        </div>
                       </td>
                     </tr>
                   ))

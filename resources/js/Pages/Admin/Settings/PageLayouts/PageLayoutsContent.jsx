@@ -1,11 +1,18 @@
-import { ButtonDelete, ButtonEdit } from '@/components/Admin/Index';
-import { BASE_URL } from '@/constants/constants';
+import { ButtonDelete, SectionHeader } from '@/components/Admin/Index';
+import AdminDialog from '@/components/Admin/Modals/AdminDialog';
 import Layout from '@/Layouts/Admin/Layout';
-import { Link, router } from '@inertiajs/react';
-import { useEffect } from 'react';
+import { router } from '@inertiajs/react';
+import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 
 const PageLayoutsContent = ({ pageLayouts, flash }) => {
+  const [search, setSearch] = useState('');
+  const [modal, setModal] = useState({ type: null, payload: null });
+  const [modalErrors, setModalErrors] = useState({});
+  const [modalProcessing, setModalProcessing] = useState(false);
+  const [createData, setCreateData] = useState({ name: '' });
+  const [editData, setEditData] = useState({ name: '' });
+
   useEffect(() => {
     if (flash?.message) {
       if (flash.message.tipo === 'success') {
@@ -16,41 +23,112 @@ const PageLayoutsContent = ({ pageLayouts, flash }) => {
     }
   }, [flash]);
 
-  const handleDelete = (e) => {
+  const filteredLayouts = useMemo(() => {
+    return pageLayouts.filter((layout) => layout.name.toLowerCase().includes(search.toLowerCase()));
+  }, [pageLayouts, search]);
+
+  const openModal = (type, payload = null) => {
+    setModalErrors({});
+    setModalProcessing(false);
+    setModal({ type, payload });
+  };
+
+  const closeModal = () => {
+    setModal({ type: null, payload: null });
+    setModalErrors({});
+    setModalProcessing(false);
+  };
+
+  const openCreateModal = () => {
+    setCreateData({ name: '' });
+    openModal('create');
+  };
+
+  const openEditModal = (layout) => {
+    setEditData({ name: layout.name || '' });
+    openModal('edit', layout);
+  };
+
+  const openDeleteModal = (layout) => {
+    openModal('delete', layout);
+  };
+
+  const submitCreate = (e) => {
     e.preventDefault();
-    const layoutName = e.target.dataset.name;
-    const layoutId = e.target.id;
-    router.delete(route('settings.layouts.destroy', layoutId), {
-      onSuccess: () => {
-        toast.success(`Layout: ${layoutName} eliminato correttamente`);
+    setModalProcessing(true);
+    setModalErrors({});
+
+    router.post(route('settings.layouts.store'), createData, {
+      preserveScroll: true,
+      onError: (errors) => setModalErrors(errors || {}),
+      onFinish: () => setModalProcessing(false),
+      onSuccess: () => closeModal(),
+    });
+  };
+
+  const submitEdit = (e) => {
+    e.preventDefault();
+    if (!modal.payload) return;
+
+    setModalProcessing(true);
+    setModalErrors({});
+
+    router.post(
+      route('settings.layouts.update', modal.payload.id),
+      {
+        ...editData,
+        _method: 'patch',
       },
-      onError: () => {
-        toast.error(`Errore durante l'eliminazione del layout: ${layoutName}`);
-      },
+      {
+        preserveScroll: true,
+        onError: (errors) => setModalErrors(errors || {}),
+        onFinish: () => setModalProcessing(false),
+        onSuccess: () => closeModal(),
+      }
+    );
+  };
+
+  const submitDelete = () => {
+    if (!modal.payload) return;
+
+    setModalProcessing(true);
+    router.delete(route('settings.layouts.destroy', modal.payload.id), {
+      preserveScroll: true,
+      onFinish: () => setModalProcessing(false),
+      onSuccess: () => closeModal(),
+      onError: () => toast.error(`Errore durante l'eliminazione del layout: ${modal.payload?.name}`),
     });
   };
 
   return (
     <Layout>
-      <h2>Gestione layout pagine</h2>
+      <SectionHeader
+        title="Gestione layout pagine"
+        subtitle="Definisci template e strutture disponibili per le pagine."
+        primaryAction={
+          <button type="button" className="btn cb-primary" onClick={openCreateModal}>
+            Inserisci un nuovo layout
+          </button>
+        }
+      />
 
-      <div className="d-grid gap-2 d-md-flex justify-content-md-start">
-        <Link href={route('settings.layouts.create')} className="btn cb-primary mb-3">
-          Inserisci un nuovo layout
-        </Link>
-      </div>
-
-      <div className="card shadow-2-strong" style={{ backgroundColor: '#f5f7fa' }}>
+      <div className="card shadow-2-strong">
         <div className="card-body">
-          <div className="table-responsive">
-            <table className="table table-hover mb-0">
+          <div className="variants-search mb-3">
+            <i className="fa-solid fa-magnifying-glass"></i>
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Cerca layout..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+
+          <div className="table-responsive admin-table-shell">
+            <table className="table table-hover mb-0 admin-table">
               <thead>
                 <tr>
-                  <th scope="col">
-                    <div className="form-check d-flex justify-content-center align-items-center">
-                      <input className="form-check-input" type="checkbox" />
-                    </div>
-                  </th>
                   <th scope="col">Id</th>
                   <th scope="col">Nome layout</th>
                   <th scope="col" className="text-center">
@@ -59,33 +137,24 @@ const PageLayoutsContent = ({ pageLayouts, flash }) => {
                 </tr>
               </thead>
               <tbody>
-                {pageLayouts.length > 0 ? (
-                  pageLayouts.map((layout) => (
+                {filteredLayouts.length > 0 ? (
+                  filteredLayouts.map((layout) => (
                     <tr key={layout.id} className="align-middle">
-                      <th scope="row" className="col-auto">
-                        <div className="form-check d-flex justify-content-center align-items-center">
-                          <input className="form-check-input" type="checkbox" />
+                      <td>{layout.id}</td>
+                      <td>{layout.name}</td>
+                      <td className="text-center">
+                        <div className="action-buttons justify-content-center">
+                          <button type="button" className="action-icon-btn action-edit" onClick={() => openEditModal(layout)}>
+                            <i className="fa-solid fa-pen"></i>
+                          </button>
+                          <ButtonDelete type="button" onClick={() => openDeleteModal(layout)} />
                         </div>
-                      </th>
-                      <td scope="row" className="col-auto ">
-                        {layout.id}
-                      </td>
-                      <td scope="row" className="col-auto">
-                        {layout.name}
-                      </td>
-                      <td scope="row" className="col-auto text-center">
-                        <Link href={route('settings.layouts.edit', layout.id)} className="btn px-2">
-                          <ButtonEdit url={BASE_URL} />
-                        </Link>
-                        <form onSubmit={handleDelete} className="d-inline" id={layout.id} data-name={layout.name}>
-                          <ButtonDelete url={BASE_URL} />
-                        </form>
                       </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="7" className="text-center">
+                    <td colSpan="3" className="text-center">
                       Non ci sono layout
                     </td>
                   </tr>
@@ -95,6 +164,100 @@ const PageLayoutsContent = ({ pageLayouts, flash }) => {
           </div>
         </div>
       </div>
+
+      <AdminDialog
+        isOpen={modal.type === 'create'}
+        onClose={closeModal}
+        title="Nuovo Layout"
+        subtitle="Crea un nuovo layout pagina."
+        icon="fa-layer-group"
+        footer={
+          <div className="variants-form-actions">
+            <button type="submit" form="create-layout-form" className="btn cb-primary" disabled={modalProcessing}>
+              {modalProcessing ? 'Salvataggio...' : 'Salva Layout'}
+            </button>
+            <button type="button" className="btn btn-outline-secondary" onClick={closeModal}>
+              Annulla
+            </button>
+          </div>
+        }
+      >
+        <form id="create-layout-form" onSubmit={submitCreate} className="variants-form-grid">
+          <div>
+            <label htmlFor="layout_create_name" className="form-label">
+              Nome layout
+            </label>
+            <input
+              id="layout_create_name"
+              type="text"
+              className="form-control"
+              placeholder="Es. Landing, Full width, Sidebar"
+              value={createData.name}
+              onChange={(e) => setCreateData({ name: e.target.value })}
+              required
+            />
+            {modalErrors.name && <small className="text-danger">{modalErrors.name}</small>}
+          </div>
+        </form>
+      </AdminDialog>
+
+      <AdminDialog
+        isOpen={modal.type === 'edit'}
+        onClose={closeModal}
+        title="Modifica Layout"
+        subtitle={modal.payload ? `Stai modificando: ${modal.payload.name}` : 'Aggiorna nome layout'}
+        icon="fa-pen-to-square"
+        footer={
+          <div className="variants-form-actions">
+            <button type="submit" form="edit-layout-form" className="btn cb-primary" disabled={modalProcessing}>
+              {modalProcessing ? 'Aggiornamento...' : 'Aggiorna Layout'}
+            </button>
+            <button type="button" className="btn btn-outline-secondary" onClick={closeModal}>
+              Annulla
+            </button>
+          </div>
+        }
+      >
+        <form id="edit-layout-form" onSubmit={submitEdit} className="variants-form-grid">
+          <div>
+            <label htmlFor="layout_edit_name" className="form-label">
+              Nome layout
+            </label>
+            <input
+              id="layout_edit_name"
+              type="text"
+              className="form-control"
+              value={editData.name}
+              onChange={(e) => setEditData({ name: e.target.value })}
+              required
+            />
+            {modalErrors.name && <small className="text-danger">{modalErrors.name}</small>}
+          </div>
+        </form>
+      </AdminDialog>
+
+      <AdminDialog
+        isOpen={modal.type === 'delete'}
+        onClose={closeModal}
+        title="Elimina Layout"
+        subtitle="Questa azione non può essere annullata."
+        icon="fa-triangle-exclamation"
+        width={520}
+        footer={
+          <div className="variants-form-actions">
+            <button type="button" className="btn btn-danger" onClick={submitDelete} disabled={modalProcessing}>
+              {modalProcessing ? 'Eliminazione...' : 'Conferma Eliminazione'}
+            </button>
+            <button type="button" className="btn btn-outline-secondary" onClick={closeModal}>
+              Annulla
+            </button>
+          </div>
+        }
+      >
+        <div className="admin-dialog-confirm-text">
+          Stai per eliminare il layout <strong>{modal.payload?.name}</strong>.
+        </div>
+      </AdminDialog>
     </Layout>
   );
 };

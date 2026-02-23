@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from '@inertiajs/react';
-import { BASE_URL, STORAGE_URL } from '@/constants/constants';
+import { STORAGE_URL } from '@/constants/constants';
 import { ButtonDelete, ButtonEdit } from '@/components/Admin/Index';
 
 const ProductRow = React.memo(({ product, handleCheckboxChange, selectedRecords, handleDelete }) => {
@@ -36,12 +36,14 @@ const ProductRow = React.memo(({ product, handleCheckboxChange, selectedRecords,
         {product.categories.map((category) => category.name).join(', ')}
       </td>
       <td scope="row" className="text-center col-md-3">
-        <Link href={route('products.edit', product.id)} className="btn px-2">
-          <ButtonEdit url={BASE_URL} />
-        </Link>
-        <form onSubmit={handleDelete} className="d-inline" id={product.id}>
-          <ButtonDelete url={BASE_URL} />
-        </form>
+        <div className="action-buttons">
+          <Link href={route('products.edit', product.id)} className="action-icon-link">
+            <ButtonEdit />
+          </Link>
+          <form onSubmit={handleDelete} className="d-inline" id={product.id}>
+            <ButtonDelete />
+          </form>
+        </div>
       </td>
     </tr>
   );

@@ -2,21 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\ProductVariant;
 use App\Models\ProductVariantValue;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 
 class ProductVariantValueController extends \App\Http\Controllers\Controller
 {
-    public function create()
-    {
-        $product_variants = ProductVariant::all();
-        return Inertia::render('Admin/Settings/ProductVariantValues/Create', [
-            'product_variants' => $product_variants,
-        ]);
-    }
-
     public function store(Request $request)
     {
         $request->validate([
@@ -40,8 +30,6 @@ class ProductVariantValueController extends \App\Http\Controllers\Controller
 
         return redirect()->route('settings.variants.index');
     }
-
-    public function edit(ProductVariantValue $variant_value) {}
 
     public function destroy(ProductVariantValue $variant_value)
     {

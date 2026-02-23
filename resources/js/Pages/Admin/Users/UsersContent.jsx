@@ -7,6 +7,7 @@ import {
   Pagination,
   SearchAndPerPageSelector,
   UserRow,
+  SectionHeader,
 } from '@/components/Admin/Index';
 import { useFilterHandlers } from '@/hooks/admin/useFilterHandlers';
 import { toast } from 'react-toastify';
@@ -80,20 +81,20 @@ const UsersContent = ({ users, sortBy, sortDirection, perPage, sortSearch, flash
 
   return (
     <Layout>
-      <h2>Lista users</h2>
+      <SectionHeader
+        title="Gestione utenti"
+        subtitle="Consulta, ordina e modifica i profili registrati nel CMS."
+        primaryAction={
+          <Link href={route('users.create')} className="btn cb-primary">
+            Inserisci nuovo utente
+          </Link>
+        }
+        showBulkAction={selectedRecords.length > 0}
+        bulkCount={selectedRecords.length}
+        onBulkAction={handleDeleteSelected}
+      />
 
-      <div className="d-grid gap-2 d-md-flex justify-content-md-start">
-        <Link href={route('users.create')} className="btn cb-primary mb-3">
-          Inserisci nuovo utente
-        </Link>
-        {selectedRecords && selectedRecords.length > 0 && (
-          <button className="btn btn-danger mb-3" onClick={handleDeleteSelected}>
-            Elimina selezionati
-          </button>
-        )}
-      </div>
-
-      <div className="card shadow-2-strong" style={{ backgroundColor: '#f5f7fa' }}>
+      <div className="card shadow-2-strong">
         <div className="card-body">
           <SearchAndPerPageSelector
             currentPerPage={currentPerPage}
@@ -103,8 +104,8 @@ const UsersContent = ({ users, sortBy, sortDirection, perPage, sortSearch, flash
             handleSearchChange={handleSearchChange}
           />
 
-          <div className="table-responsive">
-            <table className="table table-hover mb-0">
+          <div className="table-responsive admin-table-shell">
+            <table className="table table-hover mb-0 admin-table">
               <thead>
                 <tr>
                   <th scope="col">

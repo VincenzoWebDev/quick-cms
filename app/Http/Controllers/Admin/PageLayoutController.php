@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Page;
 use App\Models\PageLayout;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -16,11 +15,6 @@ class PageLayoutController extends \App\Http\Controllers\Controller
         return Inertia::render('Admin/Settings/PageLayouts/PageLayoutsContent', [
             'pageLayouts' => $page_layouts,
         ]);
-    }
-
-    public function create()
-    {
-        return Inertia::render('Admin/Settings/PageLayouts/Create');
     }
 
     public function store(Request $request)
@@ -41,13 +35,6 @@ class PageLayoutController extends \App\Http\Controllers\Controller
         session()->flash('message', ['tipo' => $tipoMessaggio, 'testo' => $messaggio]);
 
         return redirect()->route('settings.layouts.index');
-    }
-
-    public function edit(PageLayout $layout)
-    {
-        return Inertia::render('Admin/Settings/PageLayouts/Edit', [
-            'pageLayout' => $layout,
-        ]);
     }
 
     public function update(Request $request, PageLayout $layout)

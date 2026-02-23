@@ -63,9 +63,7 @@ Route::delete('/photos/destroy/batch', [PhotoController::class, 'destroyBatch'])
 
 Route::middleware('VerifyIsAdmin')->group(function () {
     Route::get('/themes', [ThemeController::class, 'index'])->name('themes.index');
-    Route::get('/themes/create', [ThemeController::class, 'create'])->name('themes.create');
     Route::post('/themes', [ThemeController::class, 'store'])->name('themes.store');
-    Route::get('/themes/{id}/edit', [ThemeController::class, 'edit'])->name('themes.edit')->where('id', '[0-9]+');
     Route::patch('/themes/{id}', [ThemeController::class, 'update'])->name('themes.update')->where('id', '[0-9]+');
     Route::post('/themes/{themeId}', [ThemeController::class, 'toggleThemeSwitch'])->name('themes.switch')->where('themeId', '[0-9]+');
     Route::delete('/themes/{theme}', [ThemeController::class, 'destroy'])->name('themes.destroy')->where('theme', '[0-9]+');
@@ -149,23 +147,17 @@ Route::middleware('VerifyIsAdmin')->group(function () {
     Route::post('/settings/{settingId}', [SettingController::class, 'toggleSettingSwitch'])->name('settings.switch')->where('settingId', '[0-9]+');
 
     Route::get('/settings/layouts', [PageLayoutController::class, 'index'])->name('settings.layouts.index');
-    Route::get('/settings/layouts/create', [PageLayoutController::class, 'create'])->name('settings.layouts.create');
     Route::post('/settings/layouts', [PageLayoutController::class, 'store'])->name('settings.layouts.store');
-    Route::get('/settings/layouts/{layout}/edit', [PageLayoutController::class, 'edit'])->name('settings.layouts.edit');
     Route::patch('/settings/layouts/{layout}', [PageLayoutController::class, 'update'])->name('settings.layouts.update');
     Route::delete('/settings/layouts/{layout}', [PageLayoutController::class, 'destroy'])->name('settings.layouts.destroy');
 
     Route::middleware('CheckEcommerceStatus')->group(function () {
         Route::get('settings/variants', [ProductVariantController::class, 'index'])->name('settings.variants.index');
-        Route::get('settings/variants/create', [ProductVariantController::class, 'create'])->name('settings.variants.create');
         Route::post('settings/variants', [ProductVariantController::class, 'store'])->name('settings.variants.store');
-        Route::get('settings/variants/{variant}/edit', [ProductVariantController::class, 'edit'])->name('settings.variants.edit');
         Route::patch('settings/variants/{variant}', [ProductVariantController::class, 'update'])->name('settings.variants.update');
         Route::delete('settings/variants/{variant}', [ProductVariantController::class, 'destroy'])->name('settings.variants.destroy');
 
-        Route::get('settings/variant-values/create', [ProductVariantValueController::class, 'create'])->name('settings.variant-values.create');
         Route::post('settings/variant-values', [ProductVariantValueController::class, 'store'])->name('settings.variant-values.store');
-        Route::get('settings/variant-values/{variant_value}/edit', [ProductVariantValueController::class, 'edit'])->name('settings.variant-values.edit');
         Route::patch('settings/variant-values/{variant_value}', [ProductVariantValueController::class, 'update'])->name('settings.variant-values.update');
         Route::delete('settings/variant-values/{variant_value}', [ProductVariantValueController::class, 'destroy'])->name('settings.variant-values.destroy');
     });

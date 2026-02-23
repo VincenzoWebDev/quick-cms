@@ -1,5 +1,6 @@
 import { ProductGallery } from "../Index";
 import GalleryUpload from "../GalleryUpload";
+import ImageFileField from '@/components/Admin/Inputs/ImageFileField';
 
 const ImagesTab = ({ productImages, ThumbChanged, GalleryChanged }) => {
     const handleThumbChange = (e) => {
@@ -13,10 +14,13 @@ const ImagesTab = ({ productImages, ThumbChanged, GalleryChanged }) => {
 
     return (
         <div className={`tab-pane fade show`} id="img-tab-pane" role="tabpanel" aria-labelledby="img-tab" tabIndex="0">
-            <div className="mb-3">
-                <label htmlFor="thumbnail" className="form-label fw-bold">Thumbnail</label>
-                <input type="file" name="thumbnail" id="thumbnail" className="form-control" onChange={handleThumbChange} />
-            </div>
+            <ImageFileField
+                id="thumbnail"
+                name="thumbnail"
+                label="Thumbnail"
+                onChange={handleThumbChange}
+                hint="Consigliato 1200x1200"
+            />
             <div className="mb-3">
                 <label className="form-label fw-bold">Inserisci immagini</label>
                 <GalleryUpload handleGalleryChange={handleGalleryChange} />

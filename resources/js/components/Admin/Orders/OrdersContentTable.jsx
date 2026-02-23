@@ -38,8 +38,8 @@ const OrdersContentTable = ({
   };
 
   return (
-    <div className="table-responsive">
-      <table className="table table-hover mb-0">
+    <div className="table-responsive admin-table-shell">
+      <table className="table table-hover mb-0 admin-table">
         <thead>
           <tr>
             <th scope="col">

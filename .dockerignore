@@ -5,6 +5,7 @@
 /vendor
 !vendor/laravel/ui/auth-backend/
 .env 
+.env.testing
 .phpunit.result.cache 
 Homestead.json 
 Homestead.yaml 

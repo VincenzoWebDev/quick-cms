@@ -1,5 +1,6 @@
 import Layout from "@/Layouts/Admin/Layout";
 import AlertErrors from "@/components/Admin/AlertErrors";
+import { SectionHeader } from "@/components/Admin/Index";
 import { usePage } from "@inertiajs/react";
 import { useState } from "react";
 
@@ -8,7 +9,10 @@ const ArticlesContent = () => {
     const [message, setMessage] = useState(flash.message);
     return (
         <Layout>
-            <h2>Articoli</h2>
+            <SectionHeader
+                title="Articoli"
+                subtitle="Sezione editoriale del pannello amministrativo."
+            />
             <AlertErrors message={message} />
         </Layout>
     )

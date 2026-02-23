@@ -1,9 +1,8 @@
-import { Link, router, useForm } from '@inertiajs/react';
-import { BASE_URL } from '@/constants/constants';
+import { router } from '@inertiajs/react';
 import React, { useEffect, useState } from 'react';
 import { CombinationsDelete, CombinationsDeleteSelected } from './CombinationsDelete';
 import AlertErrors from '../AlertErrors';
-import { ButtonEdit, ButtonCancel, ButtonSave } from '../Index';
+import { ButtonEdit, ButtonCancel, ButtonDelete, ButtonSave } from '../Index';
 
 const TableCombinations = React.memo(({ combinationValues }) => {
   const [selectedRecords, setSelectedRecords] = useState([]);
@@ -78,139 +77,138 @@ const TableCombinations = React.memo(({ combinationValues }) => {
                   </button>
                 )}
               </div>
-              <table className="table table-striped">
-                <thead>
-                  <tr>
-                    <th>
-                      <div className="form-check d-flex justify-content-center align-items-center">
-                        <input
-                          className="form-check-input"
-                          type="checkbox"
-                          value={selectAll}
-                          onChange={handleSelectAllChange}
-                          checked={selectAll}
-                        />
-                      </div>
-                    </th>
-                    <th>Variante</th>
-                    <th>Prezzo</th>
-                    <th>SKU</th>
-                    <th>EAN</th>
-                    <th>Quantità</th>
-                    <th className="text-center">Operazioni</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {combinationValues.map((combination, index) => (
-                    <tr key={index} className="align-middle">
-                      <th scope="row" className="col-md-1">
+              <div className="table-responsive admin-table-shell">
+                <table className="table table-hover mb-0 admin-table">
+                  <thead>
+                    <tr>
+                      <th>
                         <div className="form-check d-flex justify-content-center align-items-center">
                           <input
                             className="form-check-input"
                             type="checkbox"
-                            value={combination.combination_id}
-                            onChange={(e) => handleCheckboxChange(e, combination.combination_id)}
-                            checked={selectedRecords.includes(combination.combination_id)}
+                            value={selectAll}
+                            onChange={handleSelectAllChange}
+                            checked={selectAll}
                           />
                         </div>
                       </th>
-                      <td className="col-2">
-                        <input
-                          type="text"
-                          className="form-control w-100"
-                          value={combination.variant_combination_values
-                            .map((variantValue) => variantValue.product_variant_value.value) // Mappa i valori delle varianti
-                            .join(', ')} // Unisce i valori con una virgola
-                          disabled
-                        />
-                      </td>
-                      {editingCombination === combination.id ? (
-                        <>
-                          <td className="col-1">
+                      <th>Variante</th>
+                      <th>Prezzo</th>
+                      <th>SKU</th>
+                      <th>EAN</th>
+                      <th>Quantità</th>
+                      <th className="text-center">Operazioni</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {combinationValues.map((combination, index) => (
+                      <tr key={index} className="align-middle">
+                        <th scope="row" className="col-md-1">
+                          <div className="form-check d-flex justify-content-center align-items-center">
                             <input
-                              type="text"
-                              className="form-control w-100"
-                              value={editedCombination.price || ''}
-                              onChange={(e) => setEditedCombination({ ...editedCombination, price: e.target.value })}
+                              className="form-check-input"
+                              type="checkbox"
+                              value={combination.combination_id}
+                              onChange={(e) => handleCheckboxChange(e, combination.combination_id)}
+                              checked={selectedRecords.includes(combination.combination_id)}
                             />
-                          </td>
-                          <td className="col-2">
-                            <input
-                              type="text"
-                              className="form-control w-100"
-                              value={editedCombination.sku || ''}
-                              onChange={(e) => setEditedCombination({ ...editedCombination, sku: e.target.value })}
-                            />
-                          </td>
-                          <td className="col-2">
-                            <input
-                              type="text"
-                              className="form-control w-100"
-                              value={editedCombination.ean || ''}
-                              onChange={(e) => setEditedCombination({ ...editedCombination, ean: e.target.value })}
-                            />
-                          </td>
-                          <td className="col-1">
-                            <input
-                              type="number"
-                              className="form-control w-100"
-                              value={editedCombination.quantity || ''}
-                              onChange={(e) => setEditedCombination({ ...editedCombination, quantity: e.target.value })}
-                            />
-                          </td>
-                        </>
-                      ) : (
-                        <>
-                          <td className="col-1">
-                            <input
-                              type="text"
-                              className="form-control w-100 f-disabled"
-                              value={combination.price || ''}
-                              disabled
-                            />
-                          </td>
-                          <td className="col-2">
-                            <input type="text" className="form-control w-100" value={combination.sku || ''} disabled />
-                          </td>
-                          <td className="col-2">
-                            <input type="text" className="form-control w-100" value={combination.ean || ''} disabled />
-                          </td>
-                          <td className="col-1">
-                            <input
-                              type="number"
-                              className="form-control w-100"
-                              value={combination.quantity || ''}
-                              disabled
-                            />
-                          </td>
-                        </>
-                      )}
-                      <td className="col-1 text-center">
+                          </div>
+                        </th>
+                        <td className="col-2">
+                          <input
+                            type="text"
+                            className="form-control w-100"
+                            value={combination.variant_combination_values
+                              .map((variantValue) => variantValue.product_variant_value.value)
+                              .join(', ')}
+                            disabled
+                          />
+                        </td>
                         {editingCombination === combination.id ? (
                           <>
-                            <a onClick={() => handleEditCombination(editedCombination)} className="btn px-2">
-                              <ButtonSave url={BASE_URL} />
-                            </a>
-                            <a onClick={() => setEditingCombination(null)} className="btn px-0">
-                              <ButtonCancel url={BASE_URL} />
-                            </a>
+                            <td className="col-1">
+                              <input
+                                type="text"
+                                className="form-control w-100"
+                                value={editedCombination.price || ''}
+                                onChange={(e) => setEditedCombination({ ...editedCombination, price: e.target.value })}
+                              />
+                            </td>
+                            <td className="col-2">
+                              <input
+                                type="text"
+                                className="form-control w-100"
+                                value={editedCombination.sku || ''}
+                                onChange={(e) => setEditedCombination({ ...editedCombination, sku: e.target.value })}
+                              />
+                            </td>
+                            <td className="col-2">
+                              <input
+                                type="text"
+                                className="form-control w-100"
+                                value={editedCombination.ean || ''}
+                                onChange={(e) => setEditedCombination({ ...editedCombination, ean: e.target.value })}
+                              />
+                            </td>
+                            <td className="col-1">
+                              <input
+                                type="number"
+                                className="form-control w-100"
+                                value={editedCombination.quantity || ''}
+                                onChange={(e) => setEditedCombination({ ...editedCombination, quantity: e.target.value })}
+                              />
+                            </td>
                           </>
                         ) : (
                           <>
-                            <a onClick={() => handleEditClick(combination)} className="btn px-2">
-                              <ButtonEdit url={BASE_URL} />
-                            </a>
-                            <div className="over-icon btn" onClick={() => handleDeleteCombination(combination.id)}>
-                              <img src={`${BASE_URL}img/icons/delete.png`} alt="delete" className="original" />
-                              <img src={`${BASE_URL}img/icons/delete-over.png`} alt="delete" className="overized" />
-                            </div>
+                            <td className="col-1">
+                              <input
+                                type="text"
+                                className="form-control w-100 f-disabled"
+                                value={combination.price || ''}
+                                disabled
+                              />
+                            </td>
+                            <td className="col-2">
+                              <input type="text" className="form-control w-100" value={combination.sku || ''} disabled />
+                            </td>
+                            <td className="col-2">
+                              <input type="text" className="form-control w-100" value={combination.ean || ''} disabled />
+                            </td>
+                            <td className="col-1">
+                              <input
+                                type="number"
+                                className="form-control w-100"
+                                value={combination.quantity || ''}
+                                disabled
+                              />
+                            </td>
                           </>
                         )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                        <td className="col-1 text-center">
+                          {editingCombination === combination.id ? (
+                            <div className="action-buttons">
+                              <a onClick={() => handleEditCombination(editedCombination)} className="action-icon-link">
+                                <ButtonSave />
+                              </a>
+                              <a onClick={() => setEditingCombination(null)} className="action-icon-link">
+                                <ButtonCancel />
+                              </a>
+                            </div>
+                          ) : (
+                            <div className="action-buttons">
+                              <a onClick={() => handleEditClick(combination)} className="action-icon-link">
+                                <ButtonEdit />
+                              </a>
+                              <ButtonDelete type="button" onClick={() => handleDeleteCombination(combination.id)} />
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </>
           )}
     </>

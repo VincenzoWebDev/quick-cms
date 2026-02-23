@@ -1,39 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 
-const thumbsContainer = {
-    display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginTop: 16
-};
-
-const thumb = {
-    display: 'inline-flex',
-    borderRadius: 2,
-    border: '1px solid #eaeaea',
-    marginBottom: 8,
-    marginRight: 8,
-    width: 100,
-    height: 100,
-    padding: 4,
-    boxSizing: 'border-box'
-};
-
-const thumbInner = {
-    display: 'flex',
-    minWidth: 0,
-    overflow: 'hidden'
-};
-
-const img = {
-    display: 'block',
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover',
-    borderRadius: '5px'
-};
-
 const GalleryUpload = ({ handleGalleryChange }) => {
     const [files, setFiles] = useState([]);
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -51,15 +18,12 @@ const GalleryUpload = ({ handleGalleryChange }) => {
     });
 
     const thumbs = files.map(file => (
-        <div style={thumb} key={file.name}>
-            <div style={thumbInner}>
-                <img
-                    src={file.preview}
-                    style={img}
-                    // Revoke data uri after image is loaded
-                    onLoad={() => { URL.revokeObjectURL(file.preview) }}
-                />
-            </div>
+        <div className="gallery-preview-item" key={file.name}>
+            <img
+                src={file.preview}
+                className="gallery-preview-image"
+                onLoad={() => { URL.revokeObjectURL(file.preview) }}
+            />
         </div>
     ));
 
@@ -69,24 +33,22 @@ const GalleryUpload = ({ handleGalleryChange }) => {
     }, []);
 
     return (
-        <div className="image-upload-container">
+        <div className="image-upload-container modern-gallery-upload">
             <div {...getRootProps({
-                className: 'dropzone',
-                style: {
-                    border: '2px dashed #ccc',
-                    padding: '20px',
-                    textAlign: 'center',
-                    cursor: 'pointer',
-                },
+                className: `dropzone gallery-dropzone ${isDragActive ? 'is-active' : ''}`,
             })}>
                 <input {...getInputProps()} />
                 {
                     isDragActive ?
-                        <p>Rilascia i file qui</p> :
-                        <p>Trascina e rilascia i file qui, o clicca per selezionare i file</p>
+                        <p className="mb-0">Rilascia le immagini qui</p> :
+                        <div>
+                            <i className="fa-regular fa-images"></i>
+                            <p className="mb-1">Trascina le immagini o clicca per selezionarle</p>
+                            <small>Puoi caricare più file contemporaneamente</small>
+                        </div>
                 }
             </div>
-            <aside style={thumbsContainer}>
+            <aside className="gallery-preview-grid">
                 {thumbs}
             </aside>
         </div>

@@ -5,8 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Requests\ThemeRequest;
 use App\Models\Theme;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class ThemeController extends \App\Http\Controllers\Controller
@@ -57,11 +55,6 @@ class ThemeController extends \App\Http\Controllers\Controller
         return;
     }
 
-    public function create()
-    {
-        return Inertia::render('Admin/Themes/Create');
-    }
-
     public function store(ThemeRequest $request)
     {
         $theme = new Theme();
@@ -97,15 +90,28 @@ class ThemeController extends \App\Http\Controllers\Controller
         //     Log::error('Errore durante la creazione del tema: ' . $e->getMessage());
         //     return redirect()->back()->withErrors(['error' => 'Errore nella creazione del tema.']);
         // }
+        return redirect()->route('themes.index');
     }
 
-    public function edit($id)
+    public function update(ThemeRequest $request, $id)
     {
-        return;
-    }
+        $theme = Theme::findOrFail($id);
+        $oldName = $theme->name;
+        $oldPath = $theme->path;
 
-    public function update(Request $request, $id)
-    {
-        return;
+        $theme->name = $request->input('name');
+        $theme->path = $request->input('path');
+
+        if ($oldName !== $theme->name || $oldPath !== $theme->path) {
+            $res = $theme->save();
+        } else {
+            $res = 0;
+        }
+
+        $messaggio = $res ? 'Tema ' . $theme->name . ' modificato correttamente' : 'Tema ' . $theme->name . ' non modificato';
+        $tipoMessaggio = $res ? 'success' : 'danger';
+        session()->flash('message', ['tipo' => $tipoMessaggio, 'testo' => $messaggio]);
+
+        return redirect()->route('themes.index');
     }
 }

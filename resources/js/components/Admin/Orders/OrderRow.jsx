@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "@inertiajs/react";
-import { BASE_URL, STORAGE_URL } from "@/constants/constants";
+import { STORAGE_URL } from "@/constants/constants";
 import { ButtonDelete, ButtonEdit, ButtonShow, OrderShowDetails } from "@/components/Admin/Index";
 
 const OrderRow = React.memo(({ order, selectedRecords, handleCheckboxChange, handleDelete }) => {
@@ -16,7 +16,7 @@ const OrderRow = React.memo(({ order, selectedRecords, handleCheckboxChange, han
             <td scope="row" className="col-1">#{order.id}</td>
             <td scope="row" className="col-2">
                 <img src={STORAGE_URL + order.user.profile_img} alt={order.user.name} className="img-fluid rounded-circle object-fit-cover me-2"
-                    style={{ width: '40px', height: '40px', border: '1px solid #008000' }} loading="lazy"
+                    style={{ width: '40px', height: '40px' }} loading="lazy"
                 />
                 {order.user.name}&nbsp;{order.user.lastname}
             </td>
@@ -49,16 +49,18 @@ const OrderRow = React.memo(({ order, selectedRecords, handleCheckboxChange, han
             </td>
             <td scope="row" className="col-2 text-center">{order.tracking_number}</td>
             <td scope="row" className="col-1">{order.shipping_method.name}</td>
-            <td scope="row" className="col-1 text-center">
-                <Link href={route('orders.edit', order.id)} className="btn px-2">
-                    <ButtonEdit url={BASE_URL} />
-                </Link>
-                <Link preserveScroll preserveState href="#" onClick={() => OrderShowDetails(order)} className="btn px-2">
-                    <ButtonShow url={BASE_URL} />
-                </Link>
-                <form onSubmit={handleDelete} className="d-inline" id={order.id}>
-                    <ButtonDelete url={BASE_URL} />
-                </form>
+            <td scope="row" className="col-2 text-center">
+                <div className="action-buttons">
+                    <Link href={route('orders.edit', order.id)} className="action-icon-link">
+                        <ButtonEdit />
+                    </Link>
+                    <Link preserveScroll preserveState href="#" onClick={() => OrderShowDetails(order)} className="action-icon-link">
+                        <ButtonShow />
+                    </Link>
+                    <form onSubmit={handleDelete} className="d-inline" id={order.id}>
+                        <ButtonDelete />
+                    </form>
+                </div>
             </td>
         </tr>
     )

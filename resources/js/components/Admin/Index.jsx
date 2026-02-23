@@ -44,6 +44,7 @@ import Skeleton from './Skeleton';
 import AdminSidebar from './Chats/AdminSidebar';
 import ChatBox from './Chats/ChatBox';
 import Messages from './Chats/Messages';
+import SectionHeader from './SectionHeader';
 
 export {
   ButtonDelete,
@@ -99,4 +100,5 @@ export {
   AdminSidebar,
   ChatBox,
   Messages,
+  SectionHeader,
 };

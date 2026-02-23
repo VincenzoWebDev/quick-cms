@@ -138,64 +138,66 @@ const VariantsTab = ({ variants, setVariantCombinations, combinationValues }) =>
                 {/* Tabella delle combinazioni */}
                 {Object.keys(selectedValues).length > 0 &&
                     combinations.length > 0 && (
-                        <table className="table table-striped">
-                            <thead>
-                                <tr>
-                                    {Object.keys(selectedValues).map(variantId => (
-                                        <th key={variantId}>
-                                            {variants.find(variant => variant.id === parseInt(variantId))?.name}
-                                        </th>
-                                    ))}
-                                    <th>Prezzo</th>
-                                    <th>SKU</th>
-                                    <th>EAN</th>
-                                    <th>Quantità</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {combinations.map((combination, index) => (
-                                    <tr key={index} className="align-middle">
+                        <div className="table-responsive admin-table-shell">
+                            <table className="table table-hover mb-0 admin-table">
+                                <thead>
+                                    <tr>
                                         {Object.keys(selectedValues).map(variantId => (
-                                            <td key={variantId} className="col-1">
-                                                {combination[`variant_${variantId}`] || 'N/A'}
-                                            </td>
+                                            <th key={variantId}>
+                                                {variants.find(variant => variant.id === parseInt(variantId))?.name}
+                                            </th>
                                         ))}
-                                        <td className="col-2">
-                                            <input
-                                                className="form-control w-100"
-                                                type="text"
-                                                value={combination.price || ''}
-                                                onChange={(e) => handleInputCombinationChange(index, 'price', e.target.value)}
-                                            />
-                                        </td>
-                                        <td className="col-2">
-                                            <input
-                                                className="form-control w-100"
-                                                type="text"
-                                                value={combination.sku || ''}
-                                                onChange={(e) => handleInputCombinationChange(index, 'sku', e.target.value)}
-                                            />
-                                        </td>
-                                        <td className="col-2">
-                                            <input
-                                                className="form-control w-100"
-                                                type="text"
-                                                value={combination.ean || ''}
-                                                onChange={(e) => handleInputCombinationChange(index, 'ean', e.target.value)}
-                                            />
-                                        </td>
-                                        <td className="col-2">
-                                            <input
-                                                className="form-control w-100"
-                                                type="number"
-                                                value={combination.quantity || 0}
-                                                onChange={(e) => handleInputCombinationChange(index, 'quantity', e.target.value)}
-                                            />
-                                        </td>
+                                        <th>Prezzo</th>
+                                        <th>SKU</th>
+                                        <th>EAN</th>
+                                        <th>Quantità</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {combinations.map((combination, index) => (
+                                        <tr key={index} className="align-middle">
+                                            {Object.keys(selectedValues).map(variantId => (
+                                                <td key={variantId} className="col-1">
+                                                    {combination[`variant_${variantId}`] || 'N/A'}
+                                                </td>
+                                            ))}
+                                            <td className="col-2">
+                                                <input
+                                                    className="form-control w-100"
+                                                    type="text"
+                                                    value={combination.price || ''}
+                                                    onChange={(e) => handleInputCombinationChange(index, 'price', e.target.value)}
+                                                />
+                                            </td>
+                                            <td className="col-2">
+                                                <input
+                                                    className="form-control w-100"
+                                                    type="text"
+                                                    value={combination.sku || ''}
+                                                    onChange={(e) => handleInputCombinationChange(index, 'sku', e.target.value)}
+                                                />
+                                            </td>
+                                            <td className="col-2">
+                                                <input
+                                                    className="form-control w-100"
+                                                    type="text"
+                                                    value={combination.ean || ''}
+                                                    onChange={(e) => handleInputCombinationChange(index, 'ean', e.target.value)}
+                                                />
+                                            </td>
+                                            <td className="col-2">
+                                                <input
+                                                    className="form-control w-100"
+                                                    type="number"
+                                                    value={combination.quantity || 0}
+                                                    onChange={(e) => handleInputCombinationChange(index, 'quantity', e.target.value)}
+                                                />
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     )}
 
                 <TableCombinations combinationValues={combinationValues} />

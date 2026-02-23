@@ -1,9 +1,8 @@
-const ButtonCancel = ({ url }) => {
+const ButtonCancel = () => {
   return (
-    <div className="over-icon">
-      <img src={`${url}img/icons/cross.png`} alt="cancel" className="original" />
-      <img src={`${url}img/icons/cross-over.png`} alt="cancel" className="overized" />
-    </div>
+    <span className="action-icon action-cancel" aria-label="Annulla">
+      <i className="fa-solid fa-xmark"></i>
+    </span>
   );
 };
 

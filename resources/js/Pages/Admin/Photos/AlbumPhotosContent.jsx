@@ -4,6 +4,7 @@ import AlertErrors from '@/components/Admin/AlertErrors';
 import { useState, useEffect } from 'react'
 import { STORAGE_URL, BASE_URL } from "@/constants/constants";
 import Fancybox from "@/components/Admin/Fancybox";
+import { SectionHeader } from "@/components/Admin/Index";
 
 
 const AlbumPhotosContent = ({ album, photos, flash }) => {
@@ -32,15 +33,18 @@ const AlbumPhotosContent = ({ album, photos, flash }) => {
     
     return (
         <Layout>
-            <h2 >Lista immagini: <span className="ct-primary">{album.album_name}</span></h2>
+            <SectionHeader
+                title={`Immagini album: ${album.album_name}`}
+                subtitle="Gestione immagini e manutenzione della galleria selezionata."
+                primaryAction={
+                    <Link href={route('photos.create', { 'album_id': album.id })} className="btn cb-primary">
+                        Inserisci nuova immagine
+                    </Link>
+                }
+            />
             <AlertErrors message={message} />
 
-            <div className="d-grid gap-2 d-md-flex justify-content-md-start">
-                <Link href={route('photos.create', { 'album_id': album.id })} className="btn cb-primary mb-3">Inserisci nuova
-                    immagine</Link>
-            </div>
-
-            <div className="card shadow-2-strong" style={{ backgroundColor: '#f5f7fa' }}>
+            <div className="card shadow-2-strong">
                 <div className="card-body">
                     <Fancybox
                         options={{

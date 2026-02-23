@@ -1,12 +1,13 @@
-import Layout from '@/Layouts/Admin/Layout';
+import AuthLayout from '@/Layouts/AuthLayout';
 import InputErrors from '@/components/Admin/InputErrors';
-import { Link, useForm, usePage } from '@inertiajs/react';
+import { Head, Link, useForm, usePage } from '@inertiajs/react';
 
 const Login = () => {
   const { demo_mode } = usePage().props;
   const { data, setData, post, errors, processing } = useForm({
     email: demo_mode == 1 ? 'demo@quickcms.test' : '',
     password: demo_mode == 1 ? 'demo1234' : '',
+    remember: false,
   });
 
   const handleChange = (e) => {
@@ -20,86 +21,83 @@ const Login = () => {
   };
 
   return (
-    <Layout>
-      <section className="ftco-section">
-        <div className="container">
-          <div className="row justify-content-center">
-            <div className="col-xl-5 col-lg-6 col-md-7 col-sm-9">
-              <div className="login-wrap p-4 p-md-5">
-                <div className="text-center pb-4">
-                  <p>
-                    Non sei registrato?{' '}
-                    <strong>
-                      <Link href={route('register')} className="text-primary">
-                        Registrati
-                      </Link>
-                    </strong>
-                  </p>
-                </div>
-                <div className="icon d-flex align-items-center justify-content-center">
-                  <span className="fa fa-lock"></span>
-                </div>
-                <h3 className="text-center mb-4">Hai un account?</h3>
-                <InputErrors errors={errors} />
+    <AuthLayout
+      title="Bentornato nel pannello"
+      subtitle="Accedi per gestire contenuti, ecommerce e impostazioni del tuo Quick CMS."
+      icon="fa-right-to-bracket"
+      alternateAction={
+        <p>
+          Non hai un account?{' '}
+          <Link href={route('register')} className="auth-link">
+            Registrati
+          </Link>
+        </p>
+      }
+    >
+      <Head title="Login" />
+      <InputErrors errors={errors} />
 
-                <form onSubmit={handleSubmit} className="login-form">
-                  <div className="mb-3">
-                    <input
-                      id="email"
-                      type="email"
-                      className="form-control rounded-left"
-                      name="email"
-                      value={data.email}
-                      onChange={handleChange}
-                      required
-                      autoComplete="email"
-                      autoFocus
-                      placeholder="Email"
-                      disabled={demo_mode == 1 ? true : false}
-                    />
-                  </div>
-
-                  <div className="mb-3">
-                    <input
-                      id="password"
-                      type="password"
-                      className="form-control"
-                      name="password"
-                      required
-                      autoComplete="current-password"
-                      placeholder="Password"
-                      value={data.password}
-                      onChange={handleChange}
-                      disabled={demo_mode == 1 ? true : false}
-                    />
-                  </div>
-
-                  <div className="form-group d-md-flex row">
-                    <div className="w-50">
-                      <label className="checkbox-wrap checkbox-primary" htmlFor="remember">
-                        <input type="checkbox" name="remember" id="remember" />
-                        <span className="checkmark"></span>
-                        Remember Me
-                      </label>
-                    </div>
-                    <div className="w-50 text-end">
-                      <Link className="" href={route('password.request')}>
-                        Password dimenticata?
-                      </Link>
-                    </div>
-                  </div>
-                  <div className="form-group">
-                    <button className="btn btn-primary rounded submit p-3 px-5" disabled={processing}>
-                      Login
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
+      <form onSubmit={handleSubmit} className="auth-form-grid">
+        <div>
+          <label htmlFor="email" className="form-label">
+            Email
+          </label>
+          <input
+            id="email"
+            type="email"
+            className="form-control"
+            name="email"
+            value={data.email}
+            onChange={handleChange}
+            required
+            autoComplete="email"
+            autoFocus
+            placeholder="nome@dominio.it"
+            disabled={demo_mode == 1 ? true : false}
+          />
         </div>
-      </section>
-    </Layout>
+
+        <div>
+          <label htmlFor="password" className="form-label">
+            Password
+          </label>
+          <input
+            id="password"
+            type="password"
+            className="form-control"
+            name="password"
+            required
+            autoComplete="current-password"
+            placeholder="Inserisci password"
+            value={data.password}
+            onChange={handleChange}
+            disabled={demo_mode == 1 ? true : false}
+          />
+        </div>
+
+        <div className="auth-form-row">
+          <label className="form-check auth-check-wrap" htmlFor="remember">
+            <input
+              type="checkbox"
+              className="form-check-input"
+              name="remember"
+              id="remember"
+              checked={data.remember}
+              onChange={(e) => setData('remember', e.target.checked)}
+            />
+            <span className="form-check-label">Ricordami</span>
+          </label>
+
+          <Link className="auth-link" href={route('password.request')}>
+            Password dimenticata?
+          </Link>
+        </div>
+
+        <button className="btn cb-primary auth-submit-btn" disabled={processing}>
+          Accedi
+        </button>
+      </form>
+    </AuthLayout>
   );
 };
 
