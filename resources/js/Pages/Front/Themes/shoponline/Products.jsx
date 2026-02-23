@@ -1,11 +1,10 @@
 import React from 'react';
 import { Link } from '@inertiajs/react';
 import Card from './components/Card';
-import Layout from './Layout';
 
 const Products = ({ products = [] }) => {
   return (
-    <Layout>
+    <div className="min-h-screen bg-white text-slate-900 antialiased">
       <div className="max-w-6xl mx-auto px-6 py-12">
         <h2 className="text-3xl font-extrabold">Prodotti</h2>
         <p className="mt-2 text-gray-600">Elenco prodotti demo — clicca per vedere il dettaglio.</p>
@@ -26,7 +25,7 @@ const Products = ({ products = [] }) => {
           ))}
         </div>
       </div>
-    </Layout>
+    </div>
   );
 };
 

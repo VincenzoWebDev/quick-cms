@@ -5,7 +5,6 @@ import { Link, useForm, router } from '@inertiajs/react';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 const SettingsContent = ({ settings, flash }) => {
   useEffect(() => {

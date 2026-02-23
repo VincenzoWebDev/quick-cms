@@ -79,7 +79,9 @@ const Layout = ({ children }) => {
               <ToastContainer
                 position="top-right"
                 className="admin-toast-container"
-                style={{ top: `${demo_mode == 1 ? '90px' : '64px'}`, right: '14px' }}
+                style={{ top: `${demo_mode == 1 ? '124px' : '96px'}`, right: '16px' }}
+                newestOnTop
+                limit={4}
               />
               {children}
             </div>

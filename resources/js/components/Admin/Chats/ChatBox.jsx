@@ -3,7 +3,6 @@ import React, { useEffect, useRef } from 'react';
 import { Messages } from '../Index';
 import { MessageCircleX } from 'lucide-react';
 import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { InputErrors } from '@/components/Front/Index';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
