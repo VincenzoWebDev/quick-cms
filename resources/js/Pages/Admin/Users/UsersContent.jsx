@@ -79,6 +79,8 @@ const UsersContent = ({ users, sortBy, sortDirection, perPage, sortSearch, flash
     UsersDeleteSelected({ e, formDelete, selectedRecords, setSelectedRecords, setSelectAll });
   };
 
+  const totalUsers = users.total ?? users.data.length;
+
   return (
     <Layout>
       <SectionHeader
@@ -96,6 +98,21 @@ const UsersContent = ({ users, sortBy, sortDirection, perPage, sortSearch, flash
 
       <div className="card shadow-2-strong">
         <div className="card-body">
+          <div className="users-overview-strip">
+            <div className="users-overview-item">
+              <small>Totale utenti</small>
+              <strong>{totalUsers}</strong>
+            </div>
+            <div className="users-overview-item">
+              <small>Visualizzati</small>
+              <strong>{users.data.length}</strong>
+            </div>
+            <div className="users-overview-item">
+              <small>Selezionati</small>
+              <strong>{selectedRecords.length}</strong>
+            </div>
+          </div>
+
           <SearchAndPerPageSelector
             currentPerPage={currentPerPage}
             handlePerPageChange={handlePerPageChange}
@@ -104,8 +121,14 @@ const UsersContent = ({ users, sortBy, sortDirection, perPage, sortSearch, flash
             handleSearchChange={handleSearchChange}
           />
 
+          <div className="users-list-toolbar">
+            <p className="mb-0">
+              Clicca sulle intestazioni per ordinare. Usa la selezione multipla per eliminare piu utenti in una volta.
+            </p>
+          </div>
+
           <div className="table-responsive admin-table-shell">
-            <table className="table table-hover mb-0 admin-table">
+            <table className="table table-hover mb-0 admin-table users-table">
               <thead>
                 <tr>
                   <th scope="col">
@@ -122,12 +145,8 @@ const UsersContent = ({ users, sortBy, sortDirection, perPage, sortSearch, flash
                   <th scope="col" onClick={() => handleSort('id')} style={{ cursor: 'pointer' }}>
                     Id {getSortIcon('id')}
                   </th>
-                  <th scope="col">Avatar</th>
                   <th scope="col" onClick={() => handleSort('name')} style={{ cursor: 'pointer' }}>
-                    Name {getSortIcon('name')}
-                  </th>
-                  <th scope="col" onClick={() => handleSort('email')} style={{ cursor: 'pointer' }}>
-                    Email {getSortIcon('email')}
+                    Utente {getSortIcon('name')}
                   </th>
                   <th scope="col" onClick={() => handleSort('role')} style={{ cursor: 'pointer' }}>
                     Ruolo {getSortIcon('role')}
@@ -154,7 +173,7 @@ const UsersContent = ({ users, sortBy, sortDirection, perPage, sortSearch, flash
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="9" className="text-center">
+                    <td colSpan="7" className="text-center py-4">
                       Nessun utente trovato
                     </td>
                   </tr>

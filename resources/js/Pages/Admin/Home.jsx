@@ -1,10 +1,11 @@
 import Layout from '@/Layouts/Admin/Layout';
 import { useEffect, useState } from 'react';
-import { Bar, Line } from 'react-chartjs-2';
+import { Bar, Doughnut, Line } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
 import CardsHome from '@/components/Admin/CardsHome';
 import { STORAGE_URL } from '@/constants/constants';
 import { toast } from 'react-toastify';
+import { Link } from '@inertiajs/react';
 
 Chart.register(...registerables);
 
@@ -12,6 +13,8 @@ const Home = (props) => {
   const { users, albums, products, orders, dataChart, user_auth, flash } = props;
   const { usersPercentage, albumsPercentage, productsPercentage, ordersPercentage } = props;
   const [message] = useState(flash.message);
+  const totalEntities = users.length + albums.length + products.length + orders.length;
+  const orderToProductRatio = products.length > 0 ? ((orders.length / products.length) * 100).toFixed(1) : '0.0';
 
   useEffect(() => {
     if (message && message.tipo === 'success') {
@@ -48,6 +51,17 @@ const Home = (props) => {
           usePointStyle: true,
           boxWidth: 8,
         },
+      },
+    },
+  };
+
+  const doughnutOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: '72%',
+    plugins: {
+      legend: {
+        display: false,
       },
     },
   };
@@ -105,12 +119,51 @@ const Home = (props) => {
     };
   };
 
+  const prepareMixChartData = () => ({
+    labels: ['Utenti', 'Album', 'Prodotti', 'Ordini'],
+    datasets: [
+      {
+        data: [users.length, albums.length, products.length, orders.length],
+        backgroundColor: ['#2563eb', '#7c3aed', '#059669', '#ea580c'],
+        borderColor: 'transparent',
+      },
+    ],
+  });
+
   return (
     <Layout user_auth={user_auth}>
-      <section className="page-hero mb-4">
-        <div className="page-hero-content">
-          <h2>Panoramica operativa</h2>
-          <p>Una vista compatta dei trend recenti per utenti, contenuti e shop.</p>
+      <section className="page-hero dashboard-hero mb-4">
+        <div className="dashboard-hero-grid">
+          <div className="dashboard-hero-main">
+            <span className="dashboard-hero-kicker">Dashboard overview</span>
+            <h2>Benvenuto, {user_auth?.name || 'Admin'}</h2>
+            <p>Controllo rapido su performance contenuti, catalogo e ordini in un'unica vista operativa.</p>
+            <div className="dashboard-hero-actions">
+              <Link href={route('users.index')} className="btn cb-primary">
+                <i className="fa-solid fa-users me-2"></i>
+                Gestisci utenti
+              </Link>
+              <Link href={route('files')} className="btn btn-outline-secondary">
+                <i className="fa-solid fa-folder-open me-2"></i>
+                Apri files
+              </Link>
+            </div>
+          </div>
+
+          <div className="dashboard-hero-meta">
+            <div className="dashboard-hero-stat">
+              <small>Record gestiti</small>
+              <strong>{totalEntities}</strong>
+            </div>
+            <div className="dashboard-hero-stat">
+              <small>Ordini/Prodotti</small>
+              <strong>{orderToProductRatio}%</strong>
+            </div>
+            <div className="dashboard-hero-stat">
+              <small>Utenti recenti</small>
+              <strong>{users.slice(0, 10).length}</strong>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -128,7 +181,7 @@ const Home = (props) => {
       </div>
 
       <div className="row g-4 mb-4">
-        <div className="col-lg-6 col-md-12">
+        <div className="col-xl-8 col-lg-7 col-md-12">
           <div className="card panel-card h-100">
             <div className="card-body">
               <div className="panel-head">
@@ -142,7 +195,37 @@ const Home = (props) => {
           </div>
         </div>
 
-        <div className="col-lg-6 col-md-12">
+        <div className="col-xl-4 col-lg-5 col-md-12">
+          <div className="card panel-card h-100 dashboard-mix-card">
+            <div className="card-body">
+              <div className="panel-head mb-2">
+                <h5>Distribuzione risorse</h5>
+                <small>Peso attuale tra aree principali</small>
+              </div>
+              <div className="dashboard-doughnut-box">
+                <Doughnut data={prepareMixChartData()} options={doughnutOptions} />
+              </div>
+              <div className="dashboard-mix-legend">
+                <span className="legend-item legend-users">
+                  <i className="fa-solid fa-circle"></i> Utenti: {users.length}
+                </span>
+                <span className="legend-item legend-albums">
+                  <i className="fa-solid fa-circle"></i> Album: {albums.length}
+                </span>
+                <span className="legend-item legend-products">
+                  <i className="fa-solid fa-circle"></i> Prodotti: {products.length}
+                </span>
+                <span className="legend-item legend-orders">
+                  <i className="fa-solid fa-circle"></i> Ordini: {orders.length}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="row g-4 mb-4">
+        <div className="col-12">
           <div className="card panel-card h-100">
             <div className="card-body">
               <div className="panel-head">
