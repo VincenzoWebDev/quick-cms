@@ -10,6 +10,7 @@ import {
   Pagination,
 } from '@/components/Admin/Index';
 import { useFilterHandlers } from '@/hooks/admin/useFilterHandlers';
+import showSeoToast from '@/components/Admin/Products/showSeoToast';
 
 const ProductsContent = ({ products, flash, sortBy, sortDirection, perPage, sortSearch }) => {
   useEffect(() => {
@@ -21,6 +22,12 @@ const ProductsContent = ({ products, flash, sortBy, sortDirection, perPage, sort
       }
     }
   }, [flash]);
+
+  useEffect(() => {
+    if (flash?.message?.seo_generated_product) {
+      showSeoToast(flash.message.seo_generated_product);
+    }
+  }, [flash.message?.seo_generated_product]);
 
   const { delete: formDelete } = useForm();
   const { errors } = usePage().props;

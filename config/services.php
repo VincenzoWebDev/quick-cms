@@ -34,4 +34,9 @@ return [
     'shippo' => [
         'api_key' => env('SHIPPO_API_KEY'),
     ],
+
+    'ollama' => [
+        'url' => env('OLLAMA_BASE_URL', 'http://localhost:11434'),
+        'model' => env('OLLAMA_MODEL', 'llama3.1'),
+    ],
 ];

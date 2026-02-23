@@ -1,25 +1,11 @@
 import { Link, useForm } from '@inertiajs/react';
 import Layout from '@/Layouts/Admin/Layout';
 import { BASE_URL } from '@/constants/constants';
-import {
-  ImagesTab,
-  InfoTab,
-  InputErrors,
-  ProductTabs,
-  SeoTab,
-  VariantsTab,
-} from '@/components/Admin/Index';
+import { ImagesTab, InfoTab, InputErrors, ProductTabs, SeoTab, VariantsTab } from '@/components/Admin/Index';
 import { useEffect } from 'react';
 import { toast } from 'react-toastify';
 
-const ProductEdit = ({
-  product,
-  categories,
-  selectedFatherCat,
-  selectedChildCat,
-  variants,
-  flash,
-}) => {
+const ProductEdit = ({ product, categories, selectedFatherCat, selectedChildCat, variants, flash }) => {
   useEffect(() => {
     if (flash?.message) {
       if (flash.message.tipo === 'success') {
@@ -59,6 +45,7 @@ const ProductEdit = ({
     const { name, value } = e.target;
     setData(name, value);
   };
+
   const handleSeoChange = (e) => {
     const { name, value } = e.target;
     setData({

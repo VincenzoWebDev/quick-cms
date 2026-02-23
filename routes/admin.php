@@ -93,7 +93,7 @@ Route::get('/album_categories', [AlbumCategoryController::class, 'index'])->name
 Route::get('/album_categories/create', [AlbumCategoryController::class, 'create'])->name('album.categories.create');
 Route::post('/album_categories', [AlbumCategoryController::class, 'store'])->name('album.categories.store');
 Route::get('/album_categories/{category}/edit', [AlbumCategoryController::class, 'edit'])->name('album.categories.edit')->where('category', '[0-9]+');
-Route::patch('/album_categories/{category}', [AlbumCategoryController::class, 'update'])->name('album.categories.update')->where('id', '[0-9]+');
+Route::patch('/album_categories/{category}', [AlbumCategoryController::class, 'update'])->name('album.categories.update')->where('category', '[0-9]+');
 Route::delete('/album_categories/{category}', [AlbumCategoryController::class, 'destroy'])->name('album.categories.destroy')->where('category', '[0-9]+');
 Route::delete('/album_categories/destroy/batch', [AlbumCategoryController::class, 'destroyBatch'])->name('album.categories.destroy.batch');
 

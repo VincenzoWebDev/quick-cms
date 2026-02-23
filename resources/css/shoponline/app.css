@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+	--brand: #6366F1;
+	--brand-600: #4F46E5;
+	--muted: #6B7280;
+}
+
+/* shadcn-like utilities */
+.btn { @apply inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium; }
+.btn-primary { @apply bg-indigo-600 text-white hover:bg-indigo-500; }
+.btn-outline { @apply border border-gray-200 text-gray-700 bg-white hover:bg-gray-50; }
+
+.card { @apply bg-white rounded-lg border border-gray-100 p-4 hover:shadow-md transition; }
+
+/* small helpers */
+.muted { color: var(--muted); }

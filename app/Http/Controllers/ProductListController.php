@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Front\ProductListFilterRequest;
+use App\Models\Page;
 use App\Models\Product;
 use App\Models\ProductVariant;
-use App\Models\Theme;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 

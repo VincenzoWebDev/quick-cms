@@ -19,7 +19,7 @@ class ProductDetailController extends Controller
         $this->themeName = $this->getActiveTheme();
     }
 
-    public function index($slug = null, $id)
+    public function index($id, $slug = null)
     {
         $product = Product::where('id', $id)
             ->with('categories', 'productImages')
@@ -29,8 +29,11 @@ class ProductDetailController extends Controller
                 }
             ])
             ->first();
+        if (!$product) {
+            abort(404);
+        }
         $variantNames = ProductVariant::pluck('name', 'id')->toArray();
-        $seoMetadata = $product->seoMetadata;
+        $seoMetadata = $product->seoMetadata ? $product->seoMetadata->only(['meta_title', 'meta_description', 'meta_keywords']) : null;
 
         return Inertia::render(
             'Front/Themes/' . $this->themeName . '/ProductDetail',

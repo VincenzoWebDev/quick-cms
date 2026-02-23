@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Requests\EditProductRequest;
 use App\Http\Requests\ProductFilterRequest;
 use App\Http\Requests\ProductRequest;
+use App\Jobs\GenerateProductSeo;
+use App\Jobs\GenerateProductDescription;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductImage;
@@ -73,12 +75,17 @@ class ProductController extends \App\Http\Controllers\Controller
     {
         $product = new Product();
         $product->name = $request->input('name');
-        $product->description = $request->input('description');
+        $product->description = $request->input('description') ?: '';  // Se non c'è descrizione, mettiamo stringa vuota temporaneamente
         $product->price = $request->input('price');
         $product->stock = $request->input('stock');
         $product->slug = $this->createSlug($request->input('name'));
         $product->image_path = '';
         $res = $product->save();
+
+        // Se non è stata fornita una descrizione, la generiamo automaticamente
+        if (!$request->input('description')) {
+            GenerateProductDescription::dispatch($product->id);
+        }
 
         if ($res) {
             if ($request->input('variantCombinations') != null) {
@@ -95,6 +102,9 @@ class ProductController extends \App\Http\Controllers\Controller
             }
             if ($request->has('seo_metadata') && !empty(array_filter($request->input('seo_metadata')))) {
                 $product->seoMetadata()->create($request->input('seo_metadata'));
+            } else {
+                // Generiamo la SEO in background con il job
+                GenerateProductSeo::dispatch($product->id);
             }
         }
 
@@ -102,7 +112,7 @@ class ProductController extends \App\Http\Controllers\Controller
 
         $messaggio = $res ? 'Prodotto ID : ' . $product->id . ' - Inserito correttamente' : 'Prodotto ID : ' . $product->id . ' - Non Inserito';
         $tipoMessaggio = $res ? 'success' : 'danger';
-        session()->flash('message', ['tipo' => $tipoMessaggio, 'testo' => $messaggio]);
+        session()->flash('message', ['tipo' => $tipoMessaggio, 'testo' => $messaggio, 'seo_generated_product' => $product->id]);
 
         return redirect()->route('products.index');
     }

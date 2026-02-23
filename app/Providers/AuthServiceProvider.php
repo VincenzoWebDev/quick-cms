@@ -2,12 +2,9 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Gate;
 use App\Models\Album;
 use App\Models\AlbumCategories;
 use App\Models\Photo;
-use App\Models\Post;
-use App\Models\User;
 use App\Policies\AlbumCategoryPolicy;
 use App\Policies\AlbumPolicy;
 use App\Policies\PhotoPolicy;

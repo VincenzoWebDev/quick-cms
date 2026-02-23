@@ -32,6 +32,11 @@ class Product extends Model
         return $this->morphOne(SeoMetadata::class, 'seoable');
     }
 
+    public function getSeoStatusAttribute()
+    {
+        return $this->seoMetadata ? 'completed' : 'pending';
+    }
+
     public function getProductsPercentage()
     {
         // Data di inizio e fine del mese corrente

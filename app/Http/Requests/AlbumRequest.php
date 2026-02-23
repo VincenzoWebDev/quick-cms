@@ -35,5 +35,4 @@ class AlbumRequest extends FormRequest
             'album_thumb' => 'La thumbnail è obbligatoria'
         ];
     }
-
 }

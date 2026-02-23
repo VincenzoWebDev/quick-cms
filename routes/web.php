@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AiSeoController;
 use App\Http\Controllers\Front\CartController;
 use App\Http\Controllers\Front\CheckoutController;
 use App\Http\Controllers\Front\UserProfileController;
@@ -8,10 +9,11 @@ use App\Http\Controllers\PageViewController;
 use App\Http\Controllers\ProductDetailController;
 use App\Http\Controllers\ProductListController;
 use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\Front\ThemeShopOnlineController;
+use App\Http\Controllers\TestTaskController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,9 +36,17 @@ use Inertia\Inertia;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+Route::get('test-task', [TestTaskController::class, 'index'])->name('testTask.index');
+
+// ShopOnline demo theme routes
+Route::get('/shoponline/products', [ThemeShopOnlineController::class, 'products'])->name('theme.shoponline.products');
+Route::get('/shoponline/product/{id}', [ThemeShopOnlineController::class, 'product'])->name('theme.shoponline.product')->where('id', '[0-9]+');
+Route::get('/shoponline/compare', [ThemeShopOnlineController::class, 'compare'])->name('theme.shoponline.compare');
+
 Route::middleware('CheckEcommerceStatus')->group(function () {
     Route::get('/prodotti', [ProductListController::class, 'index'])->name('productList');
-    Route::get('/prodotti/{slug}/{id}', [ProductDetailController::class, 'index'])->name('productDetail.index')->where('slug', '[a-z0-9-]+')->where('id', '[0-9]+');
+    Route::redirect('/page/prodotti', '/prodotti', 301); // redirect per la pagina prodotti
+    Route::get('/prodotti/{id}/{slug}', [ProductDetailController::class, 'index'])->name('productDetail.index')->where('id', '[0-9]+')->where('slug', '[a-z0-9-]+');
     Route::get('/prodotti/{cat}/{subCat}', [ProductListController::class, 'productListCat'])->name('productList.cat');
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
@@ -60,7 +70,9 @@ Route::middleware('CheckEcommerceStatus')->group(function () {
     Route::post('/user/profile/login', [UserProfileController::class, 'loginPost'])->name('user.profile.login');
 });
 
-Route::get('/{slug}', [PageViewController::class, 'show'])->name('page.show')->where('slug', '[a-z0-9-]+');
+Route::prefix('page')->group(function () {
+    Route::get('/{slug}', [PageViewController::class, 'show'])->name('page.show')->where('slug', '^[a-z0-9]+(?:-[a-z0-9]+)*$');
+});
 
 
 // require __DIR__ . '/theme.php';

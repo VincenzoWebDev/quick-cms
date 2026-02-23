@@ -44,38 +44,52 @@ class HandleInertiaRequests extends Middleware
                 'message' => fn() => $request->session()->get('message'),
                 'status' => fn() => $request->session()->get('status'),
             ],
-            'pages' => Page::all(), /* pagine per la topbar front end */
-            'categories' => Category::whereNull('parent_id')->with('children')->get(),
-            'notifications' => Auth::user() ? Auth::user()->unreadNotifications : null,
-            'cart_items' => Auth::user() ? CartItem::where('user_id', Auth::user()->id)->with('product')->get() : null,
-            'user_auth' => Auth::user() ? Auth::user() : null,
-            'ecommerce_status' => Setting::where('key', 'ecommerce_status')->first()->value,
-            'demo_mode' => Setting::where('key', 'demo_mode')->first()->value,
+            /* pagine per la topbar front end */
+            'pages' => fn() => Page::query()->select('id', 'slug', 'title', 'active')->get(),
+            'categories' => fn() => Category::whereNull('parent_id')->with(['children'])->get(),
+            // 'notifications' => Auth::user() ? Auth::user()->unreadNotifications : null,
+            'notifications' => fn() => $request->user()?->unreadNotifications()?->limit(10)?->get() ?? collect(),
+            // 'cart_items' => Auth::user() ? CartItem::where('user_id', Auth::user()->id)->with('product')->get() : null,
+            'cart_items' => fn() => $request->user()
+                ? CartItem::where('user_id', $request->user()->id)->with('product')->get(['id', 'user_id', 'product_id', 'quantity', 'price'])
+                : [],
+            'user_auth' => fn() => $request->user() ? $request->user()->only(['id', 'name', 'lastname', 'email', 'role', 'profile_img', 'shipping_address', 'billing_address', 'phone']) : null,
+            'ecommerce_status' => fn() => Setting::where('key', 'ecommerce_status')->value('value') ?? false,
+            'demo_mode' => fn() => Setting::where('key', 'demo_mode')->value('value') ?? false,
             'seo_defaults' => [
                 'site_name' => 'Quick CMS - La tua soluzione per la gestione di un e-commerce',
                 'site_description' => 'Quick CMS è la soluzione ideale per gestire un e-commerce. Offre funzionalità complete per la gestione dei prodotti, delle categorie, degli ordini e molto altro ancora. Scopri come Quick CMS può aiutarti a gestire il tuo e-commerce in modo efficiente e semplice.',
             ],
-            'auth' => [
-                'user' => $request->user(),
-            ],
+            'auth' => ['user' => $request->user()?->only(['id', 'name', 'lastname', 'email', 'role', 'profile_img'])],
         ]);
     }
 
+    // public function rootView(Request $request)
+    // {
+    //     $uri = $request->route() ? $request->route()->uri : '';
+    //     $activeTheme = Theme::where('active', true)->first();
+    //     $themeName = $activeTheme ? $activeTheme->name : 'default';
+
+    //     if (str_contains($uri, 'admin') || str_contains($uri, 'admin/login') || str_contains($uri, 'admin/register') || str_contains($uri, 'admin/password')) {
+    //         return 'layouts.admin.app';
+    //     }
+    //     if (Str::endsWith($uri, 'user/profile/login')) {
+    //         return 'layouts.' . $themeName . '.app';
+    //     }
+    //     return 'layouts.' . $themeName . '.app';
+
+    //     return parent::rootView($request);
+    // }
     public function rootView(Request $request)
     {
-        $uri = $request->route() ? $request->route()->uri : null;
         $activeTheme = Theme::where('active', true)->first();
         $themeName = $activeTheme ? $activeTheme->name : 'default';
 
-        if (str_contains($uri, 'admin') || str_contains($uri, 'admin/login') || str_contains($uri, 'admin/register') || str_contains($uri, 'admin/password')) {
+        if ($request->is('admin*')) {
             return 'layouts.admin.app';
         }
-        if (Str::endsWith($uri, 'user/profile/login')) {
-            return 'layouts.' . $themeName . '.app';
-        }
-        return 'layouts.' . $themeName . '.app';
 
-        return parent::rootView($request);
+        return 'layouts.' . $themeName . '.app';
     }
 
     public function handle($request, Closure $next)

@@ -41,11 +41,11 @@ class PageViewController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($slug)
+    public function show(string $slug)
     {
         $currentPage = Page::where('slug', $slug)->where('active', 1)->firstOrFail();
         $pageLayout = $currentPage->layout;
-        return Inertia::render('Front/Themes/'.$this->themeName.'/Page', ['currentPage' => $currentPage, 'pageLayout' => $pageLayout]);
+        return Inertia::render('Front/Themes/' . $this->themeName . '/Page', ['currentPage' => $currentPage, 'pageLayout' => $pageLayout]);
     }
 
     /**

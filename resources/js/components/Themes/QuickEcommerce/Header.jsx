@@ -45,7 +45,7 @@ const Header = () => {
                 </select>
               </div>
               <div className="col-11 col-md-7">
-                <form id="search-form" className="text-center" action="/" method="post">
+                <form id="search-form" className="text-center" method="post">
                   <input
                     type="text"
                     className="form-control border-0 bg-transparent"
