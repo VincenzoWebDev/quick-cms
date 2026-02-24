@@ -10,6 +10,8 @@ const OrdersContentTable = ({
   selectAll,
   handleSort,
   getSortIcon,
+  loading,
+  currentPerPage,
 }) => {
   const handleCheckboxChange = useCallback((e, orderId) => {
     if (e.target.checked) {
@@ -39,7 +41,7 @@ const OrdersContentTable = ({
 
   return (
     <div className="table-responsive admin-table-shell">
-      <table className="table table-hover mb-0 admin-table">
+      <table className="table table-hover mb-0 admin-table orders-table">
         <thead>
           <tr>
             <th scope="col">
@@ -65,9 +67,7 @@ const OrdersContentTable = ({
             </th>
             <th scope="col">Stato spedizione</th>
             <th scope="col">Stato pagamento</th>
-            <th scope="col" className="text-center">
-              Numero di spedizione
-            </th>
+            <th scope="col">Tracking</th>
             <th scope="col">Metodo di spedizione</th>
             <th scope="col" className="text-center">
               Operazioni
@@ -75,7 +75,15 @@ const OrdersContentTable = ({
           </tr>
         </thead>
         <tbody>
-          {orders.data.length > 0 ? (
+          {loading ? (
+            [...Array(Number(currentPerPage) || 10)].map((_, index) => (
+              <tr key={`orders-loading-${index}`}>
+                <td colSpan="9" className="py-2">
+                  <div className="admin-row-skeleton"></div>
+                </td>
+              </tr>
+            ))
+          ) : orders.data.length > 0 ? (
             orders.data.map((order) => (
               <OrderRow
                 key={order.id}
@@ -87,7 +95,7 @@ const OrdersContentTable = ({
             ))
           ) : (
             <tr>
-              <td colSpan="9" className="text-center">
+              <td colSpan="9" className="text-center py-4">
                 Non ci sono ordini
               </td>
             </tr>

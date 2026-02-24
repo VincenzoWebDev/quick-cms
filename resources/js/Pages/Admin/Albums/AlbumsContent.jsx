@@ -54,6 +54,9 @@ const AlbumsContent = ({ albums, flash }) => {
     AlbumDeleteSelected({ e, formDelete, selectedRecords, setSelectedRecords, setSelectAll });
   };
 
+  const totalAlbums = albums.total ?? albums.data.length;
+  const totalCategoriesLinked = albums.data.reduce((acc, album) => acc + (album.categories?.length || 0), 0);
+
   return (
     <Layout>
       <SectionHeader
@@ -71,8 +74,27 @@ const AlbumsContent = ({ albums, flash }) => {
 
       <div className="card shadow-2-strong">
         <div className="card-body">
+          <div className="admin-overview-strip">
+            <div className="admin-overview-item">
+              <small>Totale album</small>
+              <strong>{totalAlbums}</strong>
+            </div>
+            <div className="admin-overview-item">
+              <small>Categorie collegate</small>
+              <strong>{totalCategoriesLinked}</strong>
+            </div>
+            <div className="admin-overview-item">
+              <small>Selezionati</small>
+              <strong>{selectedRecords.length}</strong>
+            </div>
+          </div>
+
+          <div className="admin-list-toolbar">
+            <p className="mb-0">Gestisci album, autore e tassonomia in una tabella unica e leggibile.</p>
+          </div>
+
           <div className="table-responsive admin-table-shell">
-            <table className="table table-hover mb-0 admin-table">
+            <table className="table table-hover mb-0 admin-table albums-table">
               <thead>
                 <tr>
                   <th scope="col">
@@ -112,7 +134,7 @@ const AlbumsContent = ({ albums, flash }) => {
                         </div>
                       </th>
                       <th scope="row" className="col-md-1">
-                        {album.id}
+                        #{album.id}
                       </th>
                       <td scope="row" className="col-md-2">
                         {album.album_name}
@@ -122,13 +144,25 @@ const AlbumsContent = ({ albums, flash }) => {
                       </td>
                       <td scope="row" className="col-md-2">
                         {album.categories.length > 0 ? (
-                          album.categories.map((cat) => <li key={cat.id}>{cat.category_name}</li>)
+                          <div className="albums-categories-wrap">
+                            {album.categories.map((cat) => (
+                              <span key={cat.id} className="albums-category-chip">
+                                {cat.category_name}
+                              </span>
+                            ))}
+                          </div>
                         ) : (
                           <span>Nessuna categoria</span>
                         )}
                       </td>
                       <td scope="row" className="col-md-2">
-                        <img src={STORAGE_URL + album.album_thumb} width="120" alt={album.album_name} loading="lazy" />
+                        <img
+                          src={STORAGE_URL + album.album_thumb}
+                          width="120"
+                          alt={album.album_name}
+                          loading="lazy"
+                          className="albums-thumb"
+                        />
                       </td>
                       <td scope="row" className="text-center col-md-2">
                         <div className="action-buttons justify-content-center">

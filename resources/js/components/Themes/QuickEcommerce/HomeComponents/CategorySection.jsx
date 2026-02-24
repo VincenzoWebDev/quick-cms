@@ -6,6 +6,7 @@ import { Autoplay } from 'swiper/modules';
 SwiperCore.use([Autoplay]);
 import 'swiper/swiper-bundle.css';
 import { BASE_URL } from '@/constants/constants';
+import { Link } from '@inertiajs/react';
 
 const CategorySection = () => {
     const { categories } = usePage().props;
@@ -59,10 +60,10 @@ const CategorySection = () => {
                         <div className="section-header d-flex flex-wrap justify-content-between mb-5">
                             <h2 className="section-title">Categorie</h2>
                             <div className="d-flex align-items-center">
-                                <a href="#" className="btn btn-primary me-2">Vedi tutte</a>
+                                <Link href={route('productList')} className="btn btn-primary me-2">Vedi tutte</Link>
                                 <div className="swiper-buttons">
-                                    <button className="swiper-prev category-carousel-prev btn btn-primary me-2" onClick={() => categorySwiper.slidePrev()}>❮</button>
-                                    <button className="swiper-next category-carousel-next btn btn-primary" onClick={() => categorySwiper.slideNext()}>❯</button>
+                                    <button className="swiper-prev category-carousel-prev btn btn-primary me-2" onClick={() => categorySwiper?.slidePrev()}>❮</button>
+                                    <button className="swiper-next category-carousel-next btn btn-primary" onClick={() => categorySwiper?.slideNext()}>❯</button>
                                 </div>
                             </div>
                         </div>
@@ -74,10 +75,18 @@ const CategorySection = () => {
                             <div className="swiper-wrapper">
                                 {
                                     categories.map((category) => (
-                                        <a href="#" className="nav-link swiper-slide text-center" key={category.id}>
+                                        <Link
+                                            href={
+                                                category.children?.length > 0
+                                                    ? route('productList.cat', [category.name, category.children[0].name])
+                                                    : route('productList')
+                                            }
+                                            className="nav-link swiper-slide text-center"
+                                            key={category.id}
+                                        >
                                             <img src={BASE_URL + category.image_path} className="rounded-circle" alt={category.name} loading='lazy' />
                                             <h4 className="fs-6 mt-3 fw-normal category-title">{category.name}</h4>
-                                        </a>
+                                        </Link>
                                     ))
                                 }
                             </div>

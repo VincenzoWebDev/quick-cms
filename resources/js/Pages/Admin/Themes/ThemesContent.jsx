@@ -98,6 +98,10 @@ const ThemesContent = ({ themes, flash }) => {
     );
   };
 
+  const totalThemes = themes.length;
+  const activeThemes = themes.filter((theme) => Boolean(theme.active)).length;
+  const inactiveThemes = totalThemes - activeThemes;
+
   return (
     <Layout>
       <SectionHeader
@@ -112,14 +116,33 @@ const ThemesContent = ({ themes, flash }) => {
 
       <div className="card shadow-2-strong">
         <div className="card-body">
+          <div className="admin-overview-strip">
+            <div className="admin-overview-item">
+              <small>Totale temi</small>
+              <strong>{totalThemes}</strong>
+            </div>
+            <div className="admin-overview-item">
+              <small>Temi attivi</small>
+              <strong>{activeThemes}</strong>
+            </div>
+            <div className="admin-overview-item">
+              <small>Temi inattivi</small>
+              <strong>{inactiveThemes}</strong>
+            </div>
+          </div>
+
+          <div className="admin-list-toolbar">
+            <p className="mb-0">Gestisci attivazione e percorso dei temi senza uscire dall'elenco.</p>
+          </div>
+
           <div className="table-responsive admin-table-shell">
-            <table className="table table-hover mb-0 admin-table">
+            <table className="table table-hover mb-0 admin-table themes-table">
               <thead>
                 <tr>
                   <th scope="col" className="text-center">
                     Id
                   </th>
-                  <th scope="col">Nome team</th>
+                  <th scope="col">Nome tema</th>
                   <th scope="col">Percorso</th>
                   <th scope="col">Stato</th>
                   <th scope="col" className="text-center">
@@ -132,21 +155,26 @@ const ThemesContent = ({ themes, flash }) => {
                   return (
                     <tr key={theme.id} className="align-middle">
                       <th scope="row" className="col-md-2 text-center">
-                        {theme.id}
+                        #{theme.id}
                       </th>
                       <td className="col-md-5">{theme.name}</td>
-                      <td>{theme.path}</td>
-                      <td scope="row" className="com-md-3">
-                        <div className="form-check form-switch">
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            role="switch"
-                            id={`flexSwitchCheckDefault${theme.id}`}
-                            data-theme-id={theme.id}
-                            checked={theme.active}
-                            onChange={handleSwitchChange}
-                          />
+                      <td className="themes-path-cell">{theme.path}</td>
+                      <td scope="row" className="col-md-3">
+                        <div className="d-flex align-items-center gap-2">
+                          <span className={`themes-status-badge ${theme.active ? 'is-active' : 'is-inactive'}`}>
+                            {theme.active ? 'Attivo' : 'Inattivo'}
+                          </span>
+                          <div className="form-check form-switch">
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              role="switch"
+                              id={`flexSwitchCheckDefault${theme.id}`}
+                              data-theme-id={theme.id}
+                              checked={theme.active}
+                              onChange={handleSwitchChange}
+                            />
+                          </div>
                         </div>
                       </td>
                       <td className="text-center">
@@ -159,6 +187,13 @@ const ThemesContent = ({ themes, flash }) => {
                     </tr>
                   );
                 })}
+                {themes.length === 0 && (
+                  <tr>
+                    <td colSpan="5" className="text-center py-4">
+                      Nessun tema disponibile
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

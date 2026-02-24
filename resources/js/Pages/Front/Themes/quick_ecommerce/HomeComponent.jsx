@@ -1,24 +1,11 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
     BestSellingProducts, CategorySection, BannerSection, FeaturedProducts, NewsletterBanner,
     LatestProducts, PeoplesLooking, FeaturesSection,
 } from "@/components/Themes/QuickEcommerce/Index";
 import EcommerceLayout from "@/Layouts/EcommerceLayout";
-import AOS from 'aos';
-import 'aos/dist/aos.css';
 
 const HomeComponent = ({ products }) => {
-    useEffect(() => {
-        AOS.init(
-            {
-                duration: 500,
-                easing: 'ease-in-out',
-                once: true,
-                mirror: true,
-            }
-        );
-    }, [])
-
     return (
         <EcommerceLayout>
             <CategorySection />
@@ -26,7 +13,7 @@ const HomeComponent = ({ products }) => {
             <BannerSection />
             <FeaturedProducts products={products} />
             <NewsletterBanner />
-            <LatestProducts />
+            <LatestProducts products={products} />
             <PeoplesLooking />
             <FeaturesSection />
         </EcommerceLayout>

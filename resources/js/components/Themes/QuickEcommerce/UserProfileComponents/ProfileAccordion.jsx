@@ -3,10 +3,10 @@ import { ChevronRight, Settings, ShoppingBasket, User } from 'lucide-react';
 
 const ProfileAccordion = () => {
     const { url } = usePage();
+    const currentPath = url.split('?')[0];
     const isActive = (routeName) => {
-        // Estrae solo il percorso relativo dall’URL completo generato da `route()`
-        const relativePath = new URL(route(routeName), window.location.origin).pathname;
-        return url === relativePath;
+        const relativePath = route(routeName, undefined, false);
+        return currentPath === relativePath;
     };
 
     return (

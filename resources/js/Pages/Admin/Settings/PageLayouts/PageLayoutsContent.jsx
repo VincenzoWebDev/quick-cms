@@ -26,6 +26,7 @@ const PageLayoutsContent = ({ pageLayouts, flash }) => {
   const filteredLayouts = useMemo(() => {
     return pageLayouts.filter((layout) => layout.name.toLowerCase().includes(search.toLowerCase()));
   }, [pageLayouts, search]);
+  const totalLayouts = pageLayouts.length;
 
   const openModal = (type, payload = null) => {
     setModalErrors({});
@@ -114,6 +115,21 @@ const PageLayoutsContent = ({ pageLayouts, flash }) => {
 
       <div className="card shadow-2-strong">
         <div className="card-body">
+          <div className="admin-overview-strip">
+            <div className="admin-overview-item">
+              <small>Totale layout</small>
+              <strong>{totalLayouts}</strong>
+            </div>
+            <div className="admin-overview-item">
+              <small>Visualizzati</small>
+              <strong>{filteredLayouts.length}</strong>
+            </div>
+            <div className="admin-overview-item">
+              <small>Ricerca attiva</small>
+              <strong>{search ? 'Si' : 'No'}</strong>
+            </div>
+          </div>
+
           <div className="variants-search mb-3">
             <i className="fa-solid fa-magnifying-glass"></i>
             <input
@@ -125,8 +141,12 @@ const PageLayoutsContent = ({ pageLayouts, flash }) => {
             />
           </div>
 
+          <div className="admin-list-toolbar">
+            <p className="mb-0">I layout definiscono la struttura base delle pagine disponibili nel CMS.</p>
+          </div>
+
           <div className="table-responsive admin-table-shell">
-            <table className="table table-hover mb-0 admin-table">
+            <table className="table table-hover mb-0 admin-table page-layouts-table">
               <thead>
                 <tr>
                   <th scope="col">Id</th>
@@ -140,8 +160,10 @@ const PageLayoutsContent = ({ pageLayouts, flash }) => {
                 {filteredLayouts.length > 0 ? (
                   filteredLayouts.map((layout) => (
                     <tr key={layout.id} className="align-middle">
-                      <td>{layout.id}</td>
-                      <td>{layout.name}</td>
+                      <td>#{layout.id}</td>
+                      <td>
+                        <span className="page-layout-name-pill">{layout.name}</span>
+                      </td>
                       <td className="text-center">
                         <div className="action-buttons justify-content-center">
                           <button type="button" className="action-icon-btn action-edit" onClick={() => openEditModal(layout)}>

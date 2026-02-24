@@ -90,14 +90,16 @@ class AlbumCategoryController extends \App\Http\Controllers\Controller
         if ($recordIds == null) {
             return;
         }
-        $categories = [];
         foreach ($recordIds as $id) {
-            $categories[] = AlbumCategories::find($id);
-        }
-        $response = Gate::inspect('delete', $categories);
-        if ($response->denied()) {
-            session()->flash('message', ['tipo' => 'danger', 'testo' => 'Non hai i permessi per eliminare le categorie selezionate']);
-            return redirect()->back();
+            $category = AlbumCategories::find($id);
+            if (!$category) {
+                continue;
+            }
+            $response = Gate::inspect('delete', $category);
+            if ($response->denied()) {
+                session()->flash('message', ['tipo' => 'danger', 'testo' => 'Non hai i permessi per eliminare le categorie selezionate']);
+                return redirect()->back();
+            }
         }
         $res = AlbumCategories::whereIn('id', $recordIds)->delete();
         $messaggio = $res ? 'Categorie eliminate correttamente' : 'Categorie non eliminate';

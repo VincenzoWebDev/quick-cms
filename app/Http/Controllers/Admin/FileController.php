@@ -9,6 +9,17 @@ use Inertia\Inertia;
 
 class FileController extends \App\Http\Controllers\Controller
 {
+    private const ALLOWED_EXTENSIONS = [
+        'jpg', 'png', 'jpeg', 'gif', 'webp', 'svg',
+        'pdf', 'doc', 'docx', 'odt',
+        'mp4', 'webm', 'ogv', 'mkv',
+    ];
+
+    private function resolveRelativeUploadPath(string $fileName): string
+    {
+        return config('app.uploads_dir') . basename($fileName);
+    }
+
     public function index()
     {
         $publicPath = public_path('storage/' . config('app.uploads_dir'));
@@ -31,50 +42,56 @@ class FileController extends \App\Http\Controllers\Controller
 
     public function destroy(Request $request)
     {
-        $fileName = $request->get('fileName');
-        $filePath = public_path('storage/' . config('app.uploads_dir') . $fileName);
-        if (file_exists($filePath)) {
-            unlink($filePath);
+        $request->validate([
+            'fileName' => ['required', 'string'],
+        ]);
+
+        $relativePath = $this->resolveRelativeUploadPath($request->input('fileName'));
+        if (Storage::disk('public')->exists($relativePath)) {
+            Storage::disk('public')->delete($relativePath);
         }
+
+        return back();
     }
 
     public function fileDownload(Request $request)
     {
         $res = $request->get('res');
-        $fileName = $request->get('fileName');
-        $filePath = public_path('storage/' . config('app.uploads_dir') . $fileName);
-        if (!file_exists($filePath)) {
+        $request->validate([
+            'fileName' => ['required', 'string'],
+        ]);
+
+        $fileName = basename($request->input('fileName'));
+        $relativePath = $this->resolveRelativeUploadPath($fileName);
+        if (!Storage::disk('public')->exists($relativePath)) {
             return response()->json(['message' => 'File non trovato'], 404);
         }
 
         $messaggio = $res ? 'Download immagine: ' . $fileName . ' - Avvenuto correttamente' : 'Problema con il download dell\'immagine: ' . $fileName;
         $tipoMessaggio = $res ? 'success' : 'danger';
         session()->flash('message', ['tipo' => $tipoMessaggio, 'testo' => $messaggio]);
-        return response()->download($filePath);
+        return response()->download(Storage::disk('public')->path($relativePath));
     }
 
     public function store(Request $request)
     {
+        $request->validate([
+            'file' => ['required', 'file'],
+        ]);
+
         $file = $request->file('file');
-        $fileExtension = $file->extension();
+        $fileExtension = strtolower($file->extension());
+        if (!in_array($fileExtension, self::ALLOWED_EXTENSIONS, true)) {
+            return back()->withErrors(['file' => 'Formato file non supportato']);
+        }
+
         $fileNameExt = $file->getClientOriginalName();
         $fileName = pathinfo($fileNameExt, PATHINFO_FILENAME);
+        $fileName = str_replace(' ', '_', $fileName);
+        $fileName = $fileName . '_' . time() . '.' . $fileExtension;
+        $file->storeAs(config('app.uploads_dir'), $fileName, 'public');
 
-        if ($fileExtension == 'jpg' || $fileExtension == 'png' || $fileExtension == 'jpeg' || $fileExtension == 'gif' || $fileExtension == 'webp' || $fileExtension == 'svg') {
-            $fileName = str_replace(' ', '_', $fileName);
-            $fileName = $fileName . '_' . time() . '.' . $fileExtension;
-            $file->storeAs(config('app.uploads_dir'), $fileName, 'public');
-        }
-        if ($fileExtension == 'pdf' || $fileExtension == 'doc' || $fileExtension == 'docx' || $fileExtension == 'odt') {
-            $fileName = str_replace(' ', '_', $fileName);
-            $fileName = $fileName . '_' . time() . '.' . $fileExtension;
-            $file->storeAs(config('app.uploads_dir'), $fileName, 'public');
-        }
-        if ($fileExtension == 'mp4' || $fileExtension == 'webm' || $fileExtension == 'ogv' || $fileExtension == 'mkv') {
-            $fileName = str_replace(' ', '_', $fileName);
-            $fileName = $fileName . '_' . time() . '.' . $fileExtension;
-            $file->storeAs(config('app.uploads_dir'), $fileName, 'public');
-        }
+        return back();
     }
 
     public function images()

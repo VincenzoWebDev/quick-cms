@@ -314,10 +314,10 @@ const Sidebar = () => {
               <i className="fa-solid fa-arrow-up-right-from-square"></i>
               <span>Sito</span>
             </a>
-            <a href="#" onClick={handleLogout} className="sidebar-mini-link sidebar-mini-danger">
+            <button type="button" onClick={handleLogout} className="sidebar-mini-link sidebar-mini-danger">
               <i className="fa-solid fa-right-from-bracket"></i>
               <span>Logout</span>
-            </a>
+            </button>
           </div>
 
           <div className="sidebar-notify-pill">

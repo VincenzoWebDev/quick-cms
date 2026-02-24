@@ -24,35 +24,36 @@ class ThemeController extends \App\Http\Controllers\Controller
 
     public function destroy(Theme $theme)
     {
-        // if (!$theme) {
-        //     return response()->json(['error' => 'Tema non trovato'], 404);
-        // }
-        // if ($theme->name == 'quick_cms') {
-        //     $messaggio = 'Non puoi eliminare il tema principale';
-        //     $tipoMessaggio = 'danger';
-        //     session()->flash('message', ['tipo' => $tipoMessaggio, 'testo' => $messaggio]);
-        //     return;
-        // }
-        // // Percorsi per le cartelle da eliminare
-        // $themeDir = resource_path('js/Pages/Front/themes/' . $theme->name);
-        // $cssDir = resource_path('css/' . $theme->name);
-        // $viewsDir = resource_path('views/layouts/' . $theme->name);
-        // $publicDir = public_path('themes/' . $theme->name);
+        if ((int) $theme->active === 1) {
+            session()->flash('message', ['tipo' => 'danger', 'testo' => 'Non puoi eliminare un tema attivo']);
+            return redirect()->route('themes.index');
+        }
 
-        // // Elimina i file e le directory
-        // File::deleteDirectory($themeDir);
-        // File::deleteDirectory($cssDir);
-        // File::deleteDirectory($viewsDir);
-        // File::deleteDirectory($publicDir);
-
-        // // Elimina il tema dal database
-        // $theme->delete();
-        return;
+        $res = $theme->delete();
+        $messaggio = $res ? 'Tema eliminato correttamente' : 'Tema non eliminato';
+        $tipoMessaggio = $res ? 'success' : 'danger';
+        session()->flash('message', ['tipo' => $tipoMessaggio, 'testo' => $messaggio]);
+        return redirect()->route('themes.index');
     }
 
     public function destroyBatch(Request $request)
     {
-        return;
+        $recordIds = $request->input('recordIds');
+        if (!$recordIds || !is_array($recordIds)) {
+            return redirect()->route('themes.index');
+        }
+
+        $themes = Theme::whereIn('id', $recordIds)->get();
+        if ($themes->contains(fn($theme) => (int) $theme->active === 1)) {
+            session()->flash('message', ['tipo' => 'danger', 'testo' => 'Rimuovi prima i temi attivi dalla selezione']);
+            return redirect()->route('themes.index');
+        }
+
+        $deleted = Theme::whereIn('id', $recordIds)->delete();
+        $messaggio = $deleted ? 'Temi eliminati correttamente' : 'Nessun tema eliminato';
+        $tipoMessaggio = $deleted ? 'success' : 'danger';
+        session()->flash('message', ['tipo' => $tipoMessaggio, 'testo' => $messaggio]);
+        return redirect()->route('themes.index');
     }
 
     public function store(ThemeRequest $request)

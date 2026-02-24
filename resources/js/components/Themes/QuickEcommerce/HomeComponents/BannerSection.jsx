@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from '@inertiajs/react';
 
 const BannerSection = () => {
     return (
@@ -13,7 +14,7 @@ const BannerSection = () => {
                                     <div className="content-wrapper text-light">
                                         <h3 className="banner-title text-light">Items on SALE</h3>
                                         <p>Discounts up to 30%</p>
-                                        <a href="#" className="btn-link text-white">Shop Now</a>
+                                        <Link href={route('productList')} className="btn-link text-white">Shop Now</Link>
                                     </div>
                                 </div>
                             </div>
@@ -23,7 +24,7 @@ const BannerSection = () => {
                                     <div className="content-wrapper text-light">
                                         <h3 className="banner-title text-light">Combo offers</h3>
                                         <p>Discounts up to 50%</p>
-                                        <a href="#" className="btn-link text-white">Shop Now</a>
+                                        <Link href={route('productList')} className="btn-link text-white">Shop Now</Link>
                                     </div>
                                 </div>
                             </div>
@@ -34,7 +35,7 @@ const BannerSection = () => {
                                     <div className="content-wrapper text-light">
                                         <h3 className="banner-title text-light">Discount Coupons</h3>
                                         <p>Discounts up to 40%</p>
-                                        <a href="#" className="btn-link text-white">Shop Now</a>
+                                        <Link href={route('productList')} className="btn-link text-white">Shop Now</Link>
                                     </div>
                                 </div>
                             </div>

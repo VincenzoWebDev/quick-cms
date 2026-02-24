@@ -42,6 +42,14 @@ const ProductVariantsContent = ({ variants, variants_values, flash }) => {
       return acc;
     }, {});
   }, [variants_values]);
+  const variantNameById = useMemo(
+    () =>
+      variants.reduce((acc, variant) => {
+        acc[variant.id] = variant.name;
+        return acc;
+      }, {}),
+    [variants]
+  );
 
   const filteredVariants = useMemo(() => {
     return variants.filter((variant) => variant.name.toLowerCase().includes(variantSearch.toLowerCase()));
@@ -271,8 +279,29 @@ const ProductVariantsContent = ({ variants, variants_values, flash }) => {
                 </div>
               </div>
 
+              <div className="admin-overview-strip">
+                <div className="admin-overview-item">
+                  <small>Totale valori</small>
+                  <strong>{displayedValues.length}</strong>
+                </div>
+                <div className="admin-overview-item">
+                  <small>Variante selezionata</small>
+                  <strong>{activeVariant ? activeVariant.name : 'Tutte'}</strong>
+                </div>
+                <div className="admin-overview-item">
+                  <small>Ricerca attiva</small>
+                  <strong>{valueSearch ? 'Si' : 'No'}</strong>
+                </div>
+              </div>
+
+              <div className="admin-list-toolbar">
+                <p className="mb-0">
+                  Ogni valore rappresenta una scelta concreta della variante, ad esempio colore o taglia.
+                </p>
+              </div>
+
               <div className="table-responsive admin-table-shell">
-                <table className="table table-hover mb-0 admin-table">
+                <table className="table table-hover mb-0 admin-table variants-values-table">
                   <thead>
                     <tr>
                       <th scope="col">Id</th>
@@ -287,13 +316,15 @@ const ProductVariantsContent = ({ variants, variants_values, flash }) => {
                     {displayedValues.length > 0 ? (
                       displayedValues.map((variantValue) => (
                         <tr key={variantValue.id} className="align-middle">
-                          <td>{variantValue.id}</td>
+                          <td>#{variantValue.id}</td>
                           <td>
                             <span className="variant-values-badge">
-                              {variants.find((v) => v.id === variantValue.product_variant_id)?.name || 'N/D'}
+                              {variantNameById[variantValue.product_variant_id] || 'N/D'}
                             </span>
                           </td>
-                          <td>{variantValue.value}</td>
+                          <td>
+                            <span className="variant-value-pill">{variantValue.value}</span>
+                          </td>
                           <td className="text-center">
                             <div className="action-buttons justify-content-center">
                               <ButtonDelete type="button" onClick={() => openDeleteValueModal(variantValue)} />

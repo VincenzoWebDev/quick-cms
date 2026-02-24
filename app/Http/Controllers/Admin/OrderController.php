@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\OrderFilterRequest;
 use App\Models\Order;
-use App\Models\ShippingAddress;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -87,11 +86,11 @@ class OrderController extends \App\Http\Controllers\Controller
 
         $oldShippingStatus = $order->shipping_status;
         $oldPaymentStatus = $order->payment_status;
-        $oldAddress = $shippingAddress->address;
-        $oldCivic = $shippingAddress->civic;
-        $oldProvince = $shippingAddress->province;
-        $oldPostalCode = $shippingAddress->postal_code;
-        $oldCity = $shippingAddress->city;
+        $oldAddress = $shippingAddress?->address;
+        $oldCivic = $shippingAddress?->civic;
+        $oldProvince = $shippingAddress?->province;
+        $oldPostalCode = $shippingAddress?->postal_code;
+        $oldCity = $shippingAddress?->city;
 
         if ($order != null) {
             $order->shipping_status = $request->input('shipping_status');
@@ -108,9 +107,9 @@ class OrderController extends \App\Http\Controllers\Controller
         }
 
         if (
-            $oldShippingStatus != $order->shipping_status || $oldPaymentStatus != $order->payment_status || $oldAddress != $shippingAddress->address ||
-            $oldCivic != $shippingAddress->civic || $oldProvince != $shippingAddress->province || $oldPostalCode != $shippingAddress->postal_code ||
-            $oldCity != $shippingAddress->city
+            $oldShippingStatus != $order->shipping_status || $oldPaymentStatus != $order->payment_status || $oldAddress != $shippingAddress?->address ||
+            $oldCivic != $shippingAddress?->civic || $oldProvince != $shippingAddress?->province || $oldPostalCode != $shippingAddress?->postal_code ||
+            $oldCity != $shippingAddress?->city
         ) {
             $messaggio = 'Ordine ID : ' . $order->id . ' - Aggiornato correttamente';
             $tipoMessaggio = 'success';

@@ -2,7 +2,7 @@ import Layout from '@/Layouts/Admin/Layout';
 import React, { useEffect, useState } from 'react';
 import { AdminSidebar, ChatBox, SectionHeader } from '@/components/Admin/Index';
 
-const ChatsContent = ({ chats, role, activeChat }) => {
+const ChatsContent = ({ chats, archivedChats = [], role, activeChat }) => {
   const [messages, setMessages] = useState(activeChat[0]?.messages || []);
   const [isSwitchingChat, setIsSwitchingChat] = useState(false);
 
@@ -32,7 +32,12 @@ const ChatsContent = ({ chats, role, activeChat }) => {
       <div className="chat-workspace">
         <div className="row g-0">
           {role === 'admin' && (
-            <AdminSidebar chats={chats} activeChatId={activeChat[0]?.id} onSwitchingChange={setIsSwitchingChat} />
+            <AdminSidebar
+              chats={chats}
+              archivedChats={archivedChats}
+              activeChatId={activeChat[0]?.id}
+              onSwitchingChange={setIsSwitchingChat}
+            />
           )}
           <ChatBox role={role} activeChat={activeChat} messages={messages} setMessages={setMessages} isSwitchingChat={isSwitchingChat} />
         </div>

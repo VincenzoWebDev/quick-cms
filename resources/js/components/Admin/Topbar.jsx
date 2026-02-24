@@ -141,9 +141,9 @@ const Topbar = () => {
                   </a>
                 </li>
                 <li>
-                  <Link className="dropdown-item text-danger" href="#" onClick={handleLogout}>
+                  <button type="button" className="dropdown-item text-danger" onClick={handleLogout}>
                     Logout
-                  </Link>
+                  </button>
                 </li>
               </ul>
             </div>

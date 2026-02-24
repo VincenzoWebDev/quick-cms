@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\ProductVariantValue;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class ProductVariantValueController extends \App\Http\Controllers\Controller
 {
@@ -23,6 +24,9 @@ class ProductVariantValueController extends \App\Http\Controllers\Controller
         $variant_value->value = $request->name;
         $variant_value->product_variant_id = $request->product_variant_id;
         $res = $variant_value->save();
+        if ($res) {
+            Cache::tags(['products'])->flush();
+        }
 
         $messaggio = $res ? 'Valore: ' . $variant_value->value . ' - Inserito correttamente' : 'Valore: ' . $variant_value->value . ' - Non Inserito';
         $tipoMessaggio = $res ? 'success' : 'danger';
@@ -33,6 +37,9 @@ class ProductVariantValueController extends \App\Http\Controllers\Controller
 
     public function destroy(ProductVariantValue $variant_value)
     {
-        $variant_value->delete();
+        $res = $variant_value->delete();
+        if ($res) {
+            Cache::tags(['products'])->flush();
+        }
     }
 }

@@ -126,6 +126,8 @@ Route::get('/chats/{chat?}', [ChatController::class, 'index'])->name('chats.inde
 Route::post('/chats', [ChatController::class, 'store'])->name('chats.store');
 Route::post('/chats/{chat}/close', [ChatController::class, 'closeChat'])->name('chats.close');
 Route::post('/chats/{chat}/messages', [ChatController::class, 'sendMessage'])->name('chats.messages.store');
+Route::post('/chats/{chat}/hide', [ChatController::class, 'hideChat'])->middleware('VerifyIsAdmin')->name('chats.hide');
+Route::post('/chats/{chat}/restore', [ChatController::class, 'restoreChat'])->middleware('VerifyIsAdmin')->name('chats.restore');
 
 Route::middleware('VerifyIsAdmin')->group(function () {
     Route::get('/files', [FileController::class, 'index'])->name('files');

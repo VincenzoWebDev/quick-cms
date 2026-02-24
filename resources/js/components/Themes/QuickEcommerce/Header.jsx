@@ -5,10 +5,32 @@ import logo from '../../../../../public/themes/quick_ecommerce/img/logo.svg';
 const Header = () => {
   const { pages, categories, user_auth, ecommerce_status, cart_items } = usePage().props;
   const { post } = useForm();
+  const { get, data, setData } = useForm({
+    q: '',
+    categoryId: '',
+  });
 
   const handleLogout = (e) => {
     e.preventDefault();
     post(route('user.profile.logout'));
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    const selectedCategory = categories.find((category) => String(category.id) === data.categoryId);
+
+    if (selectedCategory && selectedCategory.children?.length > 0) {
+      get(route('productList.cat', [selectedCategory.name, selectedCategory.children[0].name]), {
+        preserveState: true,
+        preserveScroll: true,
+      });
+      return;
+    }
+
+    get(route('productList', { q: data.q }), {
+      preserveState: true,
+      preserveScroll: true,
+    });
   };
 
   return (
@@ -37,19 +59,26 @@ const Header = () => {
           <div className="col-sm-6 offset-sm-2 offset-md-0 col-lg-4">
             <div className="search-bar row bg-light p-2 rounded-4 align-items-center">
               <div className="col-md-4 d-none d-md-block">
-                <select className="form-select border-0 bg-transparent text-start">
-                  <option>Categorie</option>
+                <select
+                  className="form-select border-0 bg-transparent text-start"
+                  value={data.categoryId}
+                  onChange={(e) => setData('categoryId', e.target.value)}
+                  aria-label="Seleziona una categoria"
+                >
+                  <option value="">Categorie</option>
                   {categories.map((category) => (
-                    <option key={category.id}>{category.name}</option>
+                    <option key={category.id} value={category.id}>{category.name}</option>
                   ))}
                 </select>
               </div>
               <div className="col-11 col-md-7">
-                <form id="search-form" className="text-center" method="post">
+                <form id="search-form" className="text-center" onSubmit={handleSearchSubmit}>
                   <input
                     type="text"
                     className="form-control border-0 bg-transparent"
                     placeholder="Cerca tra più di 20.000 prodotti"
+                    value={data.q}
+                    onChange={(e) => setData('q', e.target.value)}
                   />
                 </form>
               </div>
@@ -72,7 +101,7 @@ const Header = () => {
                 </Link>
               </li>
               <li className="nav-item active">
-                <a href={route('admin')} className="nav-link" target="_blank">
+                <a href={route('admin')} className="nav-link" target="_blank" rel="noopener noreferrer">
                   Pannello
                 </a>
               </li>
@@ -86,16 +115,16 @@ const Header = () => {
                 >
                   pagine
                 </a>
-                <ul
-                  className="dropdown-menu border-0 p-1 mt-5 rounded-0 shadow animate__animated animate__fadeInUp"
-                  aria-labelledby="pages"
-                >
-                  {pages.map(
-                    (page) =>
-                      page.active == 1 && (
-                        <li key={page.id}>
-                          <Link href={route('page.show', page.slug)} className="dropdown-item text-capitalize">
-                            {page.title}
+                    <ul
+                      className="dropdown-menu border-0 p-1 mt-5 rounded-0 shadow animate__animated animate__fadeInUp"
+                      aria-labelledby="pages"
+                    >
+                      {pages.map(
+                        (page) =>
+                          Number(page.active) === 1 && (
+                            <li key={page.id}>
+                              <Link href={route('page.show', page.slug)} className="dropdown-item text-capitalize">
+                                {page.title}
                           </Link>
                         </li>
                       )
@@ -131,14 +160,14 @@ const Header = () => {
                         </Link>
                       </li>
                       <li>
-                        <a className="dropdown-item text-capitalize" href="#" onClick={handleLogout}>
+                        <button type="button" className="dropdown-item text-capitalize" onClick={handleLogout}>
                           Logout
-                        </a>
+                        </button>
                       </li>
                     </ul>
                   </li>
                   <li className="nav-item">
-                    <Link to="/wishlist" className="p-2 mx-1">
+                    <Link href="/wishlist" className="p-2 mx-1">
                       <svg width="24" height="24">
                         <use xlinkHref="#wishlist"></use>
                       </svg>
@@ -181,7 +210,7 @@ const Header = () => {
                       </Link>
                     </li>
                     <li>
-                      <Link className="dropdown-item text-capitalize" href="#">
+                      <Link className="dropdown-item text-capitalize" href={route('register')}>
                         Registrati
                       </Link>
                     </li>

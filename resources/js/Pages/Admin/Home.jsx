@@ -247,8 +247,12 @@ const Home = (props) => {
             <small>Monitoraggio rapido dei nuovi accessi</small>
           </div>
 
+          <div className="admin-list-toolbar">
+            <p className="mb-0">Snapshot rapido degli ultimi utenti iscritti, con dati essenziali di contatto e data.</p>
+          </div>
+
           <div className="table-responsive admin-table-shell">
-            <table className="table table-hover mb-0 admin-table">
+            <table className="table table-hover mb-0 admin-table dashboard-users-table">
               <thead>
                 <tr>
                   <th scope="col" className="text-center">

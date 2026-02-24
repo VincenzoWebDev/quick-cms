@@ -27,6 +27,10 @@ const ShippingMethodContent = ({ shippingMethods, flash }) => {
         });
     }
 
+    const totalShippingMethods = shippingMethods.length;
+    const freeShippingMethods = shippingMethods.filter((shipping) => Number(shipping.price) <= 0).length;
+    const paidShippingMethods = totalShippingMethods - freeShippingMethods;
+
     return (
         <Layout>
             <SectionHeader
@@ -42,15 +46,29 @@ const ShippingMethodContent = ({ shippingMethods, flash }) => {
 
             <div className="card shadow-2-strong">
                 <div className="card-body">
+                    <div className="admin-overview-strip">
+                        <div className="admin-overview-item">
+                            <small>Metodi totali</small>
+                            <strong>{totalShippingMethods}</strong>
+                        </div>
+                        <div className="admin-overview-item">
+                            <small>Spedizioni gratuite</small>
+                            <strong>{freeShippingMethods}</strong>
+                        </div>
+                        <div className="admin-overview-item">
+                            <small>Spedizioni a pagamento</small>
+                            <strong>{paidShippingMethods}</strong>
+                        </div>
+                    </div>
+
+                    <div className="admin-list-toolbar">
+                        <p className="mb-0">Controlla costi e tempi di consegna in modo uniforme e rapido.</p>
+                    </div>
+
                     <div className="table-responsive admin-table-shell">
-                        <table className="table table-hover mb-0 admin-table">
+                        <table className="table table-hover mb-0 admin-table shipping-table">
                             <thead>
                                 <tr>
-                                    <th scope="col">
-                                        <div className="form-check d-flex justify-content-center align-items-center">
-                                            <input className="form-check-input" type="checkbox" />
-                                        </div>
-                                    </th>
                                     <th scope="col">Id</th>
                                     <th scope="col">Nome</th>
                                     <th scope="col">Prezzo spedizione</th>
@@ -64,16 +82,15 @@ const ShippingMethodContent = ({ shippingMethods, flash }) => {
                                     shippingMethods.length > 0 ? (
                                         shippingMethods.map(shipping => (
                                             <tr key={shipping.id} className="align-middle">
-                                                <th scope="row" className='col-1'>
-                                                    <div className="form-check d-flex justify-content-center align-items-center">
-                                                        <input className="form-check-input" type="checkbox" />
-                                                    </div>
-                                                </th>
-                                                <td scope="row" className="col-1">{shipping.id}</td>
+                                                <td scope="row" className="col-1">#{shipping.id}</td>
                                                 <td scope="row" className="col-2">{shipping.name}</td>
-                                                <td scope="row" className="col-2">{shipping.price}</td>
-                                                <td scope="row" className="col-2">{shipping.delivery_time} giorni</td>
-                                                <td scope="row" className="col-2">{shipping.description}</td>
+                                                <td scope="row" className="col-2">
+                                                    <span className="shipping-price-pill">EUR {shipping.price}</span>
+                                                </td>
+                                                <td scope="row" className="col-2">
+                                                    <span className="shipping-days-pill">{shipping.delivery_time} giorni</span>
+                                                </td>
+                                                <td scope="row" className="col-2 shipping-description-cell">{shipping.description}</td>
                                                 <td scope="row" className="col-2 text-center">
                                                     <div className="action-buttons justify-content-center">
                                                         <Link href={route('shipping-methods.edit', shipping.id)} className="action-icon-link">
@@ -88,7 +105,7 @@ const ShippingMethodContent = ({ shippingMethods, flash }) => {
                                         ))
                                     ) : (
                                         <tr>
-                                            <td colSpan='7' className='text-center'>Non ci sono spedizioni</td>
+                                            <td colSpan='6' className='text-center py-4'>Non ci sono spedizioni</td>
                                         </tr>
                                     )}
                             </tbody>

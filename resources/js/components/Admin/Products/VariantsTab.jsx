@@ -132,14 +132,16 @@ const VariantsTab = ({ variants, setVariantCombinations, combinationValues }) =>
 
                 {/* Bottone per generare combinazioni */}
                 {visibleVariants.length > 0 && (
-                    <input type="button" onClick={generateCombinations} value="Genera combinazioni" className="btn btn-success my-3" />
+                    <div className="admin-list-toolbar">
+                        <input type="button" onClick={generateCombinations} value="Genera combinazioni" className="btn btn-success my-1" />
+                    </div>
                 )}
 
                 {/* Tabella delle combinazioni */}
                 {Object.keys(selectedValues).length > 0 &&
                     combinations.length > 0 && (
                         <div className="table-responsive admin-table-shell">
-                            <table className="table table-hover mb-0 admin-table">
+                            <table className="table table-hover mb-0 admin-table product-generated-combinations-table">
                                 <thead>
                                     <tr>
                                         {Object.keys(selectedValues).map(variantId => (
@@ -155,7 +157,7 @@ const VariantsTab = ({ variants, setVariantCombinations, combinationValues }) =>
                                 </thead>
                                 <tbody>
                                     {combinations.map((combination, index) => (
-                                        <tr key={index} className="align-middle">
+                                        <tr key={`${Object.values(combination).join('|')}-${index}`} className="align-middle">
                                             {Object.keys(selectedValues).map(variantId => (
                                                 <td key={variantId} className="col-1">
                                                     {combination[`variant_${variantId}`] || 'N/A'}

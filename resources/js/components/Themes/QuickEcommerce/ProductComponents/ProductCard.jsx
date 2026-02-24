@@ -5,11 +5,11 @@ import { Heart } from 'lucide-react';
 const ProductCard = ({ product }) => {
     return (
         <>
-            <div className="col mb-3">
-                <div className="card h-100 bg">
+            <div className="mb-3">
+                <div className="card h-100">
                     <img className="img-fluid img-responsive rounded product-image" src={`${STORAGE_URL}${product.image_path}`} alt={product.name} loading="lazy" />
                     <div className="card-body">
-                        <h5 className="text-red-500">{product.name}</h5>
+                        <h5>{product.name}</h5>
                         <div className="d-flex flex-row">
                             <div className="ratings me-2">
                                 <i className="fa fa-star"></i>
@@ -29,7 +29,7 @@ const ProductCard = ({ product }) => {
                             <h6 className="text-success">Spedizione gratis</h6>
                             <div className="d-flex flex-row align-items-center justify-content-center mt-3 gap-2">
                                 <Link href={route('productDetail.index', { 'slug': product.slug, 'id': product.id })} className="btn btn-primary btn-sm" type="button">Dettagli</Link>
-                                <button className="btn btn-danger btn-sm" type="button"><Heart size={20} /></button>
+                                <button className="btn btn-danger btn-sm" type="button" aria-label={`Aggiungi ${product.name} ai preferiti`}><Heart size={20} /></button>
                             </div>
                         </div>
                     </div>

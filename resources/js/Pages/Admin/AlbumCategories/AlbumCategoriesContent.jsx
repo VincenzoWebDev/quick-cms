@@ -53,6 +53,9 @@ const AlbumCategoriesContent = ({ albumCategories, flash }) => {
     AlbumCategoryDeleteSelected({ e, formDelete, selectedRecords, setSelectedRecords, setSelectAll });
   };
 
+  const totalCategories = albumCategories.total ?? albumCategories.data.length;
+  const linkedAlbums = albumCategories.data.reduce((acc, cat) => acc + (cat.albums_count || 0), 0);
+
   return (
     <Layout>
       <SectionHeader
@@ -70,8 +73,27 @@ const AlbumCategoriesContent = ({ albumCategories, flash }) => {
 
       <div className="card shadow-2-strong">
         <div className="card-body">
+          <div className="admin-overview-strip">
+            <div className="admin-overview-item">
+              <small>Totale categorie</small>
+              <strong>{totalCategories}</strong>
+            </div>
+            <div className="admin-overview-item">
+              <small>Album associati</small>
+              <strong>{linkedAlbums}</strong>
+            </div>
+            <div className="admin-overview-item">
+              <small>Selezionate</small>
+              <strong>{selectedRecords.length}</strong>
+            </div>
+          </div>
+
+          <div className="admin-list-toolbar">
+            <p className="mb-0">Monitora la tassonomia media e il numero di album per categoria.</p>
+          </div>
+
           <div className="table-responsive admin-table-shell">
-            <table className="table table-hover mb-0 admin-table">
+            <table className="table table-hover mb-0 admin-table album-categories-table">
               <thead>
                 <tr>
                   <th scope="col">
@@ -111,7 +133,7 @@ const AlbumCategoriesContent = ({ albumCategories, flash }) => {
                         </div>
                       </th>
                       <th scope="row" className="col-md-1">
-                        {cat.id}
+                        #{cat.id}
                       </th>
                       <td scope="row" className="col-md-2">
                         {cat.category_name}
@@ -123,7 +145,7 @@ const AlbumCategoriesContent = ({ albumCategories, flash }) => {
                         {new Date(cat.updated_at).toLocaleDateString()}
                       </td>
                       <td scope="row" className="col-md-1">
-                        {cat.albums_count}
+                        <span className="album-count-pill">{cat.albums_count}</span>
                       </td>
                       <td scope="row" className="text-center col-md-2">
                         <div className="action-buttons justify-content-center">

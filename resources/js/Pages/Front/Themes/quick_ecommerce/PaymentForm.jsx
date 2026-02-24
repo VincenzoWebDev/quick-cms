@@ -39,7 +39,7 @@ const PaymentForm = ({ orderId }) => {
                     <form onSubmit={handleSubmit}>
                         <div className="form-group">
                             <label htmlFor="cardElement" className="form-label">Inserisci i dettagli della tua carta di credito</label>
-                            <CardElement id="cardElement" className="form-control" ariaHidden="true" />
+                            <CardElement id="cardElement" className="form-control" />
                         </div>
                         <button type="submit" disabled={!stripe} className="btn btn-primary mt-2">
                             Paga

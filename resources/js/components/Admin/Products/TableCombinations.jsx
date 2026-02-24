@@ -69,8 +69,8 @@ const TableCombinations = React.memo(({ combinationValues }) => {
         : combinationValues.length > 0 && (
             <>
               <AlertErrors message={message} />
-              <div className="d-grid gap-2 d-md-flex justify-content-md-start mb-3 align-items-center">
-                <span className="fw-bold my-2">Combinazioni</span>
+              <div className="admin-list-toolbar d-grid gap-2 d-md-flex justify-content-md-start align-items-center">
+                <span className="fw-bold my-2">Combinazioni salvate</span>
                 {selectedRecords && selectedRecords.length > 0 && (
                   <button className="btn btn-danger py-1 px-2" onClick={handleDeleteSelected}>
                     Elimina selezionati
@@ -78,7 +78,7 @@ const TableCombinations = React.memo(({ combinationValues }) => {
                 )}
               </div>
               <div className="table-responsive admin-table-shell">
-                <table className="table table-hover mb-0 admin-table">
+                <table className="table table-hover mb-0 admin-table combinations-table">
                   <thead>
                     <tr>
                       <th>
@@ -101,8 +101,8 @@ const TableCombinations = React.memo(({ combinationValues }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {combinationValues.map((combination, index) => (
-                      <tr key={index} className="align-middle">
+                    {combinationValues.map((combination) => (
+                      <tr key={combination.id ?? combination.combination_id} className="align-middle">
                         <th scope="row" className="col-md-1">
                           <div className="form-check d-flex justify-content-center align-items-center">
                             <input
@@ -115,14 +115,11 @@ const TableCombinations = React.memo(({ combinationValues }) => {
                           </div>
                         </th>
                         <td className="col-2">
-                          <input
-                            type="text"
-                            className="form-control w-100"
-                            value={combination.variant_combination_values
+                          <span className="combination-variant-pill">
+                            {combination.variant_combination_values
                               .map((variantValue) => variantValue.product_variant_value.value)
                               .join(', ')}
-                            disabled
-                          />
+                          </span>
                         </td>
                         {editingCombination === combination.id ? (
                           <>
@@ -188,18 +185,18 @@ const TableCombinations = React.memo(({ combinationValues }) => {
                         <td className="col-1 text-center">
                           {editingCombination === combination.id ? (
                             <div className="action-buttons">
-                              <a onClick={() => handleEditCombination(editedCombination)} className="action-icon-link">
+                              <button type="button" onClick={() => handleEditCombination(editedCombination)} className="action-icon-btn action-edit">
                                 <ButtonSave />
-                              </a>
-                              <a onClick={() => setEditingCombination(null)} className="action-icon-link">
+                              </button>
+                              <button type="button" onClick={() => setEditingCombination(null)} className="action-icon-btn">
                                 <ButtonCancel />
-                              </a>
+                              </button>
                             </div>
                           ) : (
                             <div className="action-buttons">
-                              <a onClick={() => handleEditClick(combination)} className="action-icon-link">
+                              <button type="button" onClick={() => handleEditClick(combination)} className="action-icon-btn action-edit">
                                 <ButtonEdit />
-                              </a>
+                              </button>
                               <ButtonDelete type="button" onClick={() => handleDeleteCombination(combination.id)} />
                             </div>
                           )}

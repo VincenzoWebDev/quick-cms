@@ -1,8 +1,7 @@
 import { InputErrors } from "@/components/Front/Index";
 import { useForm, usePage } from "@inertiajs/react";
 import React, { useState, useEffect } from "react";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 
 const ProductDetailCard = React.memo(({ product, variantNames }) => {
     const { user_auth } = usePage().props;
@@ -89,9 +88,8 @@ const ProductDetailCard = React.memo(({ product, variantNames }) => {
     };
 
     return (
-        <div className="col-md-6 p-4 card">
+            <div className="col-md-6 p-4 card">
             <InputErrors errors={errors} />
-            <ToastContainer position="top-center" style={{ marginTop: '80px' }} />
             <div className="mb-3">
                 <div className="d-flex align-items-center mb-2">
                     {[...Array(4)].map((_, i) => (

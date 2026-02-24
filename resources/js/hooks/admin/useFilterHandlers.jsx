@@ -26,8 +26,8 @@ export const useFilterHandlers = (rotta, sortBy, sortDirection, currentPerPage, 
             // Effettua la richiesta con i parametri corretti
             get(route(rotta, queryParams), {
                 preserveState: true,
-                onSuccess: () => setLoading(false),
-                onError: () => setLoading(false),
+                preserveScroll: true,
+                onFinish: () => setLoading(false),
             });
         }, 500);
 
@@ -38,15 +38,21 @@ export const useFilterHandlers = (rotta, sortBy, sortDirection, currentPerPage, 
     const handlePerPageChange = useCallback((e) => {
         const selectedPerPage = e.target.value;
         setCurrentPerPage(selectedPerPage);
+        setLoading(true);
         get(route(rotta, { sortBy, sortDirection, perPage: selectedPerPage, q: searchQuery }), {
+            preserveState: true,
             preserveScroll: true,
+            onFinish: () => setLoading(false),
         });
     }, [get, currentPerPage, sortBy, sortDirection, searchQuery, rotta]);
 
     const handleSort = useCallback((column) => {
         const direction = (sortBy === column && sortDirection === 'asc') ? 'desc' : 'asc';
+        setLoading(true);
         get(route(rotta, { sortBy: column, sortDirection: direction, perPage: currentPerPage, q: searchQuery }), {
+            preserveState: true,
             preserveScroll: true,
+            onFinish: () => setLoading(false),
         });
     }, [get, sortBy, sortDirection, currentPerPage, searchQuery, rotta]);
 

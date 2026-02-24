@@ -27,9 +27,9 @@ const PeoplesLooking = () => {
             <div className="container-lg">
                 <h2 className="my-4">People are also looking for</h2>
                 {items.map((item, index) => (
-                    <a href="#" key={index} className="btn btn-warning me-2 mb-2" data-aos="fade-up" data-aos-delay={index * 150}>
+                    <button type="button" key={index} className="btn btn-warning me-2 mb-2" data-aos="fade-up" data-aos-delay={index * 150}>
                         {item}
-                    </a>
+                    </button>
                 ))}
             </div>
         </section>

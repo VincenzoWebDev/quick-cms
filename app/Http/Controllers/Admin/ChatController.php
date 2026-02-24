@@ -14,8 +14,14 @@ class ChatController extends \App\Http\Controllers\Controller
     public function index(Request $request, ?Chat $chat = null)
     {
         $role = Auth::user()->role;
+        $archivedChats = collect();
         if ($request->user()->role === 'admin') {
-            $chats = Chat::with('user')->get(); // Tutte le chat per gli admin
+            $chats = Chat::with('user')
+                ->where('hidden_by_admin', false)
+                ->get(); // Tutte le chat visibili per gli admin
+            $archivedChats = Chat::with('user')
+                ->where('hidden_by_admin', true)
+                ->get();
         } else {
             $chats = Chat::where(['user_id' => $request->user()->id, 'status' => 'open'])->with('messages.user')->get();
             if ($chats->isEmpty()) {
@@ -31,7 +37,12 @@ class ChatController extends \App\Http\Controllers\Controller
             $chat->unread_messages = 0;
             $chat->save();
         }
-        return Inertia::render('Admin/Chats/ChatsContent', ['chats' => $chats, 'role' => $role, 'activeChat' => $chat ? [$chat->load('user', 'messages.user')] : []]);
+        return Inertia::render('Admin/Chats/ChatsContent', [
+            'chats' => $chats,
+            'archivedChats' => $archivedChats,
+            'role' => $role,
+            'activeChat' => $chat ? [$chat->load('user', 'messages.user')] : [],
+        ]);
     }
 
     public function store(Request $request)
@@ -43,11 +54,17 @@ class ChatController extends \App\Http\Controllers\Controller
             'status' => 'open',
         ]);
 
+        if ($chat->hidden_by_admin) {
+            $chat->hidden_by_admin = false;
+            $chat->save();
+        }
+
         return redirect()->route('chats.index', ['chat' => $chat]);
     }
 
-    public function closeChat(Chat $chat)
+    public function closeChat(Chat $chat, Request $request)
     {
+        $this->authorizeChatAccess($chat, $request->user());
         if ($chat) {
             $chat->status = 'close';
             $chat->save();
@@ -68,11 +85,41 @@ class ChatController extends \App\Http\Controllers\Controller
         // Incrementa il contatore solo se il messaggio è inviato dall'utente
         if (auth()->user()->role !== 'admin') {
             $chat->increment('unread_messages');
+            if ($chat->hidden_by_admin) {
+                $chat->hidden_by_admin = false;
+                $chat->save();
+            }
         }
 
         event(new MessageSent($message));
 
         return Redirect::route('chats.index', ['chat' => $chat]);
+    }
+
+    public function hideChat(Chat $chat, Request $request)
+    {
+        if ($request->user()->role !== 'admin') {
+            abort(403, 'Unauthorized');
+        }
+
+        $chat->hidden_by_admin = true;
+        $chat->save();
+
+        session()->flash('message', ['tipo' => 'success', 'testo' => "Chat #{$chat->id} rimossa dal pannello"]);
+        return redirect()->route('chats.index');
+    }
+
+    public function restoreChat(Chat $chat, Request $request)
+    {
+        if ($request->user()->role !== 'admin') {
+            abort(403, 'Unauthorized');
+        }
+
+        $chat->hidden_by_admin = false;
+        $chat->save();
+
+        session()->flash('message', ['tipo' => 'success', 'testo' => "Chat #{$chat->id} ripristinata nel pannello"]);
+        return redirect()->route('chats.index');
     }
 
     // Controlla se l'utente ha accesso alla chat

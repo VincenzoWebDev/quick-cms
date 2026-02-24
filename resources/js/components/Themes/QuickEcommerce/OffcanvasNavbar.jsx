@@ -1,5 +1,6 @@
 import { usePage } from '@inertiajs/react';
 import React from 'react';
+import { Link } from '@inertiajs/react';
 
 const OffcanvasNavbar = () => {
     const { categories } = usePage().props;
@@ -28,7 +29,7 @@ const OffcanvasNavbar = () => {
                                 <ul className="btn-toggle-nav list-unstyled fw-normal ps-5 pb-1">
                                     {cat.children.length > 0 && cat.children.map((child) => (
                                         <li key={child.id} className="border-bottom py-2">
-                                            <a href={route('productList.cat', [cat.name.toLowerCase(), child.name.toLowerCase()])} className="dropdown-item">{child.name}</a>
+                                            <Link href={route('productList.cat', [cat.name, child.name])} className="dropdown-item">{child.name}</Link>
                                         </li>
                                     ))}
                                 </ul>

@@ -9,11 +9,7 @@ use App\Models\Setting;
 use App\Models\Theme;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
 use Inertia\Middleware;
-use Illuminate\Support\Str;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -39,28 +35,41 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $user = $request->user();
+        $isAdminRequest = $request->is('admin*');
+        $settingsCache = null;
+        $getSetting = function (string $key, $default = false) use (&$settingsCache) {
+            if ($settingsCache === null) {
+                $settingsCache = Setting::query()
+                    ->whereIn('key', ['ecommerce_status', 'demo_mode'])
+                    ->pluck('value', 'key');
+            }
+
+            return $settingsCache[$key] ?? $default;
+        };
+
         return array_merge(parent::share($request), [
             'flash' => [
                 'message' => fn() => $request->session()->get('message'),
                 'status' => fn() => $request->session()->get('status'),
             ],
             /* pagine per la topbar front end */
-            'pages' => fn() => Page::query()->select('id', 'slug', 'title', 'active')->get(),
-            'categories' => fn() => Category::whereNull('parent_id')->with(['children'])->get(),
+            'pages' => fn() => $isAdminRequest ? collect() : Page::query()->select('id', 'slug', 'title', 'active')->get(),
+            'categories' => fn() => $isAdminRequest ? collect() : Category::whereNull('parent_id')->with(['children'])->get(),
             // 'notifications' => Auth::user() ? Auth::user()->unreadNotifications : null,
-            'notifications' => fn() => $request->user()?->unreadNotifications()?->limit(10)?->get() ?? collect(),
+            'notifications' => fn() => $user?->unreadNotifications()?->limit(10)?->get() ?? collect(),
             // 'cart_items' => Auth::user() ? CartItem::where('user_id', Auth::user()->id)->with('product')->get() : null,
-            'cart_items' => fn() => $request->user()
-                ? CartItem::where('user_id', $request->user()->id)->with('product')->get(['id', 'user_id', 'product_id', 'quantity', 'price'])
+            'cart_items' => fn() => $user
+                ? CartItem::where('user_id', $user->id)->with('product')->get(['id', 'user_id', 'product_id', 'quantity', 'price'])
                 : [],
-            'user_auth' => fn() => $request->user() ? $request->user()->only(['id', 'name', 'lastname', 'email', 'role', 'profile_img', 'shipping_address', 'billing_address', 'phone']) : null,
-            'ecommerce_status' => fn() => Setting::where('key', 'ecommerce_status')->value('value') ?? false,
-            'demo_mode' => fn() => Setting::where('key', 'demo_mode')->value('value') ?? false,
+            'user_auth' => fn() => $user ? $user->only(['id', 'name', 'lastname', 'email', 'role', 'profile_img', 'shipping_address', 'billing_address', 'phone']) : null,
+            'ecommerce_status' => fn() => $getSetting('ecommerce_status', false),
+            'demo_mode' => fn() => $getSetting('demo_mode', false),
             'seo_defaults' => [
                 'site_name' => 'Quick CMS - La tua soluzione per la gestione di un e-commerce',
                 'site_description' => 'Quick CMS è la soluzione ideale per gestire un e-commerce. Offre funzionalità complete per la gestione dei prodotti, delle categorie, degli ordini e molto altro ancora. Scopri come Quick CMS può aiutarti a gestire il tuo e-commerce in modo efficiente e semplice.',
             ],
-            'auth' => ['user' => $request->user()?->only(['id', 'name', 'lastname', 'email', 'role', 'profile_img'])],
+            'auth' => ['user' => $user?->only(['id', 'name', 'lastname', 'email', 'role', 'profile_img'])],
         ]);
     }
 
@@ -82,14 +91,14 @@ class HandleInertiaRequests extends Middleware
     // }
     public function rootView(Request $request)
     {
-        $activeTheme = Theme::where('active', true)->first();
-        $themeName = $activeTheme ? $activeTheme->name : 'default';
-
         if ($request->is('admin*')) {
             return 'layouts.admin.app';
         }
 
-        return 'layouts.' . $themeName . '.app';
+        $themeName = Theme::where('active', true)->value('name') ?? 'default';
+        $themeView = 'layouts.' . $themeName . '.app';
+
+        return view()->exists($themeView) ? $themeView : 'layouts.default.app';
     }
 
     public function handle($request, Closure $next)

@@ -1,11 +1,10 @@
 import EcommerceLayout from '@/Layouts/EcommerceLayout';
 import AlertErrors from '@/components/Front/AlertErrors';
 import { PriceFilter, ProductCard } from '@/components/Themes/QuickEcommerce/Index';
-import { use, useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import AOS from 'aos';
-import 'aos/dist/aos.css';
 import SearchAndPerPageSelector from '@/components/Themes/QuickEcommerce/SearchAndPerPageSelector';
+import ProductSortByOptions from '@/components/Themes/QuickEcommerce/ProductComponents/ProductSortByOptions';
 import { useFilterHandlers } from '@/hooks/front/useFilterHandlers';
 import { useForm, usePage } from '@inertiajs/react';
 import { InputErrors } from '@/components/Front/Index';
@@ -22,7 +21,8 @@ const ProductList = ({
   variants,
   flash,
 }) => {
-  const { errors } = usePage().props;
+  const page = usePage();
+  const { errors } = page.props;
   const { get } = useForm({
     sortBy: 'id',
     sortDirection: 'desc',
@@ -37,9 +37,29 @@ const ProductList = ({
   const [priceRange, setPriceRange] = useState({ min: minPrice, max: maxPrice });
   const [selectedVariants, setSelectedVariants] = useState(sortVariants);
 
+  const pathname = page.url.split('?')[0];
+  const listingRoute = useMemo(() => {
+    const categoryMatch = pathname.match(/\/prodotti\/([^/]+)\/([^/]+)/);
+    if (!categoryMatch) {
+      return {
+        name: 'productList',
+        params: {},
+      };
+    }
+
+    return {
+      name: 'productList.cat',
+      params: {
+        cat: decodeURIComponent(categoryMatch[1]),
+        subCat: decodeURIComponent(categoryMatch[2]),
+      },
+    };
+  }, [pathname]);
+
   const { handleSearchChange, handlePerPageChange, handleSort, handleDirection, handleApplyFilter, processing } =
     useFilterHandlers(
-      'productList', // qui passi solo il nome della rotta senza route()
+      listingRoute.name,
+      listingRoute.params,
       sortBy,
       sortDirection,
       currentPerPage,
@@ -59,15 +79,6 @@ const ProductList = ({
     return () => clearTimeout(timer);
   }, [message]);
 
-  useEffect(() => {
-    AOS.init({
-      duration: 500,
-      easing: 'ease-in-out',
-      once: true,
-      mirror: true,
-    });
-  }, []);
-
   const [openVariant, setOpenVariant] = useState(null);
   const toggleCollapse = (variantId) => {
     setOpenVariant(openVariant === variantId ? null : variantId);
@@ -83,7 +94,7 @@ const ProductList = ({
     setSelectedVariants({});
 
     // Effettua la richiesta per ripristinare i prodotti senza filtri
-    get(route('productList'), {
+    get(route(listingRoute.name, listingRoute.params), {
       preserveState: true,
       preserveScroll: true,
       onSuccess: () => {
@@ -187,11 +198,11 @@ const ProductList = ({
                 <h6 className="mb-0">Ordina per:</h6>
               </div>
 
-              <SortBy sortBy={sortBy} handleSort={handleSort} />
+              <ProductSortByOptions sortBy={sortBy} handleSort={handleSort} />
 
               <div className="card mt-3">
                 <button className="btn btn-outline-primary p-1" onClick={handleDirection} disabled={processing}>
-                  {processing ? 'Caricameto...' : sortDirection === 'asc' ? 'Ordine: Crescente' : 'Ordine: Decrescente'}
+                  {processing ? 'Caricamento...' : sortDirection === 'asc' ? 'Ordine: Crescente' : 'Ordine: Decrescente'}
                 </button>
               </div>
             </div>
@@ -209,48 +220,6 @@ const ProductList = ({
         </div>
       </div>
     </EcommerceLayout>
-  );
-};
-
-const SortBy = ({ sortBy, handleSort }) => {
-  return (
-    <div className="list-group">
-      <label htmlFor="name" className="list-group-item-action">
-        <input
-          className="form-check-input me-2"
-          type="radio"
-          id="name"
-          value="name"
-          checked={sortBy === 'name'}
-          onChange={() => handleSort('name')}
-        />
-        Nome
-      </label>
-
-      <label htmlFor="price" className="list-group-item-action">
-        <input
-          className="form-check-input me-2"
-          type="radio"
-          id="price"
-          value="price"
-          checked={sortBy === 'price'}
-          onChange={() => handleSort('price')}
-        />
-        Prezzo
-      </label>
-
-      <label htmlFor="created_at" className="list-group-item-action">
-        <input
-          className="form-check-input me-2"
-          type="radio"
-          id="created_at"
-          value="created_at"
-          checked={sortBy === 'created_at'}
-          onChange={() => handleSort('created_at')}
-        />
-        Data
-      </label>
-    </div>
   );
 };
 

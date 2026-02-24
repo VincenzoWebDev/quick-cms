@@ -72,7 +72,7 @@ const OffcanvasCart = () => {
                                             <span className="text-body-secondary">&euro;{item.price}</span>
                                         </div>
                                         <div className='col-1'>
-                                            <button className="btn text-red" onClick={() => deleteCartItem(item.id)}>
+                                            <button className="btn text-danger" onClick={() => deleteCartItem(item.id)}>
                                                 <i className="fa-regular fa-circle-xmark"></i>
                                             </button>
                                         </div>

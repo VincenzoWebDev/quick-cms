@@ -1,4 +1,4 @@
-import { CheckoutHeader, InputErrors } from "@/components/Front/Index";
+import { CheckoutCustomerCard, CheckoutHeader, CheckoutShippingMethods, InputErrors } from "@/components/Front/Index";
 import { STORAGE_URL } from "@/constants/constants";
 import FrontLayout from "@/Layouts/FrontLayout";
 import { Link, useForm, usePage } from "@inertiajs/react";
@@ -66,15 +66,7 @@ const Checkout = ({ cartItems, shippingMethods }) => {
                         <div className="row">
                             <InputErrors errors={errors} />
                             <div className="col-xl-8 col-lg-8 mb-4">
-                                <div className="card mb-4 border shadow-0">
-                                    <div className="p-4 d-flex justify-content-between">
-                                        {user_auth && (
-                                            <div>
-                                                <h5>{user_auth.name} {user_auth.lastname}</h5>
-                                                <p className="mb-0 text-wrap">Procedi con il tuo ordine</p>
-                                            </div>)}
-                                    </div>
-                                </div>
+                                <CheckoutCustomerCard user={user_auth} />
 
                                 {/* Checkout */}
                                 <div className="card shadow-0 border">
@@ -119,21 +111,11 @@ const Checkout = ({ cartItems, shippingMethods }) => {
 
                                         <h5 className="card-title mb-3">Informazioni spedizione</h5>
 
-                                        <div className="row mb-3">
-                                            {shippingMethods.map((shipping) => (
-                                                <div className="col-lg-4 mb-3" key={shipping.id}>
-                                                    <div className="form-check h-100 border rounded-3">
-                                                        <div className="p-3">
-                                                            <input className="form-check-input" type="radio" name="flexRadioDefault" id={`flexRadioDefault${shipping.id}`} onChange={() => handleShippingMethodChange(shipping.id)} />
-                                                            <label className="form-check-label" htmlFor={`flexRadioDefault${shipping.id}`}>
-                                                                {shipping.name} <br />
-                                                                <small className="text-muted">{shipping.description}</small>
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
+                                        <CheckoutShippingMethods
+                                            shippingMethods={shippingMethods}
+                                            selectedId={data.shipping_method_id}
+                                            onChange={handleShippingMethodChange}
+                                        />
 
                                         <div className="row">
                                             <div className="col-sm-8 mb-3">
@@ -252,4 +234,3 @@ const Checkout = ({ cartItems, shippingMethods }) => {
     );
 }
 export default Checkout;
-

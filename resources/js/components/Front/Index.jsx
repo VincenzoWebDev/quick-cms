@@ -13,9 +13,11 @@ import Technologies from "./HomeComponents/Technologies";
 import InputErrors from "./InputErrors";
 import AlertErrors from "./AlertErrors";
 import CheckoutHeader from "./OrderComponents/CheckoutHeader";
+import CheckoutCustomerCard from "./OrderComponents/CheckoutCustomerCard";
+import CheckoutShippingMethods from "./OrderComponents/CheckoutShippingMethods";
 
 
 export {
     Fancybox, Footer, Slideshow, SlideshowCaption, Topbar, PageContent, ProductCard, ProductDetailCard,
-    AboutMe, Cards, MyProject, Technologies, InputErrors, AlertErrors, CheckoutHeader
+    AboutMe, Cards, MyProject, Technologies, InputErrors, AlertErrors, CheckoutHeader, CheckoutCustomerCard, CheckoutShippingMethods
 };

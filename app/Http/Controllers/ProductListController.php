@@ -3,14 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Front\ProductListFilterRequest;
-use App\Models\Page;
 use App\Models\Product;
 use App\Models\ProductVariant;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 
 class ProductListController extends Controller
 {
+    private const PRODUCT_CACHE_TAG = 'products';
+    private const PRODUCT_CACHE_TTL_SECONDS = 300;
+    private const VARIANTS_CACHE_KEY = 'product_list_variants_with_values';
+    private const VARIANTS_CACHE_TTL_SECONDS = 1800;
+
     protected $themeName;
 
     public function __construct()
@@ -20,65 +25,34 @@ class ProductListController extends Controller
 
     public function index(ProductListFilterRequest $request)
     {
-        $sortBy = $request->input('sortBy', 'id');
-        $sortDirection = $request->input('sortDirection', 'desc');
-        $perPage = $request->input('perPage', 10);
-        $searchQuery = $request->input('q', '');
-        $minPrice = $request->input('minPrice', 0);
-        $maxPrice = $request->input('maxPrice', 1000);
-        $selectedVariants = json_decode($request->input('selectedVariants', '{}'), true);
+        $filters = $this->extractFilters($request);
+        $cacheKey = $this->makeCacheKey('all', $filters);
 
-        $cacheKey = 'products_' . md5(
-            json_encode([
-                $searchQuery,
-                $minPrice,
-                $maxPrice,
-                $selectedVariants,
-                $sortBy,
-                $sortDirection,
-                $perPage
-            ])
+        $products = Cache::tags([self::PRODUCT_CACHE_TAG])->remember(
+            $cacheKey,
+            self::PRODUCT_CACHE_TTL_SECONDS,
+            function () use ($filters) {
+                $query = Product::query();
+                $this->applyFilters($query, $filters);
+
+                return $query
+                    ->orderBy($filters['sortBy'], $filters['sortDirection'])
+                    ->paginate($filters['perPage'], ['*'], 'page', $filters['page']);
+            }
         );
 
-        $products = Cache::tags(['products'])->remember($cacheKey, 300, function () use ($searchQuery, $minPrice, $maxPrice, $selectedVariants, $sortBy, $sortDirection, $perPage) {
-            return Product::when($searchQuery, function ($query) use ($searchQuery) {
-                $query->where(function ($q) use ($searchQuery) {
-                    $q->where('name', 'like', '%' . $searchQuery . '%')
-                        ->orWhere('id', 'like', '%' . $searchQuery . '%')
-                        ->orWhere('description', 'like', '%' . $searchQuery . '%');
-                });
-            })
-                ->whereBetween('price', [$minPrice, $maxPrice])
-                ->when(!empty($selectedVariants), function ($query) use ($selectedVariants) {
-                    foreach ($selectedVariants as $variantId => $values) {
-                        if (!empty($values)) {
-                            $query->whereHas('combinations', function ($variantCombinationQuery) use ($variantId, $values) {
-                                $variantCombinationQuery->whereHas('variantCombinationValues', function ($variantCombinationValueQuery) use ($variantId, $values) {
-                                    $variantCombinationValueQuery->whereHas('productVariantValue', function ($productVariantValueQuery) use ($variantId, $values) {
-                                        $productVariantValueQuery->where('product_variant_id', $variantId)
-                                            ->whereIn('value', $values);
-                                    });
-                                });
-                            });
-                        }
-                    }
-                })
-                ->orderBy($sortBy, $sortDirection)
-                ->paginate($perPage);
-        });
-
-        $variants = ProductVariant::with('values')->get();
+        $variants = $this->getCachedVariants();
         return Inertia::render(
             'Front/Themes/' . $this->themeName . '/ProductList',
             [
                 'products' => $products,
-                'sortBy' => $sortBy,
-                'sortDirection' => $sortDirection,
-                'perPage' => $perPage,
-                'sortSearch' => $searchQuery,
-                'minPrice' => $minPrice,
-                'maxPrice' => $maxPrice,
-                'sortVariants' => $selectedVariants,
+                'sortBy' => $filters['sortBy'],
+                'sortDirection' => $filters['sortDirection'],
+                'perPage' => $filters['perPage'],
+                'sortSearch' => $filters['searchQuery'],
+                'minPrice' => $filters['minPrice'],
+                'maxPrice' => $filters['maxPrice'],
+                'sortVariants' => $filters['selectedVariants'],
                 'variants' => $variants,
             ]
         );
@@ -86,34 +60,126 @@ class ProductListController extends Controller
 
     public function productListCat($cat, $subCat, ProductListFilterRequest $request)
     {
-        $sortBy = $request->input('sortBy', 'id');
-        $sortDirection = $request->input('sortDirection', 'desc');
-        $perPage = $request->input('perPage', 10);
-        $searchQuery = $request->input('q', '');
-        $minPrice = $request->input('minPrice', 0);
-        $maxPrice = $request->input('maxPrice', 1000);
-        $selectedVariants = json_decode($request->input('selectedVariants', '{}'), true);
+        $filters = $this->extractFilters($request);
+        $cacheKey = $this->makeCacheKey('cat:' . $cat . ':' . $subCat, $filters);
 
-        $products = Product::whereHas('categories', function ($query) use ($cat) {
-            $query->where('name', $cat);
-        })->whereHas('categories', function ($query) use ($subCat) {
-            $query->where('name', $subCat);
-        })->paginate($perPage);
+        $products = Cache::tags([self::PRODUCT_CACHE_TAG])->remember(
+            $cacheKey,
+            self::PRODUCT_CACHE_TTL_SECONDS,
+            function () use ($filters, $cat, $subCat) {
+                $query = Product::query()
+                    ->whereHas('categories', function ($categoryQuery) use ($cat) {
+                        $categoryQuery->where('name', $cat);
+                    })
+                    ->whereHas('categories', function ($categoryQuery) use ($subCat) {
+                        $categoryQuery->where('name', $subCat);
+                    });
 
-        $variants = ProductVariant::with('values')->get();
+                $this->applyFilters($query, $filters);
+
+                return $query
+                    ->orderBy($filters['sortBy'], $filters['sortDirection'])
+                    ->paginate($filters['perPage'], ['*'], 'page', $filters['page']);
+            }
+        );
+
+        $variants = $this->getCachedVariants();
         return Inertia::render(
             'Front/Themes/' . $this->themeName . '/ProductList',
             [
                 'products' => $products,
-                'sortBy' => $sortBy,
-                'sortDirection' => $sortDirection,
-                'perPage' => $perPage,
-                'sortSearch' => $searchQuery,
-                'minPrice' => $minPrice,
-                'maxPrice' => $maxPrice,
-                'sortVariants' => $selectedVariants,
+                'sortBy' => $filters['sortBy'],
+                'sortDirection' => $filters['sortDirection'],
+                'perPage' => $filters['perPage'],
+                'sortSearch' => $filters['searchQuery'],
+                'minPrice' => $filters['minPrice'],
+                'maxPrice' => $filters['maxPrice'],
+                'sortVariants' => $filters['selectedVariants'],
                 'variants' => $variants,
             ]
+        );
+    }
+
+    private function extractFilters(ProductListFilterRequest $request): array
+    {
+        return [
+            'sortBy' => $request->input('sortBy', 'id'),
+            'sortDirection' => $request->input('sortDirection', 'desc'),
+            'perPage' => (int) $request->input('perPage', 10),
+            'page' => (int) $request->input('page', 1),
+            'searchQuery' => trim((string) $request->input('q', '')),
+            'minPrice' => (float) $request->input('minPrice', 0),
+            'maxPrice' => (float) $request->input('maxPrice', 1000),
+            'selectedVariants' => $this->normalizeSelectedVariants(
+                json_decode((string) $request->input('selectedVariants', '{}'), true) ?: []
+            ),
+        ];
+    }
+
+    private function normalizeSelectedVariants(array $selectedVariants): array
+    {
+        foreach ($selectedVariants as $variantId => $values) {
+            $values = is_array($values) ? array_values(array_unique($values)) : [];
+            sort($values);
+            $selectedVariants[(string) $variantId] = $values;
+        }
+
+        ksort($selectedVariants);
+
+        return $selectedVariants;
+    }
+
+    private function makeCacheKey(string $scope, array $filters): string
+    {
+        return 'products_' . md5(json_encode([
+            'scope' => $scope,
+            'q' => $filters['searchQuery'],
+            'minPrice' => $filters['minPrice'],
+            'maxPrice' => $filters['maxPrice'],
+            'selectedVariants' => $filters['selectedVariants'],
+            'sortBy' => $filters['sortBy'],
+            'sortDirection' => $filters['sortDirection'],
+            'perPage' => $filters['perPage'],
+            'page' => $filters['page'],
+        ]));
+    }
+
+    private function applyFilters(Builder $query, array $filters): void
+    {
+        $query
+            ->when($filters['searchQuery'], function (Builder $productQuery) use ($filters) {
+                $productQuery->where(function (Builder $searchQuery) use ($filters) {
+                    $searchQuery->where('name', 'like', '%' . $filters['searchQuery'] . '%')
+                        ->orWhere('id', 'like', '%' . $filters['searchQuery'] . '%')
+                        ->orWhere('description', 'like', '%' . $filters['searchQuery'] . '%');
+                });
+            })
+            ->whereBetween('price', [$filters['minPrice'], $filters['maxPrice']])
+            ->when(!empty($filters['selectedVariants']), function (Builder $productQuery) use ($filters) {
+                foreach ($filters['selectedVariants'] as $variantId => $values) {
+                    if (empty($values)) {
+                        continue;
+                    }
+
+                    $productQuery->whereHas('combinations', function (Builder $variantCombinationQuery) use ($variantId, $values) {
+                        $variantCombinationQuery->whereHas('variantCombinationValues', function (Builder $variantCombinationValueQuery) use ($variantId, $values) {
+                            $variantCombinationValueQuery->whereHas('productVariantValue', function (Builder $productVariantValueQuery) use ($variantId, $values) {
+                                $productVariantValueQuery
+                                    ->where('product_variant_id', $variantId)
+                                    ->whereIn('value', $values);
+                            });
+                        });
+                    });
+                }
+            });
+    }
+
+    private function getCachedVariants()
+    {
+        return Cache::tags([self::PRODUCT_CACHE_TAG])->remember(
+            self::VARIANTS_CACHE_KEY,
+            self::VARIANTS_CACHE_TTL_SECONDS,
+            fn () => ProductVariant::with('values')->get()
         );
     }
 }

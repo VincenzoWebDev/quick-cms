@@ -161,7 +161,15 @@ const UsersContent = ({ users, sortBy, sortDirection, perPage, sortSearch, flash
                 </tr>
               </thead>
               <tbody>
-                {users.data.length > 0 ? (
+                {loading ? (
+                  [...Array(Number(currentPerPage) || 10)].map((_, index) => (
+                    <tr key={`users-loading-${index}`}>
+                      <td colSpan="7" className="py-2">
+                        <div className="admin-row-skeleton"></div>
+                      </td>
+                    </tr>
+                  ))
+                ) : users.data.length > 0 ? (
                   users.data.map((user) => (
                     <UserRow
                       key={user.id}

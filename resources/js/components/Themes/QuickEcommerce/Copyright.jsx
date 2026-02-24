@@ -10,7 +10,7 @@ const Copyright = () => {
                     </div>
                     <div className="col-md-6 credit-link text-start text-md-end">
                         <p>
-                            Design & Develop by <a href='https://www.instagram.com/vincenzo.web.dev/' target='_blank'>Vincenzo Web Dev</a>
+                            Design & Develop by <a href='https://www.instagram.com/vincenzo.web.dev/' target='_blank' rel="noopener noreferrer">Vincenzo Web Dev</a>
                         </p>
                     </div>
                 </div>

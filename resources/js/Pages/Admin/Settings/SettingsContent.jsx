@@ -63,6 +63,10 @@ const SettingsContent = ({ settings, flash }) => {
     }
   };
 
+  const totalSettings = settings.length;
+  const flagSettings = settings.filter((setting) => setting.value === '0' || setting.value === '1').length;
+  const textSettings = totalSettings - flagSettings;
+
   return (
     <Layout>
       <SectionHeader
@@ -77,8 +81,27 @@ const SettingsContent = ({ settings, flash }) => {
 
       <div className="card shadow-2-strong">
         <div className="card-body">
+          <div className="admin-overview-strip">
+            <div className="admin-overview-item">
+              <small>Totale impostazioni</small>
+              <strong>{totalSettings}</strong>
+            </div>
+            <div className="admin-overview-item">
+              <small>Impostazioni flag</small>
+              <strong>{flagSettings}</strong>
+            </div>
+            <div className="admin-overview-item">
+              <small>Valori testuali</small>
+              <strong>{textSettings}</strong>
+            </div>
+          </div>
+
+          <div className="admin-list-toolbar">
+            <p className="mb-0">Chiavi, valori e toggle in una vista unica, pronta per interventi rapidi.</p>
+          </div>
+
           <div className="table-responsive admin-table-shell">
-            <table className="table table-hover mb-0 admin-table">
+            <table className="table table-hover mb-0 admin-table settings-table">
               <thead>
                 <tr>
                   <th scope="col" className="text-center">
@@ -96,28 +119,33 @@ const SettingsContent = ({ settings, flash }) => {
                   settings.map((setting) => (
                     <tr key={setting.id} className="align-middle">
                       <th scope="row" className="col-md-2 text-center">
-                        {setting.id}
+                        #{setting.id}
                       </th>
                       <td scope="row" className="col-md-4">
-                        {setting.key}
+                        <span className="settings-key-pill">{setting.key}</span>
                       </td>
                       {setting.value === '0' || setting.value === '1' ? (
                         <td scope="row" className="col-md-3">
-                          <div className="form-check form-switch">
-                            <input
-                              className="form-check-input setting-switch"
-                              type="checkbox"
-                              role="switch"
-                              id={`flexSwitchCheckDefault${setting.id}`}
-                              data-setting-id={setting.id}
-                              checked={setting.value === '0' ? false : true}
-                              onChange={handleSwitchChange}
-                            />
+                          <div className="d-flex align-items-center gap-2">
+                            <span className={`settings-value-badge ${setting.value === '1' ? 'is-active' : 'is-inactive'}`}>
+                              {setting.value === '1' ? 'Attivo' : 'Disattivo'}
+                            </span>
+                            <div className="form-check form-switch">
+                              <input
+                                className="form-check-input setting-switch"
+                                type="checkbox"
+                                role="switch"
+                                id={`flexSwitchCheckDefault${setting.id}`}
+                                data-setting-id={setting.id}
+                                checked={setting.value === '0' ? false : true}
+                                onChange={handleSwitchChange}
+                              />
+                            </div>
                           </div>
                         </td>
                       ) : (
                         <td scope="row" className="col-md-3">
-                          {setting.value}
+                          <span className="settings-value-text">{setting.value}</span>
                         </td>
                       )}
                       <td scope="row" className="text-center col-md-3">

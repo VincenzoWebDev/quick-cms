@@ -284,6 +284,14 @@ h6 {
   text-align: right;
 }
 
+.shoe-hero-image {
+  width: clamp(300px, 44vw, 620px);
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 1032 / 781;
+  object-fit: contain;
+}
+
 @keyframes float {
 
   0%,
@@ -295,6 +303,24 @@ h6 {
   50% {
     transform: translateY(-20px);
     /* Solleva l'immagine verso l'alto */
+  }
+}
+
+@media (max-width: 991.98px) {
+  .floating-shoe {
+    text-align: center;
+    margin-top: 1rem;
+  }
+
+  .shoe-hero-image {
+    width: min(86vw, 520px);
+    max-height: 42vh;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .floating-shoe {
+    animation: none;
   }
 }
 

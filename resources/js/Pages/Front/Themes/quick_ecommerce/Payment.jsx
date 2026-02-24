@@ -5,16 +5,26 @@ import PaymentForm from './PaymentForm';
 import { CheckoutHeader } from '@/components/Front/Index';
 import EcommerceLayout from '@/Layouts/EcommerceLayout';
 
-// Carica l'oggetto Stripe con la tua chiave pubblica
-const stripePromise = loadStripe('pk_test_51Q7CRl2NcYBwuLk0LYV9JXnFiaQBlJOHffKO7zSOIGKsydAvIg9zxxsyBZ8nTMZvnwWxgZLUHPzZVZPjKKp6k65o00cjuymXxU');
+const stripePublicKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
+const stripePromise = stripePublicKey ? loadStripe(stripePublicKey) : null;
 
 const Payment = ({ orderId }) => {
     return (
         <EcommerceLayout>
             <CheckoutHeader />
-            <Elements stripe={stripePromise}>
-                <PaymentForm orderId={orderId} />
-            </Elements>
+            {stripePromise ? (
+                <Elements stripe={stripePromise}>
+                    <PaymentForm orderId={orderId} />
+                </Elements>
+            ) : (
+                <section className="py-5">
+                    <div className="container">
+                        <div className="alert alert-warning mb-0">
+                            Configurazione pagamento non disponibile: imposta <code>VITE_STRIPE_PUBLIC_KEY</code>.
+                        </div>
+                    </div>
+                </section>
+            )}
         </EcommerceLayout>
     );
 };

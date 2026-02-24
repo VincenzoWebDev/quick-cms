@@ -20,7 +20,11 @@ class AdminController extends \App\Http\Controllers\Controller
 
     public function markAsRead(Notification $notificationId)
     {
+        if ((int) $notificationId->notifiable_id !== (int) Auth::id()) {
+            abort(403, 'Unauthorized');
+        }
         $notificationId->markAsRead();
+        return response()->noContent();
     }
 
     public function index()

@@ -19,9 +19,10 @@ import ProfileAccordion from "./UserProfileComponents/ProfileAccordion";
 import PaymentStatus from "./PaymentStatuts";
 import ShippingStatus from "./ShippingStatus";
 import PriceFilter from "./ProductComponents/PriceFilter";
+import ProductSortByOptions from "./ProductComponents/ProductSortByOptions";
 
 
 export {
     Preloader, Header, MainBanner, CategorySection, BestSellingProducts, BannerSection, FeaturedProducts, NewsletterBanner, LatestProducts, PeoplesLooking, FeaturesSection,
-    Footer, Copyright, OffcanvasCart, OffcanvasNavbar, ProductCard, ProductDetailCard, ProfileAccordion, PaymentStatus, ShippingStatus, PriceFilter
+    Footer, Copyright, OffcanvasCart, OffcanvasNavbar, ProductCard, ProductDetailCard, ProfileAccordion, PaymentStatus, ShippingStatus, PriceFilter, ProductSortByOptions
 }

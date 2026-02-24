@@ -1,10 +1,26 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { useForm } from '@inertiajs/react';
 
-export const useFilterHandlers = (rotta, sortBy, sortDirection, currentPerPage, setCurrentPerPage, searchQuery, setSearchQuery, setLoading, priceRange, selectedVariants) => {
+export const useFilterHandlers = (
+    rotta,
+    routeParams = {},
+    sortBy,
+    sortDirection,
+    currentPerPage,
+    setCurrentPerPage,
+    searchQuery,
+    setSearchQuery,
+    setLoading,
+    priceRange,
+    selectedVariants
+) => {
     const { get, processing } = useForm();
     const previousQuery = useRef('');
-    const dependencies = [get, currentPerPage, sortBy, sortDirection, searchQuery, priceRange, selectedVariants, rotta];
+    const dependencies = [get, currentPerPage, sortBy, sortDirection, searchQuery, priceRange, selectedVariants, rotta, routeParams];
+
+    const buildRoute = useCallback((queryParams) => {
+        return route(rotta, { ...routeParams, ...queryParams });
+    }, [rotta, routeParams]);
 
     const handleSearchChange = (e) => {
         setSearchQuery(e.target.value);
@@ -31,7 +47,7 @@ export const useFilterHandlers = (rotta, sortBy, sortDirection, currentPerPage, 
             };
 
             // Effettua la richiesta con i parametri corretti
-            get(route(rotta, queryParams), {
+            get(buildRoute(queryParams), {
                 preserveScroll: true,
                 preserveState: true,
                 onSuccess: () => setLoading(false),
@@ -46,7 +62,7 @@ export const useFilterHandlers = (rotta, sortBy, sortDirection, currentPerPage, 
     const handlePerPageChange = useCallback((e) => {
         const selectedPerPage = e.target.value;
         setCurrentPerPage(selectedPerPage);
-        get(route(rotta, { sortBy, sortDirection, perPage: selectedPerPage, q: searchQuery, minPrice: priceRange.min, maxPrice: priceRange.max, selectedVariants: JSON.stringify(selectedVariants) }), {
+        get(buildRoute({ sortBy, sortDirection, perPage: selectedPerPage, q: searchQuery, minPrice: priceRange.min, maxPrice: priceRange.max, selectedVariants: JSON.stringify(selectedVariants) }), {
             preserveScroll: true,
             preserveState: true,
         });
@@ -54,7 +70,7 @@ export const useFilterHandlers = (rotta, sortBy, sortDirection, currentPerPage, 
 
     const handleSort = useCallback((column) => {
         // const direction = (sortBy === column && sortDirection === 'asc') ? 'desc' : 'asc';
-        get(route(rotta, { sortBy: column, sortDirection, perPage: currentPerPage, q: searchQuery, minPrice: priceRange.min, maxPrice: priceRange.max, selectedVariants: JSON.stringify(selectedVariants) }), {
+        get(buildRoute({ sortBy: column, sortDirection, perPage: currentPerPage, q: searchQuery, minPrice: priceRange.min, maxPrice: priceRange.max, selectedVariants: JSON.stringify(selectedVariants) }), {
             preserveScroll: true,
             preserveState: true,
         });
@@ -62,14 +78,14 @@ export const useFilterHandlers = (rotta, sortBy, sortDirection, currentPerPage, 
 
     const handleDirection = useCallback(() => {
         const direction = sortDirection === 'asc' ? 'desc' : 'asc';
-        get(route(rotta, { sortBy, sortDirection: direction, perPage: currentPerPage, q: searchQuery, minPrice: priceRange.min, maxPrice: priceRange.max, selectedVariants: JSON.stringify(selectedVariants) }), {
+        get(buildRoute({ sortBy, sortDirection: direction, perPage: currentPerPage, q: searchQuery, minPrice: priceRange.min, maxPrice: priceRange.max, selectedVariants: JSON.stringify(selectedVariants) }), {
             preserveScroll: true,
             preserveState: true,
         });
     }, dependencies);
 
     const handleApplyFilter = useCallback(() => {
-        get(route(rotta, { sortBy, sortDirection, perPage: currentPerPage, q: searchQuery, minPrice: priceRange.min, maxPrice: priceRange.max, selectedVariants: JSON.stringify(selectedVariants) }), {
+        get(buildRoute({ sortBy, sortDirection, perPage: currentPerPage, q: searchQuery, minPrice: priceRange.min, maxPrice: priceRange.max, selectedVariants: JSON.stringify(selectedVariants) }), {
             preserveScroll: true,
             preserveState: true,
         });

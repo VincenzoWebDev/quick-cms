@@ -9,10 +9,10 @@ class AlbumCategory extends Model
 {
     use HasFactory;
 
-    protected $table = 'Album_category';
+    protected $table = 'album_categories';
 
-    public function users(){
-        $this->belongsTo(User::class);
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
-
 }

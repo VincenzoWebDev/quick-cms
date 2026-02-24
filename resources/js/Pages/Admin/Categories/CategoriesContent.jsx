@@ -235,52 +235,65 @@ const CategoriesContent = ({ categories, flash }) => {
                             )}
 
                             {selectedParentCategory && filteredChildren.length > 0 ? (
-                                <div className="table-responsive admin-table-shell">
-                                    <table className="table table-hover mb-0 admin-table">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">
-                                                    <div className="form-check d-flex justify-content-center align-items-center">
-                                                        <input
-                                                            className="form-check-input"
-                                                            type="checkbox"
-                                                            onChange={handleSelectAllChildChange}
-                                                            checked={isAllChildrenChecked}
-                                                        />
-                                                    </div>
-                                                </th>
-                                                <th scope="col">Id</th>
-                                                <th scope="col">Sotto-categoria</th>
-                                                <th scope="col" className="text-center">Operazioni</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {filteredChildren.map(child => (
-                                                <tr key={child.id} className="align-middle">
-                                                    <th scope="row" className='col-md-2 py-1'>
+                                <>
+                                    <div className="admin-list-toolbar">
+                                        <p className="mb-0">
+                                            Elenco sotto-categorie della categoria selezionata, con azioni rapide di modifica ed eliminazione.
+                                        </p>
+                                    </div>
+
+                                    <div className="table-responsive admin-table-shell">
+                                        <table className="table table-hover mb-0 admin-table categories-children-table">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">
                                                         <div className="form-check d-flex justify-content-center align-items-center">
-                                                            <input className="form-check-input" type="checkbox" value={child.id}
-                                                                onChange={(e) => handleCheckboxChange(e, child.id)}
-                                                                checked={selectedRecords.includes(child.id)} />
+                                                            <input
+                                                                className="form-check-input"
+                                                                type="checkbox"
+                                                                onChange={handleSelectAllChildChange}
+                                                                checked={isAllChildrenChecked}
+                                                            />
                                                         </div>
                                                     </th>
-                                                    <th scope="row" className='col-md-2 py-1'>{child.id}</th>
-                                                    <td scope="row" className='col-md-4 py-1'>{child.name}</td>
-                                                    <td scope="row" className="text-center col-md-4 py-1">
-                                                        <div className="action-buttons justify-content-center">
-                                                            <Link href={route('categories.edit', child.id)} className="action-icon-link">
-                                                                <ButtonEdit />
-                                                            </Link>
-                                                            <form onSubmit={handleDelete} className="d-inline" id={child.id}>
-                                                                <ButtonDelete />
-                                                            </form>
-                                                        </div>
-                                                    </td>
+                                                    <th scope="col">Id</th>
+                                                    <th scope="col">Sotto-categoria</th>
+                                                    <th scope="col" className="text-center">Operazioni</th>
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
+                                            </thead>
+                                            <tbody>
+                                                {filteredChildren.map(child => (
+                                                    <tr key={child.id} className="align-middle">
+                                                        <th scope="row" className='col-md-2 py-1'>
+                                                            <div className="form-check d-flex justify-content-center align-items-center">
+                                                                <input className="form-check-input" type="checkbox" value={child.id}
+                                                                    onChange={(e) => handleCheckboxChange(e, child.id)}
+                                                                    checked={selectedRecords.includes(child.id)} />
+                                                            </div>
+                                                        </th>
+                                                        <th scope="row" className='col-md-2 py-1'>#{child.id}</th>
+                                                        <td scope="row" className='col-md-4 py-1'>
+                                                            <div className="categories-child-name">
+                                                                <strong>{child.name}</strong>
+                                                                <small>Figlia di {selectedParentCategory.name}</small>
+                                                            </div>
+                                                        </td>
+                                                        <td scope="row" className="text-center col-md-4 py-1">
+                                                            <div className="action-buttons justify-content-center">
+                                                                <Link href={route('categories.edit', child.id)} className="action-icon-link">
+                                                                    <ButtonEdit />
+                                                                </Link>
+                                                                <form onSubmit={handleDelete} className="d-inline" id={child.id}>
+                                                                    <ButtonDelete />
+                                                                </form>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </>
                             ) : (
                                 <div className='categories-empty-state'>
                                     <i className="fa-regular fa-folder-open"></i>

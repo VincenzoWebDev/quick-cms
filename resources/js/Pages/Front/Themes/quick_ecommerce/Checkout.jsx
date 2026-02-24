@@ -1,13 +1,10 @@
-import { AlertErrors, CheckoutHeader, InputErrors } from '@/components/Front/Index';
+import { CheckoutCustomerCard, CheckoutHeader, CheckoutShippingMethods, InputErrors } from '@/components/Front/Index';
 import { STORAGE_URL } from '@/constants/constants';
 import EcommerceLayout from '@/Layouts/EcommerceLayout';
 import { Link, useForm, usePage } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
-const url = 'https://axqvoqvbfjpaamphztgd.functions.supabase.co/province';
 
 const Checkout = ({ cartItems, shippingMethods }) => {
   const { user_auth } = usePage().props;
-  const [province, setProvince] = useState([]);
 
   const getTotalPrice = () => {
     let totalPrice = 0;
@@ -30,15 +27,6 @@ const Checkout = ({ cartItems, shippingMethods }) => {
     shipping_method_id: '',
     total_price: getTotalPrice(),
   });
-
-  useEffect(() => {
-    fetch(url)
-      .then((response) => response.json())
-      .then((data) => {
-        setProvince(data);
-      })
-      .catch((error) => console.error(error));
-  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -64,18 +52,7 @@ const Checkout = ({ cartItems, shippingMethods }) => {
           <div className="row">
             <InputErrors errors={errors} />
             <div className="col-xl-8 col-lg-8 mb-4">
-              <div className="card mb-4 border shadow-0">
-                <div className="p-4 d-flex justify-content-between">
-                  {user_auth && (
-                    <div>
-                      <h5>
-                        {user_auth.name} {user_auth.lastname}
-                      </h5>
-                      <p className="mb-0 text-wrap">Procedi con il tuo ordine</p>
-                    </div>
-                  )}
-                </div>
-              </div>
+              <CheckoutCustomerCard user={user_auth} />
 
               {/* Checkout */}
               <div className="card shadow-0 border">
@@ -87,7 +64,7 @@ const Checkout = ({ cartItems, shippingMethods }) => {
                       <div className="form-outline">
                         <input
                           type="text"
-                          id="typeText"
+                          id="checkout-name"
                           placeholder="Digita qui"
                           className="form-control"
                           value={data.name}
@@ -101,7 +78,7 @@ const Checkout = ({ cartItems, shippingMethods }) => {
                       <div className="form-outline">
                         <input
                           type="text"
-                          id="typeText"
+                          id="checkout-lastname"
                           placeholder="Digita qui"
                           className="form-control"
                           value={data.lastname}
@@ -151,27 +128,11 @@ const Checkout = ({ cartItems, shippingMethods }) => {
 
                   <h5 className="card-title mb-3">Informazioni spedizione</h5>
 
-                  <div className="row mb-3">
-                    {shippingMethods.map((shipping) => (
-                      <div className="col-lg-4 mb-3" key={shipping.id}>
-                        <div className="form-check h-100 border rounded-3">
-                          <div className="p-3">
-                            <input
-                              className="form-check-input"
-                              type="radio"
-                              name="flexRadioDefault"
-                              id={`flexRadioDefault${shipping.id}`}
-                              onChange={() => handleShippingMethodChange(shipping.id)}
-                            />
-                            <label className="form-check-label" htmlFor={`flexRadioDefault${shipping.id}`}>
-                              {shipping.name} <br />
-                              <small className="text-muted">{shipping.description}</small>
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                  <CheckoutShippingMethods
+                    shippingMethods={shippingMethods}
+                    selectedId={data.shipping_method_id}
+                    onChange={handleShippingMethodChange}
+                  />
 
                   <div className="row">
                     <div className="col-sm-8 mb-3">
@@ -180,7 +141,7 @@ const Checkout = ({ cartItems, shippingMethods }) => {
                         <input
                           type="text"
                           name="address"
-                          id="typeText"
+                          id="checkout-address"
                           placeholder="Digita qui"
                           className="form-control"
                           value={data.address}
@@ -195,7 +156,7 @@ const Checkout = ({ cartItems, shippingMethods }) => {
                         <input
                           type="text"
                           name="civic"
-                          id="typeText"
+                          id="checkout-civic"
                           placeholder="Digita qui"
                           className="form-control"
                           value={data.civic}
@@ -209,7 +170,7 @@ const Checkout = ({ cartItems, shippingMethods }) => {
                       <select
                         className="form-select"
                         name="province"
-                        aria-label="Default select example"
+                        aria-label="Seleziona provincia"
                         onChange={handleInputChange}
                       >
                         {/* <option value="">Seleziona una città</option> */}
@@ -223,7 +184,7 @@ const Checkout = ({ cartItems, shippingMethods }) => {
                         <input
                           type="text"
                           name="city"
-                          id="typeText"
+                          id="checkout-country"
                           placeholder="Digita qui"
                           className="form-control"
                           value={data.city}
@@ -238,7 +199,7 @@ const Checkout = ({ cartItems, shippingMethods }) => {
                         <input
                           type="text"
                           name="cap"
-                          id="typeText"
+                          id="checkout-cap"
                           className="form-control"
                           value={data.cap}
                           onChange={handleInputChange}
@@ -318,7 +279,7 @@ const Checkout = ({ cartItems, shippingMethods }) => {
                         />
                       </Link>
                     </div>
-                    <div className="coll-md-8">
+                    <div className="col-md-8">
                       <span>{item.product.name}</span> <br />
                       <div className="price text-muted">Totale: {item.quantity * item.price} &euro;</div>
                     </div>

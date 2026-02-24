@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\ProductVariant;
 use App\Models\ProductVariantValue;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 
 class ProductVariantController extends \App\Http\Controllers\Controller
@@ -32,6 +33,9 @@ class ProductVariantController extends \App\Http\Controllers\Controller
         $variant = new ProductVariant();
         $variant->name = $request->name;
         $res = $variant->save();
+        if ($res) {
+            Cache::tags(['products'])->flush();
+        }
 
         $messaggio = $res ? 'Variante: ' . $variant->name . ' - Inserita correttamente' : 'Variante: ' . $variant->name . ' - Non Inserita';
         $tipoMessaggio = $res ? 'success' : 'danger';
@@ -58,6 +62,9 @@ class ProductVariantController extends \App\Http\Controllers\Controller
         } else {
             $res = 0;
         }
+        if ($res) {
+            Cache::tags(['products'])->flush();
+        }
         $messaggio = $res ? 'Variante: ' . $variant->name . ' - Modificata correttamente' : 'Variante: ' . $variant->name . ' - Non Modificata';
         $tipoMessaggio = $res ? 'success' : 'danger';
         session()->flash('message', ['tipo' => $tipoMessaggio, 'testo' => $messaggio]);
@@ -67,6 +74,9 @@ class ProductVariantController extends \App\Http\Controllers\Controller
 
     public function destroy(ProductVariant $variant)
     {
-        $variant->delete();
+        $res = $variant->delete();
+        if ($res) {
+            Cache::tags(['products'])->flush();
+        }
     }
 }

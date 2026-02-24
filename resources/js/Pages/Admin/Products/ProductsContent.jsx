@@ -1,6 +1,6 @@
 import Layout from '@/Layouts/Admin/Layout';
 import { Link, useForm, usePage } from '@inertiajs/react';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { toast } from 'react-toastify';
 import {
   ProductDelete,
@@ -93,6 +93,13 @@ const ProductsContent = ({ products, flash, sortBy, sortDirection, perPage, sort
     });
   };
 
+  const totalProducts = products.total ?? products.data.length;
+  const inStockCount = useMemo(() => products.data.filter((product) => Number(product.stock) > 0).length, [products.data]);
+  const lowStockCount = useMemo(
+    () => products.data.filter((product) => Number(product.stock) > 0 && Number(product.stock) <= 5).length,
+    [products.data]
+  );
+
   return (
     <Layout>
       <SectionHeader
@@ -110,6 +117,25 @@ const ProductsContent = ({ products, flash, sortBy, sortDirection, perPage, sort
 
       <div className="card shadow-2-strong">
         <div className="card-body">
+          <div className="products-overview-strip">
+            <div className="products-overview-item">
+              <small>Totale prodotti</small>
+              <strong>{totalProducts}</strong>
+            </div>
+            <div className="products-overview-item">
+              <small>Disponibili</small>
+              <strong>{inStockCount}</strong>
+            </div>
+            <div className="products-overview-item">
+              <small>Stock basso</small>
+              <strong>{lowStockCount}</strong>
+            </div>
+            <div className="products-overview-item">
+              <small>Selezionati</small>
+              <strong>{selectedRecords.length}</strong>
+            </div>
+          </div>
+
           <SearchAndPerPageSelector
             currentPerPage={currentPerPage}
             handlePerPageChange={handlePerPageChange}
@@ -117,8 +143,13 @@ const ProductsContent = ({ products, flash, sortBy, sortDirection, perPage, sort
             searchQuery={searchQuery}
             handleSearchChange={handleSearchChange}
           />
+
+          <div className="products-list-toolbar">
+            <p className="mb-0">Monitora in un colpo d'occhio prezzo, stock e categorie per ogni prodotto.</p>
+          </div>
+
           <div className="table-responsive admin-table-shell">
-            <table className="table table-hover mb-0 admin-table">
+            <table className="table table-hover mb-0 admin-table products-table">
               <thead>
                 <tr>
                   <th scope="col">
@@ -135,8 +166,7 @@ const ProductsContent = ({ products, flash, sortBy, sortDirection, perPage, sort
                   <th scope="col" onClick={() => handleSort('id')} style={{ cursor: 'pointer' }}>
                     Id {getSortIcon('id')}
                   </th>
-                  <th scope="col">Immagine</th>
-                  <th scope="col">Nome prodotto</th>
+                  <th scope="col">Prodotto</th>
                   <th scope="col" onClick={() => handleSort('price')} style={{ cursor: 'pointer' }}>
                     Prezzo {getSortIcon('price')}
                   </th>
@@ -150,7 +180,15 @@ const ProductsContent = ({ products, flash, sortBy, sortDirection, perPage, sort
                 </tr>
               </thead>
               <tbody>
-                {products.data.length > 0 ? (
+                {loading ? (
+                  [...Array(Number(currentPerPage) || 10)].map((_, index) => (
+                    <tr key={`products-loading-${index}`}>
+                      <td colSpan="7" className="py-2">
+                        <div className="admin-row-skeleton"></div>
+                      </td>
+                    </tr>
+                  ))
+                ) : products.data.length > 0 ? (
                   products.data.map((product) => (
                     <ProductRow
                       key={product.id}
@@ -162,7 +200,7 @@ const ProductsContent = ({ products, flash, sortBy, sortDirection, perPage, sort
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="8" className="text-center">
+                    <td colSpan="7" className="text-center py-4">
                       Non ci sono prodotti
                     </td>
                   </tr>

@@ -262,6 +262,7 @@ class ProductController extends \App\Http\Controllers\Controller
         if ($recordIds == null) {
             return;
         }
+        $cacheNeedsFlush = false;
         foreach ($recordIds as $recordId) {
             $product = Product::findOrFail($recordId);
             $productThumb = $product->image_path;
@@ -283,8 +284,12 @@ class ProductController extends \App\Http\Controllers\Controller
             if ($res) {
                 $this->deleteThumb($productThumb);
                 $this->deleteGallery($productGallery);
-                Cache::tags(['products'])->flush();
+                $cacheNeedsFlush = true;
             }
+        }
+
+        if ($cacheNeedsFlush) {
+            Cache::tags(['products'])->flush();
         }
     }
 

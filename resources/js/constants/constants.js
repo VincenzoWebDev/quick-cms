@@ -38,7 +38,7 @@ export const EDITOR_CONFIG = {
     images_upload_url: route('pages.images.store'),
     content_style: 'body { font-family:Roboto, sans-serif; font-size:14px }',
 };
-export const API_KEY_EDITOR = 'q2q8szpna6www4mstibaoriqw2mrsaeqivcmkec6fp3i2prq';
+export const API_KEY_EDITOR = import.meta.env.VITE_TINYMCE_API_KEY || '';
 /* End Editor config */
 
 export const ItemTypes = {
