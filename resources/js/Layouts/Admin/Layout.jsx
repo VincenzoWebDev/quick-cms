@@ -57,9 +57,8 @@ const Layout = ({ children }) => {
   return (
     <>
       <HeaderTitle />
+      {Number(demo_mode) === 1 && <DemoModeBanner />}
       <div className="wrapper admin-shell">
-        {demo_mode == 1 && <DemoModeBanner />}
-
         <div
           className={`body-overlay ${respCollapsed ? 'show-nav' : ''}`}
           onClick={() => dispatch(setRespCollapsed(!respCollapsed))}
