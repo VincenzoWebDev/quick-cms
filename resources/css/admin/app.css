@@ -70,7 +70,15 @@ body {
   line-height: 1.5;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+body.auth-page {
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  touch-action: manipulation;
 }
 
 h1,
@@ -495,12 +503,8 @@ button,
   min-height: 100vh;
   position: relative;
   overflow: hidden;
-  padding: 24px;
+  padding: 18px 24px;
   background: radial-gradient(circle at 15% 20%, rgba(59, 130, 246, 0.18), transparent 40%), radial-gradient(circle at 85% 15%, rgba(16, 185, 129, 0.1), transparent 35%), var(--admin-bg);
-}
-
-.auth-shell.has-demo-banner {
-  padding-top: 78px;
 }
 
 .auth-bg-orb {
@@ -542,6 +546,14 @@ button,
 
 .auth-shell-inner > .row {
   width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+  --bs-gutter-y: 1rem;
+}
+
+.auth-shell-inner > .row > [class*='col-'] {
+  padding-left: calc(var(--bs-gutter-x, 1.5rem) * 0.35);
+  padding-right: calc(var(--bs-gutter-x, 1.5rem) * 0.35);
 }
 
 .auth-side-card,
@@ -624,6 +636,13 @@ button,
 
 .auth-form-card {
   padding: 26px 28px;
+}
+
+.auth-form-card input {
+  cursor:no-drop;
+}
+.auth-form-card input:disabled{
+  color: var(--admin-text-soft);
 }
 
 .auth-form-head {
@@ -713,11 +732,11 @@ button,
 #content {
   width: calc(100% - var(--sidebar-width));
   margin-left: var(--sidebar-width);
-  height: 100vh;
+  min-height: 100vh;
+  height: auto;
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
-  overscroll-behavior: contain;
+  overflow: visible;
   transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1), margin-left 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -4191,11 +4210,26 @@ h2 {
 
 @media (max-width: 991.98px) {
   .auth-shell {
-    padding: 18px 14px;
+    min-height: auto;
+    padding: 12px 12px 18px;
   }
 
   .auth-shell.has-demo-banner {
     padding-top: 70px;
+  }
+
+  .auth-shell-inner,
+  .auth-shell.has-demo-banner .auth-shell-inner {
+    min-height: auto;
+  }
+
+  .auth-shell-inner > .row {
+    row-gap: 12px;
+  }
+
+  .auth-shell-inner > .row > [class*='col-'] {
+    padding-left: 0;
+    padding-right: 0;
   }
 
   .auth-side-card,
