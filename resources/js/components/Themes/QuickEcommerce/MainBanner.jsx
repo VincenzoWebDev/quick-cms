@@ -25,10 +25,16 @@ const MainBanner = () => {
                 </h2>
                 <p className="fs-4">Scopri i nuovi arrivi.</p>
                 <div className="d-flex gap-3">
-                  <Link href={route('productList')} className="btn btn-primary text-uppercase fs-6 rounded-pill px-4 py-3 mt-3">
+                  <Link
+                    href={route('productList')}
+                    className="btn btn-primary text-uppercase fs-6 rounded-pill px-4 py-3 mt-3"
+                  >
                     Inizia lo Shopping
                   </Link>
-                  <Link href={route('user.profile.login.index')} className="btn btn-dark text-uppercase fs-6 rounded-pill px-4 py-3 mt-3">
+                  <Link
+                    href={route('user.profile.login.index')}
+                    className="btn btn-dark text-uppercase fs-6 rounded-pill px-4 py-3 mt-3"
+                  >
                     Iscrivi ora
                   </Link>
                 </div>
@@ -42,13 +48,13 @@ const MainBanner = () => {
                 <picture>
                   <source srcSet="themes/quick_ecommerce/img/shoe-img.webp" type="image/webp" />
                   <img
-                    src="themes/quick_ecommerce/img/shoe-img.png"
+                    src="themes/quick_ecommerce/img/shoe-img.webp"
                     alt="Scarpa sportiva in evidenza"
                     width="1032"
                     height="781"
                     className="img-fluid shoe-hero-image"
                     loading="eager"
-                    fetchPriority="high"
+                    fetchpriority="high"
                     decoding="async"
                   />
                 </picture>

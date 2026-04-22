@@ -24,7 +24,19 @@ class AdminController extends \App\Http\Controllers\Controller
             abort(403, 'Unauthorized');
         }
         $notificationId->markAsRead();
-        return response()->noContent();
+        return redirect()->back();
+    }
+
+    public function markAllAsRead(Request $request)
+    {
+        $user = Auth::user();
+        if (!$user) {
+            abort(403, 'Unauthorized');
+        }
+
+        $user->unreadNotifications->markAsRead();
+
+        return redirect()->back();
     }
 
     public function index()

@@ -36,8 +36,16 @@ const Topbar = () => {
   }, [url]);
 
   const markAsRead = (notificationId) => {
-    router.put(route('notifications.markAsRead', notificationId));
+    router.put(route('notifications.markAsRead', notificationId), {}, { preserveScroll: true });
     setUnreadNotifications((prev) => prev.filter((notification) => notification.id !== notificationId));
+  };
+
+  const markAllAsRead = () => {
+    if (unreadNotifications.length === 0) {
+      return;
+    }
+    router.put(route('notifications.markAllAsRead'), {}, { preserveScroll: true });
+    setUnreadNotifications([]);
   };
 
   const handleLogout = (e) => {
@@ -93,29 +101,70 @@ const Topbar = () => {
                 {unreadCount > 0 && <span className="notification-badge">{unreadCount}</span>}
               </button>
               <ul className="dropdown-menu dropdown-menu-end admin-dropdown notifications-dropdown animate__animated animate__fadeInUp">
-                {unreadNotifications.length === 0 && <li className="dropdown-item-text text-center">Nessuna notifica</li>}
-                {unreadNotifications.map((notification) => (
-                  <li key={notification.id}>
-                    <div className="dropdown-notification-row">
-                      <Link
-                        href={notification.data.order_url ? notification.data.order_url : '#'}
-                        className="dropdown-item notification-link"
-                      >
-                        {notification.data.message} {notification.data.user_name ? `- ${notification.data.user_name}` : ''}
-                        {notification.data.order_id ? ` #${notification.data.order_id}` : ''}
-                      </Link>
+                <li className="notifications-header">
+                  <div>
+                    <p>Notifiche</p>
+                    <span>{unreadCount > 0 ? `${unreadCount} non lette` : 'Tutte lette'}</span>
+                  </div>
+                  <div className="notifications-header__actions">
+                    <button
+                      type="button"
+                      className="notifications-mark-all"
+                      onClick={markAllAsRead}
+                      disabled={unreadCount === 0}
+                    >
+                      Segna tutte
+                    </button>
+                    <i className="fa-regular fa-bell"></i>
+                  </div>
+                </li>
+                {unreadNotifications.length === 0 && (
+                  <li className="notifications-empty">
+                    <span>Nessuna notifica al momento</span>
+                    <small>Quando succede qualcosa, la trovi qui.</small>
+                  </li>
+                )}
+                {unreadNotifications.map((notification) => {
+                  const titleParts = [
+                    notification.data.message,
+                    notification.data.user_name ? `- ${notification.data.user_name}` : null,
+                  ].filter(Boolean);
+                  const metaParts = [
+                    notification.data.order_id ? `Ordine #${notification.data.order_id}` : null,
+                    notification.created_at ? new Date(notification.created_at).toLocaleString('it-IT') : null,
+                  ].filter(Boolean);
+                  const iconClass = notification.data.order_id ? 'fa-box' : 'fa-bell';
+
+                  return (
+                    <li key={notification.id} className="notification-item">
+                      <div className={`notification-dot ${!notification.read_at ? 'is-unread' : ''}`}></div>
+                      <div className="notification-item__icon">
+                        <i className={`fa-solid ${iconClass}`}></i>
+                      </div>
+                      <div className="notification-item__content">
+                        <Link
+                          href={notification.data.order_url ? notification.data.order_url : '#'}
+                          className="notification-item__title"
+                        >
+                          {titleParts.join(' ')}
+                        </Link>
+                        {metaParts.length > 0 && (
+                          <div className="notification-item__meta">{metaParts.join(' · ')}</div>
+                        )}
+                      </div>
                       {!notification.read_at && (
                         <button
-                          className="btn btn-link text-danger p-0"
+                          className="notification-mark-btn"
                           onClick={() => markAsRead(notification.id)}
                           type="button"
+                          title="Segna come letta"
                         >
                           <i className="fa-solid fa-check"></i>
                         </button>
                       )}
-                    </div>
-                  </li>
-                ))}
+                    </li>
+                  );
+                })}
               </ul>
             </div>
 

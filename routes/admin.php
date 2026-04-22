@@ -37,6 +37,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [AdminController::class, 'index'])->name('admin');
 Route::put('/notifications/{notificationId}', [AdminController::class, 'markAsRead'])->name('notifications.markAsRead');
+Route::put('/notifications', [AdminController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
 
 Route::middleware('VerifyIsAdmin')->group(function () {
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
