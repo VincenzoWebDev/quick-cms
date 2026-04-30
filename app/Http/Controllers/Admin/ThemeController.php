@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\ThemeRequest;
 use App\Models\Theme;
+use App\Services\ThemeCleanupService;
+use App\Services\ThemeScaffolder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class ThemeController extends \App\Http\Controllers\Controller
@@ -12,23 +15,36 @@ class ThemeController extends \App\Http\Controllers\Controller
     public function toggleThemeSwitch(Request $request, $themeId)
     {
         $theme = Theme::findOrFail($themeId);
-        $active = $request->input('active');
+        $active = (bool) $request->input('active');
+
+        if ($active) {
+            Theme::where('id', '!=', $theme->id)->update(['active' => false]);
+        }
+
         $theme->update(['active' => $active]);
     }
 
     public function index()
     {
-        $themes = Theme::get();
+        $themes = Theme::with('parentTheme:id,name,slug')
+            ->withCount('childThemes')
+            ->get();
         return Inertia::render('Admin/Themes/ThemesContent', ['themes' => $themes]);
     }
 
-    public function destroy(Theme $theme)
+    public function destroy(Theme $theme, ThemeCleanupService $themeCleanupService)
     {
         if ((int) $theme->active === 1) {
             session()->flash('message', ['tipo' => 'danger', 'testo' => 'Non puoi eliminare un tema attivo']);
             return redirect()->route('themes.index');
         }
 
+        if ($theme->childThemes()->exists()) {
+            session()->flash('message', ['tipo' => 'danger', 'testo' => 'Non puoi eliminare un tema usato come base da altri temi']);
+            return redirect()->route('themes.index');
+        }
+
+        $themeCleanupService->deleteThemeAssets($theme);
         $res = $theme->delete();
         $messaggio = $res ? 'Tema eliminato correttamente' : 'Tema non eliminato';
         $tipoMessaggio = $res ? 'success' : 'danger';
@@ -36,7 +52,7 @@ class ThemeController extends \App\Http\Controllers\Controller
         return redirect()->route('themes.index');
     }
 
-    public function destroyBatch(Request $request)
+    public function destroyBatch(Request $request, ThemeCleanupService $themeCleanupService)
     {
         $recordIds = $request->input('recordIds');
         if (!$recordIds || !is_array($recordIds)) {
@@ -49,6 +65,15 @@ class ThemeController extends \App\Http\Controllers\Controller
             return redirect()->route('themes.index');
         }
 
+        if ($themes->contains(fn($theme) => $theme->childThemes()->exists())) {
+            session()->flash('message', ['tipo' => 'danger', 'testo' => 'Non puoi eliminare temi usati come base da altri temi']);
+            return redirect()->route('themes.index');
+        }
+
+        foreach ($themes as $theme) {
+            $themeCleanupService->deleteThemeAssets($theme);
+        }
+
         $deleted = Theme::whereIn('id', $recordIds)->delete();
         $messaggio = $deleted ? 'Temi eliminati correttamente' : 'Nessun tema eliminato';
         $tipoMessaggio = $deleted ? 'success' : 'danger';
@@ -56,41 +81,41 @@ class ThemeController extends \App\Http\Controllers\Controller
         return redirect()->route('themes.index');
     }
 
-    public function store(ThemeRequest $request)
+    public function store(ThemeRequest $request, ThemeScaffolder $themeScaffolder)
     {
-        $theme = new Theme();
-        $theme->name = $request->input('name');
-        $theme->path = $request->input('path');
-        $res = $theme->save();
+        $slugBase = Str::of($request->input('name'))->slug('_')->toString();
+        $slug = $slugBase;
+        $suffix = 1;
+
+        while (Theme::where('slug', $slug)->exists()) {
+            $slug = $slugBase . '_' . $suffix;
+            $suffix++;
+        }
+
+        $theme = Theme::create([
+            'name' => $request->input('name'),
+            'slug' => $slug,
+            'path' => 'resources/js/Pages/Front/Themes/' . $slug,
+            'type' => $request->input('type', 'content'),
+            'description' => $request->input('description'),
+            'parent_theme_id' => $request->input('parent_theme_id'),
+            'status' => 'draft',
+            'active' => false,
+        ]);
+
+        $theme->load('parentTheme');
+        $themeScaffolder->scaffold($theme);
+
+        if ($request->boolean('activate_after_create')) {
+            Theme::where('id', '!=', $theme->id)->update(['active' => false]);
+            $theme->update(['active' => true]);
+        }
+
+        $res = true;
 
         $messaggio = $res ? 'Tema ' . $theme->name . ' inserito correttamente' : 'Tema ' . $theme->name . ' non inserito';
         $tipoMessaggio = $res ? 'success' : 'danger';
         session()->flash('message', ['tipo' => $tipoMessaggio, 'testo' => $messaggio]);
-
-        // Percorsi per le cartelle da creare
-        // $themeDir = resource_path('js/Pages/Front/themes/' . $theme->name);
-        // $cssDir = resource_path('css/' . $theme->name);
-        // $viewsDir = resource_path('views/layouts/' . $theme->name);
-        // $publicDir = public_path('themes/' . $theme->name);
-        // try {
-        //     // Crea le cartelle se non esistono già
-        //     File::ensureDirectoryExists($themeDir);
-        //     File::ensureDirectoryExists($cssDir);
-        //     File::ensureDirectoryExists($viewsDir);
-        //     File::ensureDirectoryExists($publicDir . '/img');
-
-        //     $res = $theme->save();
-
-        //     $messaggio = $res ? 'Tema ' . $theme->name . ' inserito correttamente' : 'Tema ' . $theme->name . ' non inserito';
-        //     $tipoMessaggio = $res ? 'success' : 'danger';
-        //     session()->flash('message', ['tipo' => $tipoMessaggio, 'testo' => $messaggio]);
-
-        //     return redirect()->route('themes.index');
-        // } catch (\Exception $e) {
-        //     // Log dell'errore
-        //     Log::error('Errore durante la creazione del tema: ' . $e->getMessage());
-        //     return redirect()->back()->withErrors(['error' => 'Errore nella creazione del tema.']);
-        // }
         return redirect()->route('themes.index');
     }
 
@@ -98,12 +123,21 @@ class ThemeController extends \App\Http\Controllers\Controller
     {
         $theme = Theme::findOrFail($id);
         $oldName = $theme->name;
-        $oldPath = $theme->path;
+        $oldType = $theme->type;
+        $oldDescription = $theme->description;
+        $oldParentThemeId = $theme->parent_theme_id;
 
         $theme->name = $request->input('name');
-        $theme->path = $request->input('path');
+        $theme->type = $request->input('type', $theme->type);
+        $theme->description = $request->input('description', $theme->description);
+        $theme->parent_theme_id = $request->input('parent_theme_id', $theme->parent_theme_id);
 
-        if ($oldName !== $theme->name || $oldPath !== $theme->path) {
+        if (
+            $oldName !== $theme->name
+            || $oldType !== $theme->type
+            || $oldDescription !== $theme->description
+            || $oldParentThemeId !== $theme->parent_theme_id
+        ) {
             $res = $theme->save();
         } else {
             $res = 0;

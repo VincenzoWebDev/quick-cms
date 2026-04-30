@@ -64,7 +64,7 @@ class CartController extends \App\Http\Controllers\Controller
         $cartItems = CartItem::where('user_id', $user->id)
             ->with('product', 'VariantCombination.variantCombinationValues.productVariantValue')
             ->get();
-        return Inertia::render('Front/Themes/' . $this->themeName . '/Cart', compact('cartItems'));
+        return $this->renderThemePage('Cart', compact('cartItems'));
     }
 
     public function deleteCartItem($id)

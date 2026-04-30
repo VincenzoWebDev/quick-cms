@@ -18,7 +18,7 @@ class UserProfileController extends \App\Http\Controllers\Controller
 
     public function index()
     {
-        return Inertia::render('Front/Themes/' . $this->themeName . '/UserProfile/Profile');
+        return $this->renderThemePage('UserProfile/Profile');
     }
 
     public function login()
@@ -26,7 +26,7 @@ class UserProfileController extends \App\Http\Controllers\Controller
         if (Auth::check()) {
             return redirect()->route('home');
         }
-        return Inertia::render('Front/Themes/' . $this->themeName . '/UserProfile/Login');
+        return $this->renderThemePage('UserProfile/Login');
     }
     public function loginPost(Request $request)
     {
@@ -65,12 +65,12 @@ class UserProfileController extends \App\Http\Controllers\Controller
             ->with('orderItems.product')
             ->get();
 
-        return Inertia::render('Front/Themes/' . $this->themeName . '/UserProfile/Orders', compact('orders'));
+        return $this->renderThemePage('UserProfile/Orders', compact('orders'));
     }
 
     public function completedOrders()
     {
         $completedOrders = Order::where(['shipping_status' => 'delivered', 'payment_status' => 'paid', 'user_id' => Auth::user()->id])->with('orderItems.product')->get();
-        return Inertia::render('Front/Themes/' . $this->themeName . '/UserProfile/CompletedOrders', compact('completedOrders'));
+        return $this->renderThemePage('UserProfile/CompletedOrders', compact('completedOrders'));
     }
 }

@@ -17,7 +17,7 @@ class TestTaskController extends Controller
 
     public function index()
     {
-        return Inertia::render('Front/Themes/' . $this->themeName . '/TestTask/Index', [
+        return $this->renderThemePage('TestTask/Index', [
             'title' => 'Test Task Page',
         ]);
     }

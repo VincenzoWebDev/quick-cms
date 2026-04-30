@@ -35,6 +35,6 @@ class HomeController extends Controller
             ->with('children')
             ->get();
         $products = Product::get();
-        return Inertia::render('Front/Themes/' . $this->themeName . '/HomeComponent', compact('categories', 'products'));
+        return $this->renderThemePage('HomeComponent', compact('categories', 'products'));
     }
 }

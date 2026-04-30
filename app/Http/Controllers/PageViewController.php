@@ -45,7 +45,7 @@ class PageViewController extends Controller
     {
         $currentPage = Page::where('slug', $slug)->where('active', 1)->firstOrFail();
         $pageLayout = $currentPage->layout;
-        return Inertia::render('Front/Themes/' . $this->themeName . '/Page', ['currentPage' => $currentPage, 'pageLayout' => $pageLayout]);
+        return $this->renderThemePage('Page', ['currentPage' => $currentPage, 'pageLayout' => $pageLayout]);
     }
 
     /**

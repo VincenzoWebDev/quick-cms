@@ -2,8 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Theme;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class ThemeRequest extends FormRequest
 {
@@ -22,8 +23,18 @@ class ThemeRequest extends FormRequest
      */
     public function rules(): array
     {
+        $theme = $this->route('theme') instanceof Theme
+            ? $this->route('theme')
+            : Theme::find($this->route('id'));
+
         return [
-            'name' => 'required',
+            'name' => ['required', 'string', 'max:255'],
+            'type' => ['nullable', Rule::in(['content', 'ecommerce'])],
+            'description' => ['nullable', 'string'],
+            'parent_theme_id' => ['nullable', 'integer', 'exists:themes,id'],
+            'activate_after_create' => ['nullable', 'boolean'],
+            'path' => ['nullable', 'string'],
+            'slug' => ['nullable', 'string', 'max:255', Rule::unique('themes', 'slug')->ignore($theme?->id)],
         ];
     }
 
@@ -31,6 +42,8 @@ class ThemeRequest extends FormRequest
     {
         return [
             'name.required' => 'Il nome del tema è obbligatorio',
+            'type.in' => 'Il tipo tema non è valido',
+            'parent_theme_id.exists' => 'Il tema base selezionato non esiste',
         ];
     }
 }

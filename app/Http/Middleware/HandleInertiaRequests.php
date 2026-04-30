@@ -6,7 +6,7 @@ use App\Models\CartItem;
 use App\Models\Category;
 use App\Models\Page;
 use App\Models\Setting;
-use App\Models\Theme;
+use App\Services\ThemeResolver;
 use Closure;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -37,6 +37,7 @@ class HandleInertiaRequests extends Middleware
     {
         $user = $request->user();
         $isAdminRequest = $request->is('admin*');
+        $themeResolver = app(ThemeResolver::class);
         $settingsCache = null;
         $getSetting = function (string $key, $default = false) use (&$settingsCache) {
             if ($settingsCache === null) {
@@ -69,6 +70,10 @@ class HandleInertiaRequests extends Middleware
                 'site_name' => 'Quick CMS - La tua soluzione per la gestione di un e-commerce',
                 'site_description' => 'Quick CMS è la soluzione ideale per gestire un e-commerce. Offre funzionalità complete per la gestione dei prodotti, delle categorie, degli ordini e molto altro ancora. Scopri come Quick CMS può aiutarti a gestire il tuo e-commerce in modo efficiente e semplice.',
             ],
+            'active_theme' => fn() => $isAdminRequest ? null : [
+                'slug' => $themeResolver->getActiveThemeSlug(),
+                'manifest' => $themeResolver->readManifest(),
+            ],
             'auth' => ['user' => $user?->only(['id', 'name', 'lastname', 'email', 'role', 'profile_img'])],
         ]);
     }
@@ -95,10 +100,7 @@ class HandleInertiaRequests extends Middleware
             return 'layouts.admin.app';
         }
 
-        $themeName = Theme::where('active', true)->value('name') ?? 'default';
-        $themeView = 'layouts.' . $themeName . '.app';
-
-        return view()->exists($themeView) ? $themeView : 'layouts.default.app';
+        return app(ThemeResolver::class)->resolveLayoutView();
     }
 
     public function handle($request, Closure $next)

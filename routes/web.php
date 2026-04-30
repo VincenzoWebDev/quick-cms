@@ -26,12 +26,6 @@ use App\Http\Controllers\TestTaskController;
 |
 */
 
-// Route::prefix('admin')->group(function () {
-//     Auth::routes();
-// });
-
-// require __DIR__ . '/admin.php';
-
 /* Rotte pagine front-end */
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -74,14 +68,6 @@ Route::prefix('page')->group(function () {
     Route::get('/{slug}', [PageViewController::class, 'show'])->name('page.show')->where('slug', '^[a-z0-9]+(?:-[a-z0-9]+)*$');
 });
 
-
-// require __DIR__ . '/theme.php';
-
-// Route::get('testEmail', function () {
-//     Mail::to('sports.eco12@gmail.com')->queue(new testEmail());
-// });
-// Route::view('testEmail', 'mails.testEmail', ['username' => 'Vincenzo']);
-
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -93,3 +79,11 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__ . '/auth.php';
+
+
+
+
+// Route::get('testEmail', function () {
+//     Mail::to('sports.eco12@gmail.com')->queue(new testEmail());
+// });
+// Route::view('testEmail', 'mails.testEmail', ['username' => 'Vincenzo']);

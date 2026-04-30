@@ -40,7 +40,7 @@ class CheckoutController extends \App\Http\Controllers\Controller
             return redirect()->route('home');
         } else {
             $shippingMethods = ShippingMethod::all();
-            return Inertia::render('Front/Themes/' . $this->themeName . '/Checkout', [
+            return $this->renderThemePage('Checkout', [
                 'cartItems' => $cartItems,
                 'shippingMethods' => $shippingMethods,
             ]);
@@ -157,7 +157,7 @@ class CheckoutController extends \App\Http\Controllers\Controller
         if (!$order || $order->payment_status == 'paid') {
             abort(404);
         }
-        return Inertia::render('Front/Themes/' . $this->themeName . '/Payment', [
+        return $this->renderThemePage('Payment', [
             'orderId' => $id
         ]);
     }

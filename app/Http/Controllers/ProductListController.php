@@ -42,8 +42,8 @@ class ProductListController extends Controller
         );
 
         $variants = $this->getCachedVariants();
-        return Inertia::render(
-            'Front/Themes/' . $this->themeName . '/ProductList',
+        return $this->renderThemePage(
+            'ProductList',
             [
                 'products' => $products,
                 'sortBy' => $filters['sortBy'],
@@ -84,8 +84,8 @@ class ProductListController extends Controller
         );
 
         $variants = $this->getCachedVariants();
-        return Inertia::render(
-            'Front/Themes/' . $this->themeName . '/ProductList',
+        return $this->renderThemePage(
+            'ProductList',
             [
                 'products' => $products,
                 'sortBy' => $filters['sortBy'],

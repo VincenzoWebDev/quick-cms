@@ -35,8 +35,8 @@ class ProductDetailController extends Controller
         $variantNames = ProductVariant::pluck('name', 'id')->toArray();
         $seoMetadata = $product->seoMetadata ? $product->seoMetadata->only(['meta_title', 'meta_description', 'meta_keywords']) : null;
 
-        return Inertia::render(
-            'Front/Themes/' . $this->themeName . '/ProductDetail',
+        return $this->renderThemePage(
+            'ProductDetail',
             [
                 'product' => $product,
                 'variantNames' => $variantNames,

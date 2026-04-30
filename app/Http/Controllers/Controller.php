@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Theme;
+use App\Services\ThemeResolver;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
@@ -13,8 +13,22 @@ class Controller extends BaseController
 
     protected function getActiveTheme()
     {
-        $activeTheme = Theme::where('active', true)->first();
-        $themeName = $activeTheme ? $activeTheme->name : 'default';
-        return $themeName;
+        return app(ThemeResolver::class)->getActiveThemeSlug();
+    }
+
+    protected function renderThemePage(string $page, array $props = [])
+    {
+        return \Inertia\Inertia::render(
+            app(ThemeResolver::class)->resolveInertiaPage($page),
+            $props
+        );
+    }
+
+    protected function renderThemeView(string $view, array $data = [], ?string $fallback = null)
+    {
+        return view(
+            app(ThemeResolver::class)->resolveBladeThemeView($view, null, $fallback),
+            $data
+        );
     }
 }

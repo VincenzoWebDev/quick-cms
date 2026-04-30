@@ -100,7 +100,7 @@ Route::middleware('VerifyIsAdmin')->group(function () {
     Route::get('/articles', [ArticleController::class, 'index'])->name('articles');
 });
 
-Route::middleware('VerifyIsAdmin', 'CheckEcommerceStatus')->group(function () {
+Route::middleware(['VerifyIsAdmin', 'CheckEcommerceStatus'])->group(function () {
     Route::resource('/products', ProductController::class);
     Route::delete('/products/destroy/batch', [ProductController::class, 'destroyBatch'])->name('products.destroy.batch');
     // Route::post('/products/generate-combinations', [ProductController::class, 'generateCombinations'])->name('products.generate.combinations');
@@ -165,4 +165,3 @@ Route::middleware('VerifyIsAdmin')->group(function () {
         Route::delete('settings/variant-values/{variant_value}', [ProductVariantValueController::class, 'destroy'])->name('settings.variant-values.destroy');
     });
 });
-// });

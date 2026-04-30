@@ -28,7 +28,7 @@ class ThemesSeed extends Seeder
             ],
         ];
         foreach ($themes as $theme) {
-            DB::table('settings')->updateOrInsert(
+            DB::table('themes')->updateOrInsert(
                 ['name' => $theme['name']],
                 [
                     'active' => $theme['active'],
