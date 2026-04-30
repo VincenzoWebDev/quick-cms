@@ -17,7 +17,7 @@ To install Quick-CMS on your local environment, follow these steps:
 1. Clone the repository from GitHub:
 
    ```
-   git clone https://github.com/VincenzoDesigner/quick-cms.git
+   git clone https://github.com/VincenzoWebDev/quick-cms.git
    ```
 
 2. Install project dependencies using Composer:
